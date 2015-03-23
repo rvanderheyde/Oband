@@ -1,0 +1,23 @@
+{
+  "name": "Oband",
+  "version": "1.0.0",
+  "description": "Online Rockband like game. Final Project for OLIN.js",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rvanderheyde/Oband.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rvanderheyde/Oband/issues"
+  },
+  "homepage": "https://github.com/rvanderheyde/Oband",
+  "dependencies": {
+    "express": "^4.12.3",
+    "morgan": "^1.5.2"
+  }
+}
