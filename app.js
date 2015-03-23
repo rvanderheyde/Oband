@@ -4,6 +4,8 @@ var path = require('path');
 var mongoose = require('mongoose');
 var bodyParser = require('body-parser');
 
+var index = require('./routes/index');
+
 var app = express();
 var mongoURI = process.env.MONGOURI || "mongodb://localhost/test";
 var PORT = process.env.PORT || 3000;
@@ -15,7 +17,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.get('/');
+app.get('/', index.indexRender);
 
 app.listen(PORT, function() {
   console.log("Application running on port:", PORT);
