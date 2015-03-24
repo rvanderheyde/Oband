@@ -4,9 +4,12 @@ var path = require('path');
 var mongoose = require('mongoose');
 var bodyParser = require('body-parser');
 
+var app = express();
+var http = require('http').Server(app);
+var io = require('socket.io')(http);
+
 var index = require('./routes/index');
 
-var app = express();
 var mongoURI = process.env.MONGOURI || "mongodb://localhost/test";
 var PORT = process.env.PORT || 3000;
 
@@ -19,6 +22,13 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('/', index.indexRender);
 
-app.listen(PORT, function() {
+io.on('connection', function(socket){
+  console.log('a user connected');
+  socket.on('disconnect', function(){
+    console.log('user disconnected');
+  });
+});
+
+http.listen(PORT, function() {
   console.log("Application running on port:", PORT);
 });
