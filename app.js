@@ -3,10 +3,13 @@ var logger = require('morgan');
 var path = require('path');
 var mongoose = require('mongoose');
 var bodyParser = require('body-parser');
+var Sock = require('socket.io');
 
 var app = express();
 var http = require('http').Server(app);
-var io = require('socket.io')(http);
+var io = new Sock(http);
+
+// var io = require('socket.io')(http);
 
 var index = require('./routes/index');
 
@@ -22,14 +25,14 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('/', index.indexRender);
 
-io.on('connection', function(socket){
+io.on('connection', function(client){
   console.log('a user connected');
 
-  socket.on('disconnect', function(){
+  client.on('disconnect', function(){
     console.log('user disconnected');
   });
 
-  socket.on('mouseClick', function(point){
+  client.on('mouseClick', function(point){
   	console.log('click');
   	console.log(point);
   	io.emit('mouseClick', point);
