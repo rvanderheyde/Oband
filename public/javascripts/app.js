@@ -5,12 +5,14 @@ var requestAnimationFrame = window.requestAnimationFrame ||
 var radius = 10;
 var height = $(window).height()-20;
 var width = $(window).width()-20;
+var socket = io();
 
 function init(){
 	canvas = document.getElementById("blankSpace");
 	canvas.width = width;
 	canvas.height = height;
   	drawStuff();
+  	canvas.addEventListener("mousedown", mouseClickDown)
 }
 
 function drawCircle(ctx){
@@ -31,4 +33,11 @@ function drawStuff(){
 	drawCircle(ctx);
 	radius += 10;
 	requestAnimationFrame(drawStuff);
+}
+
+function mouseClickDown(event){
+	var clickX = event.pageX;
+	var clickY = event.pageY;
+	var point = [clickX,clickY];
+	socket.emit('mouseClick', point);
 }
