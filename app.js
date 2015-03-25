@@ -32,6 +32,7 @@ io.on('connection', function(socket){
   socket.on('mouseClick', function(point){
   	console.log('click');
   	console.log(point);
+  	io.emit('mouseClick', point);
   })
 });
 

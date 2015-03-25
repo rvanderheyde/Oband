@@ -11,13 +11,23 @@ function init(){
 	canvas = document.getElementById("blankSpace");
 	canvas.width = width;
 	canvas.height = height;
+	ctx = canvas.getContext("2d");
   	drawStuff();
   	canvas.addEventListener("mousedown", mouseClickDown)
+  	socket.on('mouseClick', function(point){
+  		ctx.beginPath();
+  		ctx.arc(point[0],point[1],10,0,2*Math.PI);
+  		ctx.stroke();
+  		ctx.closePath();
+
+  		ctx.fillStyle ="#FF0000";
+  		ctx.fill();
+  	})
 }
 
 function drawCircle(ctx){
 	ctx.fillStyle = "#FF0000";
-  	ctx.fillRect(0,0,width,height);
+  	ctx.fillRect(0,0,width,height); 
 	ctx.beginPath();
 	ctx.arc(width/2,height/2,radius,0,2*Math.PI);
 	ctx.stroke();
@@ -28,11 +38,11 @@ function drawCircle(ctx){
 }
 
 function drawStuff(){
-	ctx = canvas.getContext("2d");
-
-	drawCircle(ctx);
-	radius += 10;
-	requestAnimationFrame(drawStuff);
+	if (radius <= 500){
+		drawCircle(ctx);
+		radius += 10;
+		requestAnimationFrame(drawStuff);
+	}	
 }
 
 function mouseClickDown(event){
