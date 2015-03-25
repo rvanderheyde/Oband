@@ -45,6 +45,7 @@ function drawStuff(){
 	}	
 }
 
+
 function mouseClickDown(event){
 	var clickX = event.pageX;
 	var clickY = event.pageY;
