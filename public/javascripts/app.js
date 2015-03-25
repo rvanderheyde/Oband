@@ -3,8 +3,8 @@ var requestAnimationFrame = window.requestAnimationFrame ||
                             window.webkitRequestAnimationFrame || 
                             window.msRequestAnimationFrame;
 var radius = 10;
-var height = $(window).height()-20;
-var width = $(window).width()-20;
+var height = $(window).height()-5;
+var width = $(window).width()-5;
 var socket = io();
 
 function init(){

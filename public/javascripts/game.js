@@ -13,4 +13,17 @@ function init(){
 	canvas.height = height;
 	ctx = canvas.getContext("2d");
 
+	drawStartScreen()
+	canvas.addEventListener("mousedown", mouseClickDown)
+}
+
+function drawStartScreen(){
+	
+}
+
+function mouseClickDown(event){
+	var clickX = event.pageX;
+	var clickY = event.pageY;
+	var point = [clickX,clickY];
+
 }
