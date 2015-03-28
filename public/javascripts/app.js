@@ -33,14 +33,14 @@ function init(){
   	drawStuff();
   	canvas.addEventListener("mousedown", mouseClickDown)
   	// scores['user' + num_users] = 0;
-  	socket.on('mouseClick', function(point) {
+  	socket.on('mouseClick', function(point, clientId) {
   		ctx.beginPath();
   		ctx.arc(point[0],point[1],10,0,2*Math.PI);
   		ctx.stroke();
   		ctx.closePath();
-
   		ctx.fillStyle ="#FF0000";
   		ctx.fill();
+  		canvas.ids[clientId] += 1;
   	});
 }
 
@@ -68,5 +68,5 @@ function mouseClickDown(event){
 	var clickX = event.pageX;
 	var clickY = event.pageY;
 	var point = [clickX,clickY];
-	socket.emit('mouseClick', point);
+	socket.emit('mouseClick', point, canvas.myId);
 }

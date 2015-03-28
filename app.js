@@ -35,10 +35,10 @@ io.on('connection', function(client){
     io.emit('disconnecting', client.id);
   });
 
-  client.on('mouseClick', function(point){
+  client.on('mouseClick', function(point, otherId){
   	console.log('click');
   	console.log(point);
-  	io.emit('mouseClick', point);
+  	io.emit('mouseClick', point, otherId);
   });
 });
 
