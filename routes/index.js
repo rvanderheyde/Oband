@@ -13,7 +13,7 @@ var echo = echojs({
 });
 
 // testing if api works
-routes.testing = function (req, res) {
+routes.echonestCall = function (req, res) {
   echo('song/search').get({
     artist: 'abba',
     title: 'mamma mia'
