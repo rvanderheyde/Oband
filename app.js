@@ -26,17 +26,20 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.get('/', index.indexRender);
 
 io.on('connection', function(client){
-  console.log('a user connected');
+  console.log('a user connected: ' + client.id);
+  client.emit('connecting', client.id);
+  client.broadcast.emit('newConnection', client.id);
 
-  client.on('disconnect', function(){
-    console.log('user disconnected');
+  client.on('disconnect', function() {
+    console.log('user disconnected: ' + client.id);
+    io.emit('disconnecting', client.id);
   });
 
   client.on('mouseClick', function(point){
   	console.log('click');
   	console.log(point);
   	io.emit('mouseClick', point);
-  })
+  });
 });
 
 http.listen(PORT, function() {
