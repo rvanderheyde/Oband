@@ -17,9 +17,14 @@ var gf = {
             height: height, 
             width: width,
             context: ctx,
+            font: 'Bold 16px Arial',
             penColor: '#000000',
             backgroundColor: '#FFFFFF',
             objects: [],
+            setFont: function(font){
+              this.font = font;
+              this.context.font = font;
+            },
             setPenColor: function(hexColor){
               this.context.fillStyle = hexColor;
               this.penColor = hexColor;
@@ -58,7 +63,19 @@ var gf = {
                         } else {
                           return true;
                         }
-                      },
+                      }
+                    }
+            },
+            drawText: function(text, x, y){
+              this.context.fillStyle = this.penColor;
+              this.context.font = this.font;
+              this.context.fillText(text, x, y);
+              this.objects.push({type:'text', vars: [ text, x, y], font: this.font, color: this.penColor})
+              return {type: 'Text',
+                      point: [x,y], 
+                      text: text, 
+                      font: this.font, 
+                      color: this.penColor,
                     }
             },
             move: function(shape, dx, dy){
@@ -81,6 +98,11 @@ var gf = {
                 this.context.fillStyle = this.backgroundColor;
                 this.context.fillRect(shape.point1[0], shape.point1[1], shape.width, shape.height);
                 this.context.fillStyle = this.penColor;
+              }
+              if(shape.type === 'Text'){
+                this.context.fillStyle = this.backgroundColor;
+                this.context.font = shape.font;
+                this.context.fillText(shape.text, shape.point[0], shape.point[1])
               }
             },
             redraw: function(){
