@@ -12,11 +12,10 @@ var echo = echojs({
   key: process.env.ECHONEST_KEY
 });
 
-// testing if api works
 routes.echonestCall = function (req, res) {
-  echo('song/search').get({
-    artist: 'abba',
-    title: 'mamma mia'
+  echo('track/profile').get({
+    id: 'TRTLKZV12E5AC92E11', //TESTING TRACK ID
+    bucket: 'audio_summary'
   }, function (err, json) {
     console.log(json.response);
   });
