@@ -1,8 +1,18 @@
 function main(){
 	canvas = gf.fullCanvas();
-	canvas.setBackgroundColor('#909090');
-	canvas.createBackground();
-	init()
+	if (canvas.width>1500 && canvas.height>800){
+		canvas.setBackgroundColor('#909090');
+		canvas.createBackground();
+		init()
+	} else {
+		canvas.setBackgroundColor('#909090');
+		canvas.createBackground();
+		canvas.setPenColor('#E60000')
+		var fontSize = canvas.width/12
+		var font = 'Bold ' + fontSize.toString() + 'px Arial'
+		canvas.setFont(font)
+		canvas.drawText('Please resize the Screen', canvas.width/75,canvas.height/2)
+	}
 }
 
 function init(){
@@ -19,6 +29,21 @@ function init(){
 	var text2 = canvas.drawText('Multi-Player', canvas.width/2-67, 360)
 	var text3 = canvas.drawText('Leaderboard', canvas.width/2-70, 420)
 	var text3 = canvas.drawText('Help', canvas.width/2-24, 480)
+	var lastBut = '';
+	function startScreenHoverEffect(event){
+		var mx = event.pageX;
+		var my = event.pageY;
+		var point = [clickX, clickY];
+		if (rect1.checkInside(point)){
+			canvas.setPenColor(canvas.backgroundColor)
+			canvas.drawRect(canvas.width/2-90, 270, 180, 48);
+			canvas.setPenColor('#656565')
+			// canvas.drawRect(canvas.width/2-90, 270, 200, 48);
+			canvas.setPenColor('#000000')
+			canvas.setFont('Bold 24px Arial')
+		}
+	}
+	canvas.paper.addEventListener("mousemove", startScreenHoverEffect);
 	canvas.paper.addEventListener("mousedown", function startScreenClick(event){
 		var clickX = event.pageX;
   		var clickY = event.pageY;
@@ -26,7 +51,9 @@ function init(){
   		if (rect1.checkInside(point)){
   			console.log('Single Player');
     		canvas.paper.removeEventListener("mousedown", startScreenClick)
+    		canvas.paper.removeEventListener("mousemove", startScreenHoverEffect)
     		var setupScreen = drawSinglePlayerSetup()
+    		canvas.paper.addEventListener("mousemove")
     		canvas.paper.addEventListener("mousedown", setupScreenClick)
   		}
   		if (rect2.checkInside(point)){
