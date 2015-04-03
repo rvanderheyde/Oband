@@ -27,6 +27,7 @@ function init(){
   			console.log('Single Player');
     		canvas.paper.removeEventListener("mousedown", startScreenClick)
     		var setupScreen = drawSinglePlayerSetup()
+    		canvas.paper.addEventListener("mousedown", setupScreenClick)
   		}
   		if (rect2.checkInside(point)){
   			console.log('Multi-Player')
@@ -41,6 +42,10 @@ function init(){
   			console.log('help')
   		}
 	})
+}
+
+function setupScreenClick(event){
+	
 }
 
 function drawSongListArea(){
