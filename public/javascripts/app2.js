@@ -20,8 +20,8 @@ function drawShit(canvas, obj){
 		canvas.move(obj, x, 0)
 		canvas.animate(drawShit, obj)
 	} else {
-		y = 50*Math.cos(theta);
-		theta+=1;
+		y = 30*Math.cos(theta);
+		theta+=.1;
 		canvas.move(obj, 0, y)
 		canvas.animate(function(){drawShit(canvas, obj)})
 	}

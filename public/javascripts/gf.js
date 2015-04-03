@@ -118,6 +118,20 @@ var gf = {
                 }
               }
             },
+            draw: function(lst){
+              for(var i=0; i<lst.length;i++){
+                var obj = lst[i]
+                if (obj.type ==='background'){
+                  this.context.fillStyle = this.backgroundColor;
+                  this.context.fillRect(0,0,this.width, this.height)
+                }
+                if (obj.type === 'rect'){
+                  this.context.fillStyle = obj.color;
+                  this.context.fillRect(obj.vars[0], obj.vars[1], obj.vars[2], obj.vars[3])
+                }
+              }
+
+            },
             animate: function(fun, objs){
               var canvas = this;
               this.redraw();
