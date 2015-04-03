@@ -35,10 +35,18 @@ io.on('connection', function(client){
     io.emit('disconnecting', client.id);
   });
 
-  client.on('mouseClick', function(point, otherId){
+  client.on('mouseClick', function(point, room) {
   	console.log('click');
   	console.log(point);
-  	io.emit('mouseClick', point, otherId);
+    if (room) {
+    	io.to(room).emit('mouseClick', point, client.id);
+    } 
+  });
+
+  client.on('joinRoom', function(room) {
+    console.log(client.id + ' joining room ' + room);
+    client.join(room);
+    io.to(room).emit('joinRoom', client.id, room);
   });
 });
 
