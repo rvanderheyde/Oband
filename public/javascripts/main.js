@@ -33,14 +33,38 @@ function init(){
 	function startScreenHoverEffect(event){
 		var mx = event.pageX;
 		var my = event.pageY;
-		var point = [clickX, clickY];
+		var point = [mx, my];
 		if (rect1.checkInside(point)){
-			canvas.setPenColor(canvas.backgroundColor)
-			canvas.drawRect(canvas.width/2-90, 270, 180, 48);
+			canvas.undraw(rect1)
 			canvas.setPenColor('#656565')
-			// canvas.drawRect(canvas.width/2-90, 270, 200, 48);
+			canvas.drawRect(canvas.width/2-94, 260, 190, 51);
 			canvas.setPenColor('#000000')
 			canvas.setFont('Bold 24px Arial')
+			canvas.drawText('Single Player', canvas.width/2-75, 290)
+		} else if (rect2.checkInside(point)){
+			canvas.undraw(rect2)
+			canvas.setPenColor('#656565')
+			canvas.drawRect(canvas.width/2-94, rect2.point1[1]-10, 190, 51);
+			canvas.setPenColor('#000000')
+			canvas.setFont('Bold 24px Arial')
+			canvas.drawText('Multi-Player', canvas.width/2-67, 350)
+		} else {
+			canvas.setPenColor(canvas.backgroundColor)
+			canvas.drawRect(canvas.width/2-94, 260, 190, 51);
+			canvas.drawRect(canvas.width/2-94, 320, 190, 51);
+			canvas.drawRect(canvas.width/2-94, 380, 190, 51);
+			canvas.drawRect(canvas.width/2-94, 440, 190, 51);
+			canvas.setPenColor('#656565')
+			canvas.drawRect(canvas.width/2-90, 270, 180, 48);
+			canvas.drawRect(canvas.width/2-90, 330, 180, 48);
+			canvas.drawRect(canvas.width/2-90, 390, 180, 48);
+			canvas.drawRect(canvas.width/2-90, 450, 180, 48);
+			canvas.setPenColor('#000000')
+			canvas.setFont('Bold 24px Arial')
+			canvas.drawText('Single Player', canvas.width/2-75, 300)
+			canvas.drawText('Multi-Player', canvas.width/2-67, 360)
+			canvas.drawText('Leaderboard', canvas.width/2-70, 420)
+			canvas.drawText('Help', canvas.width/2-24, 480)
 		}
 	}
 	canvas.paper.addEventListener("mousemove", startScreenHoverEffect);
