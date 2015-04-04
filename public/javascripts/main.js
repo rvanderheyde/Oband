@@ -40,14 +40,28 @@ function init(){
 			canvas.drawRect(canvas.width/2-94, 260, 190, 51);
 			canvas.setPenColor('#000000')
 			canvas.setFont('Bold 24px Arial')
-			canvas.drawText('Single Player', canvas.width/2-75, 290)
+			canvas.drawText('Single Player', canvas.width/2-75, 300-7.5)
 		} else if (rect2.checkInside(point)){
 			canvas.undraw(rect2)
 			canvas.setPenColor('#656565')
 			canvas.drawRect(canvas.width/2-94, rect2.point1[1]-10, 190, 51);
 			canvas.setPenColor('#000000')
 			canvas.setFont('Bold 24px Arial')
-			canvas.drawText('Multi-Player', canvas.width/2-67, 350)
+			canvas.drawText('Multi-Player', canvas.width/2-67, 360-7.5)
+		} else if (rect3.checkInside(point)){
+			canvas.undraw(rect3)
+			canvas.setPenColor('#656565')
+			canvas.drawRect(canvas.width/2-94, rect3.point1[1]-10, 190, 51);
+			canvas.setPenColor('#000000')
+			canvas.setFont('Bold 24px Arial')
+			canvas.drawText('Leaderboard', canvas.width/2-70, 410+2.5)
+		} else if (rect4.checkInside(point)){
+			canvas.undraw(rect4)
+			canvas.setPenColor('#656565')
+			canvas.drawRect(canvas.width/2-94, rect4.point1[1]-10, 190, 51);
+			canvas.setPenColor('#000000')
+			canvas.setFont('Bold 24px Arial')
+			canvas.drawText('Help', canvas.width/2-24, 470+2.5)
 		} else {
 			canvas.setPenColor(canvas.backgroundColor)
 			canvas.drawRect(canvas.width/2-94, 260, 190, 51);
@@ -77,8 +91,8 @@ function init(){
     		canvas.paper.removeEventListener("mousedown", startScreenClick)
     		canvas.paper.removeEventListener("mousemove", startScreenHoverEffect)
     		var setupScreen = drawSinglePlayerSetup()
-    		canvas.paper.addEventListener("mousemove")
-    		canvas.paper.addEventListener("mousedown", setupScreenClick)
+    		canvas.paper.addEventListener("mousemove", function(event){ setupScreenHoverEffect(event, setupScreen) })
+    		canvas.paper.addEventListener("mousedown", function(event){ setupScreenClick(event, setupScreen) })
   		}
   		if (rect2.checkInside(point)){
   			console.log('Multi-Player')
@@ -95,8 +109,37 @@ function init(){
 	})
 }
 
-function setupScreenClick(event){
-	
+function setupScreenHoverEffect(event, disp){
+	var mx = event.pageX;
+	var my = event.pageY;
+	var point = [mx,my];
+	if (disp.diff.easy[1].checkInside(point)){
+		canvas.undraw(disp.diff.easy[1])
+		canvas.setPenColor(disp.diff.easy[1].color)
+		canvas.drawRect(disp.diff.easy[1].point1[0]-4, disp.diff.easy[1].point1[1]-10, disp.diff.easy[1].width+10, disp.diff.easy[1].height+3)
+		canvas.setPenColor(disp.diff.easy[0].color)
+		canvas.drawText(disp.diff.easy[0].text, disp.diff.easy[0].point[0], disp.diff.easy[0].point[1]-7.5)
+	} else if (disp.diff.med[1].checkInside(point)){
+		canvas.undraw(disp.diff.med[1])
+		canvas.setPenColor(disp.diff.med[1].color)
+		canvas.drawRect(disp.diff.med[1].point1[0]-4, disp.diff.med[1].point1[1]-10, disp.diff.med[1].width+10, disp.diff.med[1].height+3)
+		canvas.setPenColor(disp.diff.med[0].color)
+		canvas.drawText(disp.diff.med[0].text, disp.diff.med[0].point[0], disp.diff.med[0].point[1]-7.5)
+	}else {
+		canvas.setPenColor(canvas.backgroundColor)
+		canvas.drawRect(disp.diff.easy[1].point1[0]-5, disp.diff.easy[1].point1[1]-10, disp.diff.easy[1].width+11, disp.diff.easy[1].height+10)
+		canvas.drawRect(disp.diff.med[1].point1[0]-5, disp.diff.med[1].point1[1]-10, disp.diff.med[1].width+11, disp.diff.med[1].height+10)
+		drawDifficultyButtons(canvas)
+	}
+}
+
+function setupScreenClick(event, disp){
+	var clickX = event.pageX;
+	var clickY = event.pageY;
+	var point  = [clickX, clickY];
+	if (disp.diff.easy[1].checkInside(point)){
+		console.log('Difficulty: Easy')
+	}
 }
 
 function drawSongListArea(){
