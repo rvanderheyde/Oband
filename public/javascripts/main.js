@@ -125,10 +125,24 @@ function setupScreenHoverEffect(event, disp){
 		canvas.drawRect(disp.diff.med[1].point1[0]-4, disp.diff.med[1].point1[1]-10, disp.diff.med[1].width+10, disp.diff.med[1].height+3)
 		canvas.setPenColor(disp.diff.med[0].color)
 		canvas.drawText(disp.diff.med[0].text, disp.diff.med[0].point[0], disp.diff.med[0].point[1]-7.5)
-	}else {
+	} else if (disp.diff.hard[1].checkInside(point)){
+		canvas.undraw(disp.diff.hard[1])
+		canvas.setPenColor(disp.diff.hard[1].color)
+		canvas.drawRect(disp.diff.hard[1].point1[0]-4, disp.diff.hard[1].point1[1]-10, disp.diff.hard[1].width+10, disp.diff.hard[1].height+3)
+		canvas.setPenColor(disp.diff.hard[0].color)
+		canvas.drawText(disp.diff.hard[0].text, disp.diff.hard[0].point[0], disp.diff.hard[0].point[1]-7.5)
+	}  else if (disp.diff.expert[1].checkInside(point)){
+		canvas.undraw(disp.diff.expert[1])
+		canvas.setPenColor(disp.diff.expert[1].color)
+		canvas.drawRect(disp.diff.expert[1].point1[0]-4, disp.diff.expert[1].point1[1]-10, disp.diff.expert[1].width+10, disp.diff.expert[1].height+3)
+		canvas.setPenColor(disp.diff.expert[0].color)
+		canvas.drawText(disp.diff.expert[0].text, disp.diff.expert[0].point[0], disp.diff.expert[0].point[1]-7.5)
+	} else {
 		canvas.setPenColor(canvas.backgroundColor)
 		canvas.drawRect(disp.diff.easy[1].point1[0]-5, disp.diff.easy[1].point1[1]-10, disp.diff.easy[1].width+11, disp.diff.easy[1].height+10)
 		canvas.drawRect(disp.diff.med[1].point1[0]-5, disp.diff.med[1].point1[1]-10, disp.diff.med[1].width+11, disp.diff.med[1].height+10)
+		canvas.drawRect(disp.diff.hard[1].point1[0]-5, disp.diff.hard[1].point1[1]-10, disp.diff.hard[1].width+11, disp.diff.hard[1].height+10)
+		canvas.drawRect(disp.diff.expert[1].point1[0]-5, disp.diff.expert[1].point1[1]-10, disp.diff.expert[1].width+11, disp.diff.expert[1].height+10)
 		drawDifficultyButtons(canvas)
 	}
 }
