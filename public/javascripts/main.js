@@ -31,6 +31,7 @@ function init(){
 	var text3 = canvas.drawText('Help', canvas.width/2-24, 480)
 	var lastBut = '';
 	function startScreenHoverEffect(event){
+		//called by the event clue on hover
 		var mx = event.pageX;
 		var my = event.pageY;
 		var point = [mx, my];
@@ -115,6 +116,7 @@ var	setScreenClick = function (event){ setupScreenClick(event, setupScreen) }
 var setScreenClick2 = function (event) { setupScreenClick2(event, setupScreen)}
 
 function setupScreenHoverEffect(event, disp){
+	//when mouse over a rectangle apply effect
 	var mx = event.pageX;
 	var my = event.pageY;
 	var point = [mx,my];
@@ -153,6 +155,7 @@ function setupScreenHoverEffect(event, disp){
 }
 
 function setupScreenClick(event, disp){
+	//click a rectangle makes it stay large
 	var clickX = event.pageX;
 	var clickY = event.pageY;
 	var point  = [clickX, clickY];
@@ -180,6 +183,7 @@ function setupScreenClick(event, disp){
 }
 
 function setupScreenClick2(event, disp){
+	//click the large rectangle re-apply the hover effect
 	var clickX = event.pageX;
 	var clickY = event.pageY;
 	var point  = [clickX, clickY];

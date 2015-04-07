@@ -1,4 +1,5 @@
 function drawSinglePlayerSetup(){
+	//function that calls the other draw functions
 	canvas.createBackground()
 	drawTitles(canvas)
 	var difficultyButtons = drawDifficultyButtons(canvas)
@@ -11,6 +12,7 @@ function drawSinglePlayerSetup(){
 }
 
 function drawDifficultyButtons(canvas){
+	//takes the canvas and returns the rect and text
 	canvas.setPenColor('#656565')
 	var rect1 = canvas.drawRect(canvas.width/48, 158, canvas.width*.098, 48)
 	var rect2 = canvas.drawRect(canvas.width/48, 218, 150, 48)
@@ -29,6 +31,7 @@ function drawDifficultyButtons(canvas){
 }
 
 function drawInstrumentButtons(canvas){
+	//takes the canvas and returns the rect and text
 	canvas.setPenColor('#656565')
 	var rect5 = canvas.drawRect(canvas.width/6+20, 158, 240, 48)
 	var rect6 = canvas.drawRect(canvas.width/6+20, 218, 240, 48)
@@ -53,6 +56,7 @@ function drawSongSpace(canvas){
 }
 
 function drawTitles(canvas){
+	//draws the text titles
 	canvas.setPenColor('#000000')
 	canvas.setFont('Bold 64px Arial')
 	canvas.drawText('Setup', canvas.width/2-96,64)

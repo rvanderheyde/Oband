@@ -133,6 +133,7 @@ var gf = {
 
             },
             animate: function(fun, objs){
+              //ignore this function for now it doesn't work.
               var canvas = this;
               this.redraw();
               requestAnimationFrame(function(){fun(canvas,objs)})
