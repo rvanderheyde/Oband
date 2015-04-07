@@ -5,6 +5,7 @@ function drawSinglePlayerSetup(){
 	var difficultyButtons = drawDifficultyButtons(canvas)
 	var instrumentButtons = drawInstrumentButtons(canvas)
 	drawSongSpace(canvas)
+	drawBottomButtons(canvas)
 	
 	return {diff: difficultyButtons,
 			instr: instrumentButtons
@@ -51,8 +52,18 @@ function drawInstrumentButtons(canvas){
 
 function drawSongSpace(canvas){
 	canvas.setPenColor('#787878')
-	var rect1 = canvas.drawRect(canvas.width/6+260+canvas.width/8.41/2, 158, canvas.width/2-canvas.width/48, 100)
+	var rect1 = canvas.drawRect(canvas.width/6+260+canvas.width/8.41/2, 158, canvas.width*5/8-canvas.width/24, canvas.height/2)
 	canvas.setPenColor('#656565')
+}
+
+function drawBottomButtons(canvas){
+	canvas.setPenColor('#656565')
+	var rec1 = canvas.drawRect(canvas.width*7/8, canvas.height*7/8, canvas.width/10, canvas.height/16)
+	var rec2 = canvas.drawRect(canvas.width*7/8, canvas.height*3/4, canvas.width/10, canvas.height/16)
+	canvas.setPenColor('#000000')
+	canvas.setFont('Bold 24px Arial')
+	var text1 = canvas.drawText('START', canvas.width*115/128, canvas.height*235/256)
+	var text1 = canvas.drawText('Add Song', canvas.width*455/512, canvas.height*(235/256-1/8))
 }
 
 function drawTitles(canvas){
