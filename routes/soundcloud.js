@@ -15,6 +15,7 @@ routes.oauthInit = function (req, res) {
   res.writeHead(301, url);
   res.end();
 }
+test
 
 routes.oauthHandleToken = function (req, res) {
   var query = req.query;
