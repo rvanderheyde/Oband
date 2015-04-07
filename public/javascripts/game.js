@@ -3,27 +3,19 @@ var requestAnimationFrame = window.requestAnimationFrame ||
                             window.webkitRequestAnimationFrame || 
                             window.msRequestAnimationFrame;
 
-var height = $(window).height()-20;
-var width = $(window).width()-20;
-var socket = io();
+var height = $(window).height()-5;
+var width = $(window).width()-5;
+// var socket = io(); call this to connect
 
-function init(){
+function main(){
 	canvas = document.getElementById("blankSpace");
 	canvas.width = width;
 	canvas.height = height;
 	ctx = canvas.getContext("2d");
 
 	drawStartScreen()
-	canvas.addEventListener("mousedown", mouseClickDown)
-}
-
-function drawStartScreen(){
 	
 }
 
-function mouseClickDown(event){
-	var clickX = event.pageX;
-	var clickY = event.pageY;
-	var point = [clickX,clickY];
 
-}
+

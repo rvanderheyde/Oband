@@ -24,6 +24,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('/', index.indexRender);
+app.get('/echonestCall', index.echonestCall);
 
 io.on('connection', function(client){
   console.log('a user connected: ' + client.id);
