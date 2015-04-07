@@ -15,14 +15,14 @@ var client = new SoundCloudAPI(
   redirect_uri = 'http://localhost:3000/submit',
   credentials);
 
-routes.oauthInit = function (req, res) {
+var oauthInit = function (req, res) {
   var url = client.getConnectUrl();
 
   res.writeHead(301, url);
   res.end();
 }
 
-routes.oauthHandleToken = function (req, res) {
+var oauthHandleToken = function (req, res) {
   var query = req.query;
 
   client.getToken(query.code, function (err, tokens) {
@@ -45,7 +45,7 @@ var getUser = client.getMe(function(err, user) {
 });
 
 routes.user = function (req, res) {
-  client.get('/users/filous/favorites', function (data) {
+  client.get('/users', function (data) {
     console.log(data.title);
   });
 }
