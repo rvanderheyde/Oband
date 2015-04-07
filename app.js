@@ -26,7 +26,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('/', index.indexRender);
 app.get('/echonestCall', index.echonestCall);
-app.get('/soundcloudCall', soundcloud.user);
+app.get('/init', soundcloud.oauthInit);
+app.get('/token', soundcloud.oauthHandleToken);
+app.get('/call', soundcloud.user);
 
 io.on('connection', function(client){
   console.log('a user connected');

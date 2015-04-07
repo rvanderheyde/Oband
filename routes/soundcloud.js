@@ -1,13 +1,19 @@
 var path = require('path');
 var SoundCloudAPI = require('soundcloud-node');
+var access_token = null;
 
 routes = {}
 
-var user_id;
+var credentials = {
+  access_token: "{ACCESS_TOKEN}",
+  user_id: "{USER_ID}"
+}
+
 var client = new SoundCloudAPI(
   process.env.SOUNDCLOUD_KEY,
   process.env.SOUNDCLOUD_SECRET,
-  redirect_uri = 'http://localhost:3000/submit');
+  redirect_uri = 'http://localhost:3000/submit',
+  credentials);
 
 routes.oauthInit = function (req, res) {
   var url = client.getConnectUrl();
@@ -26,10 +32,11 @@ routes.oauthHandleToken = function (req, res) {
       callback(null, tokens);
     }
   });
-
-  client.setToken(access_token);
 }
 
+client.setToken(access_token);
+
+var user_id;
 var getUser = client.getMe(function(err, user) {
     user_id = user.id;
 
@@ -38,8 +45,9 @@ var getUser = client.getMe(function(err, user) {
 });
 
 routes.user = function (req, res) {
-  var info = getUser();
-  console.log(info);
+  client.get('/users/filous/favorites', function (data) {
+    console.log(data.title);
+  });
 }
 
 module.exports = routes;
