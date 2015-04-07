@@ -1,10 +1,14 @@
 function main(){
+	// loads canvas from gf.js
 	canvas = gf.fullCanvas();
+	// ensures that screen size is large enough
 	if (canvas.width>1500 && canvas.height>800){
+		// creates canvas background
 		canvas.setBackgroundColor('#909090');
 		canvas.createBackground();
 		init()
 	} else {
+		// tell user to resize screen
 		canvas.setBackgroundColor('#909090');
 		canvas.createBackground();
 		canvas.setPenColor('#E60000')
@@ -15,7 +19,8 @@ function main(){
 	}
 }
 
-function init(){
+function init() {
+	// initializing objects on the canvas
 	canvas.setPenColor('#656565')
 	var rect1 = canvas.drawRect(canvas.width/2-90, 270, 180, 48);
 	var rect2 = canvas.drawRect(canvas.width/2-90, 330, 180, 48);
@@ -35,10 +40,11 @@ function init(){
 		var mx = event.pageX;
 		var my = event.pageY;
 		var point = [mx, my];
+		// checkInside is a method from gf.js to see if a point is inside a rectangle
 		if (rect1.checkInside(point)){
-			canvas.undraw(rect1)
-			canvas.setPenColor('#656565')
-			canvas.drawRect(canvas.width/2-94, 260, 190, 51);
+			canvas.undraw(rect1) // undraw old rectangle
+			canvas.setPenColor(rect1.color) // change color to rectangel color
+			canvas.drawRect(canvas.width/2-94, 260, 190, 51); // rectangle hover effect 
 			canvas.setPenColor('#000000')
 			canvas.setFont('Bold 24px Arial')
 			canvas.drawText('Single Player', canvas.width/2-75, 300-7.5)
@@ -64,6 +70,7 @@ function init(){
 			canvas.setFont('Bold 24px Arial')
 			canvas.drawText('Help', canvas.width/2-24, 470+2.5)
 		} else {
+			// Resets everything when you aren't hovering over button
 			canvas.setPenColor(canvas.backgroundColor)
 			canvas.drawRect(canvas.width/2-94, 260, 190, 51);
 			canvas.drawRect(canvas.width/2-94, 320, 190, 51);
@@ -82,6 +89,8 @@ function init(){
 			canvas.drawText('Help', canvas.width/2-24, 480)
 		}
 	}
+	// When adding an eventListener, you can only pass in an event name,
+	// and a function
 	canvas.paper.addEventListener("mousemove", startScreenHoverEffect);
 	canvas.paper.addEventListener("mousedown", function startScreenClick(event){
 		var clickX = event.pageX;
@@ -111,15 +120,22 @@ function init(){
   		}
 	})
 }
+
+// To give functions that handle the events names so that they can
+// be deregistered at a later date
 var setScreenHover = function (event){ setupScreenHoverEffect(event, setupScreen) }
 var	setScreenClick = function (event){ setupScreenClick(event, setupScreen) }
 var setScreenClick2 = function (event) { setupScreenClick2(event, setupScreen)}
 
 function setupScreenHoverEffect(event, disp){
-	//when mouse over a rectangle apply effect
+	// Disp object is an object of objects with all the shapes from
+	// the setup screen
+	// function triggered when mouse over a rectangle apply effect
 	var mx = event.pageX;
 	var my = event.pageY;
 	var point = [mx,my];
+	// Now using created objects to modify things, could eventually
+	// be put into a loop for more modularity
 	if (disp.diff.easy[1].checkInside(point)){
 		canvas.undraw(disp.diff.easy[1])
 		canvas.setPenColor(disp.diff.easy[1].color)
@@ -154,6 +170,8 @@ function setupScreenHoverEffect(event, disp){
 	}
 }
 
+// When you click on a rectangle, it stays in hover mode
+// and removes the hover effects from all the rectangles
 function setupScreenClick(event, disp){
 	//click a rectangle makes it stay large
 	var clickX = event.pageX;
@@ -182,6 +200,7 @@ function setupScreenClick(event, disp){
 	}
 }
 
+// Unregistering a click, and reregistering all the click handlers
 function setupScreenClick2(event, disp){
 	//click the large rectangle re-apply the hover effect
 	var clickX = event.pageX;
