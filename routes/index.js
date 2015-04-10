@@ -8,6 +8,10 @@ routes.indexRender = function (req, res){
   res.sendFile(url);
 }
 
+routes.echonestKey = function(req,res) {
+	res.send(process.env.ECHONEST_KEY);
+}
+
 var echo = echojs({
   key: process.env.ECHONEST_KEY
 });
@@ -19,6 +23,10 @@ routes.echonestCall = function (req, res) {
   }, function (err, json) {
     console.log(json.response);
   });
+}
+
+routes.beats = function(req, res) {
+	res.render("beats");
 }
 
 module.exports = routes
