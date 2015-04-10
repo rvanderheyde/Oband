@@ -152,10 +152,10 @@ function setupScreenHoverEffect(event, disp){
   // Reset hover effects if none of the display cases were triggered
   if (i !== -1) {
     canvas.setPenColor(canvas.backgroundColor)
-    canvas.drawRect(disp.diff.easy[1].point1[0]-5, disp.diff.easy[1].point1[1]-10, disp.diff.easy[1].width+11, disp.diff.easy[1].height+10)
-    canvas.drawRect(disp.diff.med[1].point1[0]-5, disp.diff.med[1].point1[1]-10, disp.diff.med[1].width+11, disp.diff.med[1].height+10)
-    canvas.drawRect(disp.diff.hard[1].point1[0]-5, disp.diff.hard[1].point1[1]-10, disp.diff.hard[1].width+11, disp.diff.hard[1].height+10)
-    canvas.drawRect(disp.diff.expert[1].point1[0]-5, disp.diff.expert[1].point1[1]-10, disp.diff.expert[1].width+11, disp.diff.expert[1].height+10)
+    canvas.drawRect(disp.diff.easy[1].point1[0]-5, disp.diff.easy[1].point1[1]-10, disp.diff.easy[1].width+15, disp.diff.easy[1].height+10)
+    canvas.drawRect(disp.diff.med[1].point1[0]-5, disp.diff.med[1].point1[1]-10, disp.diff.med[1].width+15, disp.diff.med[1].height+10)
+    canvas.drawRect(disp.diff.hard[1].point1[0]-5, disp.diff.hard[1].point1[1]-10, disp.diff.hard[1].width+15, disp.diff.hard[1].height+10)
+    canvas.drawRect(disp.diff.expert[1].point1[0]-5, disp.diff.expert[1].point1[1]-10, disp.diff.expert[1].width+15, disp.diff.expert[1].height+10)
     drawDifficultyButtons(canvas)
   }
 }
@@ -167,45 +167,52 @@ function setupScreenClick(event, disp){
   var clickX = event.pageX;
   var clickY = event.pageY;
   var point  = [clickX, clickY];
-  if (disp.diff.easy[1].checkInside(point)){
-    console.log('Difficulty: Easy')
-    canvas.undraw(disp.diff.easy[1])
-    canvas.setPenColor(disp.diff.easy[1].color)
-    canvas.drawRect(disp.diff.easy[1].point1[0]-4, disp.diff.easy[1].point1[1]-10, disp.diff.easy[1].width+10, disp.diff.easy[1].height+3)
-    canvas.setPenColor(disp.diff.easy[0].color)
-    canvas.drawText(disp.diff.easy[0].text, disp.diff.easy[0].point[0], disp.diff.easy[0].point[1]-7.5)
-    canvas.paper.removeEventListener("mousemove", setScreenHover)
-    canvas.paper.removeEventListener("mousedown", setScreenClick)
-    canvas.paper.addEventListener("mousedown", setScreenClick2)
-    
-  }
-  if (disp.diff.med[1].checkInside(point)){
-    console.log('Difficulty: Medium')
-  }
-  if (disp.diff.hard[1].checkInside(point)){
-    console.log('Difficulty: Hard')
-  }
-  if (disp.diff.expert[1].checkInside(point)){
-    console.log('Difficulty: Expert')
+  var displays = [disp.diff.easy, disp.diff.med, 
+    disp.diff.hard, disp.diff.expert];
+  var levels = ['Easy', 'Medium', 'Hard', 'Expert'];
+  
+  for (var i=0; i<displays.length; i++) {
+    if (displays[i][1].checkInside(point)) {
+      console.log('Difficulty: ' + levels[i]);
+      canvas.undraw(displays[i][1]);
+      canvas.setPenColor(displays[i][1].color);
+      canvas.drawRect(displays[i][1].point1[0]-4, displays[i][1].point1[1]-10, displays[i][1].width+10, displays[i][1].height+3);
+      canvas.setPenColor(displays[i][0].color);
+      canvas.drawText(displays[i][0].text, displays[i][0].point[0], displays[i][0].point[1]-7.5);
+      canvas.paper.removeEventListener("mousemove", setScreenHover);
+      canvas.paper.removeEventListener("mousedown", setScreenClick);
+      canvas.paper.addEventListener("mousedown", setScreenClick2);
+      canvas.diff = levels[i];
+      break;
+    }
   }
 }
 
 // Unregistering a click, and reregistering all the click handlers
-function setupScreenClick2(event, disp){
+function setupScreenClick2(event, disp) {
   //click the large rectangle re-apply the hover effect
   var clickX = event.pageX;
   var clickY = event.pageY;
   var point  = [clickX, clickY];
-  if (disp.diff.easy[1].checkInside(point)){
-    canvas.setPenColor(canvas.backgroundColor)
-    canvas.drawRect(disp.diff.easy[1].point1[0]-4, disp.diff.easy[1].point1[1]-10, disp.diff.easy[1].width+10, disp.diff.easy[1].height+3)
-    canvas.setPenColor(disp.diff.easy[1].color)
-    canvas.drawRect(disp.diff.easy[1].point1[0], disp.diff.easy[1].point1[1], disp.diff.easy[1].width, disp.diff.easy[1].height)
-    canvas.setPenColor(disp.diff.easy[0].color)
-    canvas.drawText(disp.diff.easy[0].text, disp.diff.easy[0].point[0], disp.diff.easy[0].point[1])
-    canvas.paper.removeEventListener("mousedown", setScreenClick2)
-    canvas.paper.addEventListener("mousemove", setScreenHover)
-    canvas.paper.addEventListener("mousedown", setScreenClick)
+  var displays = [disp.diff.easy, disp.diff.med, 
+    disp.diff.hard, disp.diff.expert];
+  var levels = ['Easy', 'Medium', 'Hard', 'Expert'];
+
+  for (var i=0; i<displays.length; i++) {
+    if ((displays[i][1].checkInside(point)) && (canvas.diff === levels[i])) {
+      console.log('Remove difficulty: ' + levels[i]);
+      canvas.setPenColor(canvas.backgroundColor);
+      canvas.drawRect(displays[i][1].point1[0]-4, displays[i][1].point1[1]-10, displays[i][1].width+10, displays[i][1].height+3);
+      canvas.setPenColor(displays[i][1].color);
+      canvas.drawRect(displays[i][1].point1[0], displays[i][1].point1[1], displays[i][1].width, displays[i][1].height);
+      canvas.setPenColor(displays[i][0].color);
+      canvas.drawText(displays[i][0].text, displays[i][0].point[0], displays[i][0].point[1]);
+      canvas.paper.removeEventListener("mousedown", setScreenClick2);
+      canvas.paper.addEventListener("mousemove", setScreenHover);
+      canvas.paper.addEventListener("mousedown", setScreenClick);      
+      canvas.diff = false;
+      break;
+    }
   }
 }
 
