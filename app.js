@@ -12,6 +12,7 @@ var io = new Sock(http);
 // var io = require('socket.io')(http);
 
 var index = require('./routes/index');
+var gameplay = require('./routes/gameplay');
 
 var mongoURI = process.env.MONGOURI || "mongodb://localhost/test";
 var PORT = process.env.PORT || 3000;
@@ -25,6 +26,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('/', index.indexRender);
 app.get('/echonestCall', index.echonestCall);
+
+app.get('/startSong', gameplay.startGame);
 
 io.on('connection', function(client){
   console.log('a user connected: ' + client.id);

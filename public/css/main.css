@@ -2,3 +2,39 @@
 	box-sizing: border-box;
 	margin: 0;
 }
+
+#home, #omsetup {
+	text-align: center;
+}
+
+#home button {
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+	width: 20%;
+}
+
+#diff-col, #inst-col, #song-col {
+	position: relative;
+	float: left;
+	width: 33%;
+}
+
+#diff-col button, #inst-col button {
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+	width: 50%;
+}
+
+#ominfo {
+	position: relative;
+	float: left;
+	width: 60%;
+	text-align: left;
+	margin-left: 8%;
+}
+
+#ominfo span {
+	font-weight: bold;
+}

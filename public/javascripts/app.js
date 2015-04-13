@@ -1,53 +1,70 @@
-var requestAnimationFrame = window.requestAnimationFrame || 
-                            window.mozRequestAnimationFrame || 
-                            window.webkitRequestAnimationFrame || 
-                            window.msRequestAnimationFrame;
-var radius = 10;
-var height = $(window).height()-5;
-var width = $(window).width()-5;
-var socket = io();
+// var socket = io();
+
+// Home Page
 
 function main() {
-	canvas = document.getElementById("blankSpace");
-	canvas.width = width;
-	canvas.height = height;
-	ctx = canvas.getContext("2d");
-  	drawStuff();
-  	canvas.addEventListener("mousedown", mouseClickDown)
-  	socket.on('mouseClick', function(point){
-  		ctx.beginPath();
-  		ctx.arc(point[0],point[1],10,0,2*Math.PI);
-  		ctx.stroke();
-  		ctx.closePath();
-
-  		ctx.fillStyle ="#FF0000";
-  		ctx.fill();
-  	})
+	$('#content').load('templates/home.html');
 }
 
-function drawCircle(ctx) {
-  ctx.fillStyle = "#FF0000";
-    ctx.fillRect(0,0,width,height); 
-  ctx.beginPath();
-  ctx.arc(width/2,height/2,radius,0,2*Math.PI);
-  ctx.stroke();
-  ctx.closePath();
+$(document).on('click', '#help', function(event) {
+  event.preventDefault();
+  $('#help_info').toggle();
+});
 
-  ctx.fillStyle = "#006699";
-  ctx.fill();
+$(document).on('click', '#online', function(event) {
+  event.preventDefault();
+  console.log('Hsldfkjsdlkf');
+  $('#content').load('templates/online.html')
+});
+
+var difficulty = false;
+var instrument = false;
+var song = false;
+
+$(document).on('click', '#diff-col button', function(event) {
+  difficulty = $(this).html();
+  $('#diff').html(difficulty);
+});
+
+$(document).on('click', '#inst-col button', function(event) {
+  instrument = $(this).html();
+  $('#inst').html(instrument);
+});
+
+$(document).on('click', '#song-col button', function(event) {
+  song = $(this).html();
+  $('#song').html(song);
+});
+
+var songSuccess = function(data, status) {
+  console.log('Success');
 }
 
-function drawStuff() {
-  if (radius <= 500){
-    drawCircle(ctx);
-    radius += 10;
-    requestAnimationFrame(drawStuff);
-  } 
+var onError = function(data, status) {
+  console.log(data);
+  console.log(status);
 }
 
-function mouseClickDown(event) {
-  var clickX = event.pageX;
-  var clickY = event.pageY;
-  var point = [clickX,clickY];
-  socket.emit('mouseClick', point);
-}
+$(document).on('click', '#start', function(event) {
+  if (difficulty && instrument && song) {
+    console.log('Start Song!');
+    var data = {
+      'difficulty': difficulty,
+      'instrument': instrument,
+      'song': song
+    };
+    $.get('/startSong', data)
+      .done(songSuccess)
+      .error(onError);
+  } else {
+    console.log('Please select a difficulty, instrument, and song');
+  }
+});
+
+$(document).on('click', '#join', function(event) {
+  if (difficulty && instrument && song) {
+    console.log('Join Song!');
+  } else {
+    console.log('Please select a difficulty, instrument, and song');
+  }
+});
