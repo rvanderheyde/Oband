@@ -47,6 +47,41 @@ var generateNotes = function(beats) {
   return notes;
 }
 
+
+var playSong = function(player, track, notes) {
+  // Actually play the song.
+  player.play(0,track.analysis.beats);
+  var startTime = millis();
+
+  var total = notes.length; // Total # of notes -- for logging.
+
+  function playNotes(notes) {
+    /**
+     * Display the # of the beat being played,
+     * remove that note from the queue,
+     * and after an appropriate delay,
+     * recursively call this function with the rest of the notes queue.
+     */
+
+    // Display this beat #
+    console.log("Beat#: " + (total-notes.length) + " of " + total);
+    var note = notes[0];
+    notes = notes.slice(1);
+
+    // If there are any notes left to play,
+    // set a timer to recurse.
+    if (notes.length > 0) {
+      var nextStartTime = note.time + startTime; // Time when next note plays
+      setTimeout(
+        function() { playNotes(notes); }, // Recurse
+        nextStartTime - millis() // in (desired-now) milliseconds.
+      );
+    }
+  }
+  playNotes(notes); // Let's get recursive!      
+}
+
+
 // Get the EchoNest API key fromt he server
 $.get('echonestKey', function(apiKey) {
   var trackID = 'TRCYWPQ139279B3308'; // I don't know what this is.
@@ -61,7 +96,7 @@ $.get('echonestKey', function(apiKey) {
     // Make sure the browser can handle it
     var contextFunction = window.AudioContext;
     if (contextFunction === undefined) {
-      $("#info").text("Sorry, this app needs advanced web audio. Your browser doesn't"
+      console.log("Sorry, this app needs advanced web audio. Your browser doesn't"
           + " support it. Try the latest version of Chrome?");
       return;
     }
@@ -71,7 +106,7 @@ $.get('echonestKey', function(apiKey) {
     var context = new contextFunction();
     remixer = createJRemixer(context, $, apiKey);
     player = remixer.getPlayer();
-    $("#info").text("Loading analysis data...");
+    console.log("Loading analysis data...");
 
     // The key line.  This prepares the track for remixing:  it gets
     // data from the Echo Nest analyze API and connects it with the audio file.
@@ -80,46 +115,20 @@ $.get('echonestKey', function(apiKey) {
       track = t;
 
       // Keep the user updated with load times
-      $("#info").text(percent + "% of the track loaded");
+      console.log(percent + "% of the track loaded");
       if (percent == 100) {
-        $("#info").text(percent + "% of the track loaded, remixing...");
+        console.log(percent + "% of the track loaded, remixing...");
       }
 
       // Do the remixing!
       if (track.status == 'ok') {
         var notes = generateNotes(track.analysis.beats);
-        $("#info").text("Remix complete!");
-        console.log(notes);
-
-        // Play the song
-        player.play(0,track.analysis.beats);
-        var startTime = millis();
-
-        // If it's important (which it's usually not),
-        // display the beats on screen as they come up.
-        var total = notes.length; // Total # of notes -- for logging.
-        function playNotes(notes) {
-          // console.log("Beat:");
-          console.log(total - notes.length);
-          $("#info").text("Beat#: " + (total-notes.length));
-          note = notes.shift; // This is .pop() from the front. Like queue.pop.
-
-          // If there are any notes left to play,
-          // set a timer to display that note when it's time.
-          if (notes.length > 0) {
-            var nextStartTime = note + startTime; // Time when next note plays
-            setTimeout(
-              function() { playNotes(notes); }, // Recurse
-              nextStartTime - millis() // in (desired-now) milliseconds.
-            );
-          }
-        }
+        console.log("Remix complete!");
+        
         // Uncomment this line to display the beat#s realtime in the 
-        // playNotes(notes);
+        playSong(player, track, notes);
 
         // Send the notes to the server.
-        console.log(notes.length);
-        // notes = [{test: 1}, {test: 2}]
         $.post('/songNotes', { notes: JSON.stringify(notes)});
       }
     });
