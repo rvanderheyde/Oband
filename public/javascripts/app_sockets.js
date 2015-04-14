@@ -1,3 +1,5 @@
+// This script is not currently in use, but is useful for sockets stuff in the future
+
 var requestAnimationFrame = window.requestAnimationFrame || 
                             window.mozRequestAnimationFrame || 
                             window.webkitRequestAnimationFrame || 
