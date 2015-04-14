@@ -79,9 +79,9 @@ io.on('connection', function(client) {
     client.join(room);
     console.log(roomStatus);
     if (roomStatus[room]) {
-      client.emit('joinExisting', true);
+      client.emit('joinExisting', room, true);
     } else {
-      client.emit('joinExisting', false);
+      client.emit('joinExisting', room, false);
     }
     // console.log('People in room');
     // // console.log(io.sockets.clients(room));

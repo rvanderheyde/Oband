@@ -38,8 +38,9 @@ function main() {
     console.log('I joined room: ', + letter);
     info.room = letter;
   });
-  socket.on('joinExisting', function(ready) {
+  socket.on('joinExisting', function(room, ready) {
     // informs you if room you joined is ready
+    info.room = room;
     if (ready) {
       // Get request to server for song information
       var data = {
