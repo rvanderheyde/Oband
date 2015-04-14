@@ -57,13 +57,16 @@ function onKey(ev, key, pressed){
 function update(dt){
 	var song = Global.song.song;
 	for(var i = 0; i<song.length; i++){
-		if(song[i].time < 0){
+		if(song[i].time < 100){
 			var note = song.shift()
-			for(var i=0; i<note.length; i++){
+			for(var i=0; i<note.keys.length; i++){
+				console.log(input)
 				if (note.keys[i] === 'A' && input.a){
 					score += 10;
+					alert('SCORE 1')
 				} else if (note.keys[i] === 'S' && input.s){
 					score += 10;
+					alert('SCORE 2')
 				} else if (note.keys[i] === 'D' && input.d){
 					score += 10;
 				} else if (note.keys[i] === 'F' && input.f){
@@ -97,11 +100,14 @@ function render(){
 	canvas.setPenColor('#440044')
 	for(var i=0; i<Global.song.song.length; i++){
 		var note = Global.song.song[i]
-		if (note.time <= 5){
-			for(var j=0; j<note.keys.length; j++){
-				if (note.keys[j] === 'A'){
-					// canvas.drawRect(canvas.width*.225,canvas.height-.001*note.time-100,50,50) fix this
-				}
+		for(var j=0; j<note.keys.length; j++){
+			if (note.keys[j] === 'A'){
+				var dx = timeToX(note.time)
+				canvas.drawRect(canvas.width*.225,(5000-note.time)/6250*canvas.height ,50,50) 
+			}
+			if (note.keys[j] === 'S'){
+				var dx = timeToX(note.time)
+				canvas.drawRect(canvas.width*.325,(5000-note.time)/6250*canvas.height ,50,50) 
 			}
 		}
 	}
@@ -111,14 +117,18 @@ function render(){
 
 }
 
-
+function timeToX(time){
+	//turn time on range 0-5000 to x. 
+	//5000 = 0
+	//0 = canvas.height*.8
+	return (5000-time)/4000*canvas.height 
+}
 
 
 function mainGame(songObj){
 	if(!songFinished(songObj)){
 		now = timestamp();
 		dt += Math.min(1000, (now - last));
-		console.log(dt)
 		while(dt > step) {
     		dt -= step;
     		update(step);
@@ -138,7 +148,7 @@ function playGame(songObj){
 }
 
 function main(){
-	var songObj = { song: [{time: 100, keys:['A']},{time: 2100, keys:['A','S']},]}
+	var songObj = { song: [{time: 5000, keys:['A']},{time: 10000, keys:['A','S']},]}
 	playGame(songObj)
 }
 
