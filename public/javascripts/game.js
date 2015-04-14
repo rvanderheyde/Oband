@@ -24,7 +24,8 @@ var KEY = {
     TILDA:    192
 };
 var Global = { song:{} };
-var now, dt;
+var now; 
+var dt =0;
 var last = timestamp();
 var step = 1/60;
 var score = 0;
@@ -99,8 +100,7 @@ function render(){
 		if (note.time <= 5){
 			for(var j=0; j<note.keys.length; j++){
 				if (note.keys[j] === 'A'){
-					console.log("FUCK")
-					canvas.drawRect(canvas.width*.225,canvas.height-.001*note.time-100,50,50)
+					// canvas.drawRect(canvas.width*.225,canvas.height-.001*note.time-100,50,50) fix this
 				}
 			}
 		}
@@ -117,9 +117,12 @@ function render(){
 function mainGame(songObj){
 	if(!songFinished(songObj)){
 		now = timestamp();
-		dt = Math.min(1000, (now - last));
+		dt += Math.min(1000, (now - last));
 		console.log(dt)
-    	update(dt);
+		while(dt > step) {
+    		dt -= step;
+    		update(step);
+    	}
 		render(dt)
 		last = now;
 		requestAnimationFrame(function(){ mainGame(songObj) })
