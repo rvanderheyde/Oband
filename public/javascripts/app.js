@@ -90,6 +90,8 @@ var joinSuccess = function(data, status) {
   // Only allow successful join if someone has already started a game
   if (info.roomCount > 1) {
     $('#status').html('Music data loaded. Starting game...');
+    console.log(data)
+    playGame({song:data})
   } else {
     $('#status').html('Cannot join game. Try a different song');
   }
