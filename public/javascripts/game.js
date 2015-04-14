@@ -54,7 +54,7 @@ function onKey(ev, key, pressed){
 }
 
 function update(dt){
-	var song = Global.song;
+	var song = Global.song.song;
 	for(var i = 0; i<song.length; i++){
 		if(song[i].time < 0){
 			var note = song.shift()
@@ -82,21 +82,32 @@ function update(dt){
 			song[i].time -= dt;
 		}
 	}
-	Global.song = song;
+	Global.song.song = song;
 }
+var loop = 0;
 
-function render(dt){
+function render(){
 	canvas.setBackgroundColor('#999999');
 	canvas.createBackground()
 	canvas.setPenColor('#656565')
 	canvas.drawRect(canvas.width*.125, canvas.height*.05, canvas.width*.5, canvas.height*.9)
 	canvas.setPenColor('#000000')
 	canvas.drawLine(canvas.width*.125, canvas.height*.8, canvas.width*.625, canvas.height*.8)
-	canvas.setPenColor('#444444')
-	for(var i=0; i<Global.song.length; i++){
-		var note = Global.song[i]
-		if ()
+	canvas.setPenColor('#440044')
+	for(var i=0; i<Global.song.song.length; i++){
+		var note = Global.song.song[i]
+		if (note.time <= 5){
+			for(var j=0; j<note.keys.length; j++){
+				if (note.keys[j] === 'A'){
+					console.log("FUCK")
+					canvas.drawRect(canvas.width*.225,canvas.height-.001*note.time-100,50,50)
+				}
+			}
+		}
 	}
+	var str = loop.toString()
+	canvas.drawText(str, canvas.width*.75, canvas.height*.5)
+	loop += 1;
 
 }
 
@@ -106,17 +117,14 @@ function render(dt){
 function mainGame(songObj){
 	if(!songFinished(songObj)){
 		now = timestamp();
-		dt = dt + Math.min(1, (now - last) / 1000);
-		while(dt > step) {
-    		dt = dt - step;
-    		update(step);
-  		}
+		dt = Math.min(1000, (now - last));
+		console.log(dt)
+    	update(dt);
 		render(dt)
 		last = now;
 		requestAnimationFrame(function(){ mainGame(songObj) })
 	}
 }
-// var socket = io(); call this to connect
 
 function playGame(songObj){
 	canvas = gf.fullCanvas();
@@ -127,7 +135,7 @@ function playGame(songObj){
 }
 
 function main(){
-	var songObj = { song: [{time: .45, notes:['A']},{time: 2.1, notes:['A','S']},]}
+	var songObj = { song: [{time: 100, keys:['A']},{time: 2100, keys:['A','S']},]}
 	playGame(songObj)
 }
 
