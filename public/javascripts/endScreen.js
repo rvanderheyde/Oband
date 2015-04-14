@@ -1,19 +1,20 @@
 function main() {
-  $('#content').load('templates/end.html');
+  $('#content').load('templates/end.html', function() {
+    var score1 = '20'; //values from actual game
+    var score2 = '17';
+
+    $('#player1score').html(score1);
+    $('#player2score').html(score2);
+  });
 }
 
-$(document).on('click', '#restart button', function(event) {
-  console.log('restart');
-});
+$(document).ready(function() {
+  $(document).on('click', '#restart', function(event) {
+    console.log('restart');
+  });
 
-$(document).on('click', '#new button', function(event) {
-  console.log('new');
-});
-
-$(document).on('click', '#player1', function(event) {
-  console.log('testing1');
-});
-
-$(document).on('click', '#player2', function(event) {
-  console.log('testing2');
+  $(document).on('click', '#new', function(event) {
+    console.log('new');
+    $('#player1score').text('test');
+  });
 });

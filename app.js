@@ -13,6 +13,7 @@ var io = new Sock(http);
 
 var index = require('./routes/index');
 var gameplay = require('./routes/gameplay');
+var end = require('./routes/end');
 
 var mongoURI = process.env.MONGOURI || "mongodb://localhost/test";
 var PORT = process.env.PORT || 3000;
@@ -25,6 +26,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('/', index.indexRender);
+app.get('/end', end.endRender);
 app.get('/echonestCall', index.echonestCall);
 
 app.get('/startSong', gameplay.startGame);
