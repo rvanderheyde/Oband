@@ -8,6 +8,7 @@ function main() {
   info.ids = {};
   info.room = false;
   info.roomCount = 0;
+  info.ready = false;
 
   // load home page template
 	$('#content').load('templates/home.html');
@@ -32,14 +33,44 @@ function main() {
     console.log('User disconnected: ' + clientId);
     $('#number span').html(info.count);
   });
-  socket.on('joinRoom', function(clientId, letter, count) {
-    // informs everyone in a room if someone new joins, and potentially starts the game
-    alert(clientId + ' joined room ' + letter);
+  socket.on('joining', function(letter) {
+    // informs host that they joined the room
+    console.log('I joined room: ', + letter);
     info.room = letter;
-    info.roomCount = count;
-    if (info.roomCount > 1) {
-      $('#status').html('You can start game now?');
+  });
+  socket.on('joinExisting', function(room, ready) {
+    // informs you if room you joined is ready
+    info.room = room;
+    if (ready) {
+      // Get request to server for song information
+      var data = {
+        'difficulty': difficulty,
+        'instrument': instrument,
+        'song': song
+      };
+      $.get('/getSongInfo', data)
+        .done(infoSuccess)
+        .error(onError);
+    } else {
+      $('#status').html('Room not ready. Please wait...');
     }
+  });
+  socket.on('roomReady', function(room) {
+    if (!info.ready) {
+      var data = {
+        'difficulty': difficulty,
+        'instrument': instrument,
+        'song': song
+      };
+      $.get('/getSongInfo', data)
+        .done(infoSuccess)
+        .error(onError);
+    }
+  });
+  socket.on('allReady', function(room) {
+    $('#status').html('Starting da game do');
+    console.log('Starting dat game tho');
+    console.log(info.notes);
   });
 }
 
@@ -78,22 +109,12 @@ $(document).on('click', '#song-col button', function(event) {
   $('#song').html(song);
 });
 
-// Success function for starting a new song
-var songSuccess = function(data, status) {
-  $('#status').html('Music data loaded. Waiting for more players...');
-  console.log('Success');
-}
-
-// Success function for joining an existing song
-var joinSuccess = function(data, status) {
-  console.log('Room count: ' + info.roomCount);
-  // Only allow successful join if someone has already started a game
-  if (info.roomCount > 1) {
-    $('#status').html('Music data loaded. Starting game...');
-  } else {
-    $('#status').html('Cannot join game. Try a different song');
-  }
-  console.log('Success');
+// Success function for joining an existing song and getting song info
+var infoSuccess = function(data, status) {
+  console.log('This be the data');
+  console.log(data)
+  info.notes = data;
+  socket.emit('allReady', info.room);
 }
 
 var onError = function(data, status) {
@@ -107,17 +128,10 @@ $(document).on('click', '#start', function(event) {
   if (difficulty && instrument && song) {
     console.log('Start Song!');
     $('#status').html('Loading music data...');
-    var data = {
-      'difficulty': difficulty,
-      'instrument': instrument,
-      'song': song
-    };
     // Create new socket room
-    socket.emit('joinRoom', data.song);
-    // Get request to server for song information
-    $.get('/startSong', data)
-      .done(songSuccess)
-      .error(onError);
+    socket.emit('joinRoom', song);
+    // runBeats() to save notes object to info
+    runBeats();
   } else {
     console.log('Please select a difficulty, instrument, and song');
   }
@@ -134,11 +148,7 @@ $(document).on('click', '#join', function(event) {
       'song': song
     };
     // Join existing socket room
-    socket.emit('joinRoom', data.song);
-    // Get request to server for song information
-    $.get('/startSong', data)
-      .done(joinSuccess)
-      .error(onError);
+    socket.emit('joinExisting', data.song);
   } else {
     console.log('Please select a difficulty, instrument, and song');
   }
