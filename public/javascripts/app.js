@@ -1,7 +1,6 @@
 var socket = io();
 
-// Home Page
-
+// Info object for each user
 var info = {};
 
 function main() {
@@ -10,26 +9,31 @@ function main() {
   info.room = false;
   info.roomCount = 0;
 
+  // load home page template
 	$('#content').load('templates/home.html');
   socket.on('connecting', function(clientId, count) {
+    // called when you connect
     info.count = count;
     info.myId = clientId;
     info.ids[clientId] = 0;
     console.log(clientId);
   });
   socket.on('newConnection', function(clientId) {
+    // informs you of new people connecting and updates info obj
     info.count += 1;
     info.ids[clientId] = 0;
     console.log(clientId + ' connected');
     $('#number span').html(info.count);
   });
   socket.on('disconnecting', function(clientId) {
+    // informs you of new people disconnecting and updates info obj
     info.count -= 1;
     delete info.ids[clientId];
     console.log('User disconnected: ' + clientId);
     $('#number span').html(info.count);
   });
   socket.on('joinRoom', function(clientId, letter, count) {
+    // informs everyone in a room if someone new joins, and potentially starts the game
     alert(clientId + ' joined room ' + letter);
     info.room = letter;
     info.roomCount = count;
@@ -39,11 +43,13 @@ function main() {
   });
 }
 
+// Toggles help information
 $(document).on('click', '#help', function(event) {
   event.preventDefault();
   $('#help_info').toggle();
 });
 
+// Loads online multiplayer page
 $(document).on('click', '#online', function(event) {
   event.preventDefault();
   console.log('Hsldfkjsdlkf');
@@ -56,6 +62,7 @@ var difficulty = false;
 var instrument = false;
 var song = false;
 
+// Functions to update vars when setup buttons are clicked
 $(document).on('click', '#diff-col button', function(event) {
   difficulty = $(this).html();
   $('#diff').html(difficulty);
@@ -71,13 +78,16 @@ $(document).on('click', '#song-col button', function(event) {
   $('#song').html(song);
 });
 
+// Success function for starting a new song
 var songSuccess = function(data, status) {
   $('#status').html('Music data loaded. Waiting for more players...');
   console.log('Success');
 }
 
+// Success function for joining an existing song
 var joinSuccess = function(data, status) {
   console.log('Room count: ' + info.roomCount);
+  // Only allow successful join if someone has already started a game
   if (info.roomCount > 1) {
     $('#status').html('Music data loaded. Starting game...');
   } else {
@@ -92,6 +102,7 @@ var onError = function(data, status) {
   console.log(status);
 }
 
+// Loads game if start button is clicked
 $(document).on('click', '#start', function(event) {
   if (difficulty && instrument && song) {
     console.log('Start Song!');
@@ -101,7 +112,9 @@ $(document).on('click', '#start', function(event) {
       'instrument': instrument,
       'song': song
     };
+    // Create new socket room
     socket.emit('joinRoom', data.song);
+    // Get request to server for song information
     $.get('/startSong', data)
       .done(songSuccess)
       .error(onError);
@@ -110,6 +123,7 @@ $(document).on('click', '#start', function(event) {
   }
 });
 
+// Load game if join button is clicked
 $(document).on('click', '#join', function(event) {
   if (difficulty && instrument && song) {
     console.log('Join Song!');
@@ -119,7 +133,9 @@ $(document).on('click', '#join', function(event) {
       'instrument': instrument,
       'song': song
     };
+    // Join existing socket room
     socket.emit('joinRoom', data.song);
+    // Get request to server for song information
     $.get('/startSong', data)
       .done(joinSuccess)
       .error(onError);
