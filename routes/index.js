@@ -29,4 +29,9 @@ routes.beats = function(req, res) {
 	res.render("beats");
 }
 
+routes.songNotes = function (req, res) {
+  var notes = JSON.parse(req.body.notes);
+  console.log(notes[0]);
+}
+
 module.exports = routes

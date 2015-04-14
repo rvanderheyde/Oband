@@ -31,7 +31,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.get('/', index.indexRender);
 app.get('/echonestCall', index.echonestCall);
 app.get('/beats', index.beats);
-app.get('/echonestKey', index.echonestKey)
+app.get('/echonestKey', index.echonestKey);
+
+app.post('/songNotes', index.songNotes);
 
 io.on('connection', function(client){
   console.log('a user connected');

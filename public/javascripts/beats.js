@@ -16,8 +16,8 @@ var generateNotes = function(beats) {
    * A note object contains two attributes: "time" and "key".
    * "time" is the # of milliseconds into the song
    * when that note should be played.
-   * "key" is either "KEY_UP", "KEY_DOWN", "KEY_LEFT", or "KEY_RIGHT",
-   * representing the arrow-key which should be pressed for that note.
+   * "keys" is a list holding (for now) exactly one of "A", "S", "D", or "F",
+   * representing the keyboard button(s) which should be pressed for that note.
    */
   var notes = new Array();
   var runningTime = 0;
@@ -38,26 +38,26 @@ var generateNotes = function(beats) {
 
       // Create and push each note.
       startTime = beat.start*1000 + (duration * j);
-      key = choose(["KEY_UP", "KEY_DOWN", "KEY_LEFT", "KEY_RIGHT"]);
       notes.push({
         time: startTime,
-        key: key
+        keys: [choose(['A','S','D','F'])]
       });
     }
   }
   return notes;
 }
 
-
-$.get('echonestKey', function(apiKey) { // Get the API Key from the server
-  var trackID = 'TRCYWPQ139279B3308';
-  var trackURL = 'audio/OKGO.mp3';
-  var remixer;
+// Get the EchoNest API key fromt he server
+$.get('echonestKey', function(apiKey) {
+  var trackID = 'TRCYWPQ139279B3308'; // I don't know what this is.
+  var trackURL = 'audio/OKGO.mp3'; // Where the audio file is saved
+  var remixer; // remix.js stuff
   var player;
   var track;
   var remixed;
 
   function init() {
+
     // Make sure the browser can handle it
     var contextFunction = window.AudioContext;
     if (contextFunction === undefined) {
@@ -95,6 +95,8 @@ $.get('echonestKey', function(apiKey) { // Get the API Key from the server
         player.play(0,track.analysis.beats);
         var startTime = millis();
 
+        // If it's important (which it's usually not),
+        // display the beats on screen as they come up.
         var total = notes.length; // Total # of notes -- for logging.
         function playNotes(notes) {
           // console.log("Beat:");
@@ -112,9 +114,13 @@ $.get('echonestKey', function(apiKey) { // Get the API Key from the server
             );
           }
         }
-
         // Uncomment this line to display the beat#s realtime in the 
         // playNotes(notes);
+
+        // Send the notes to the server.
+        console.log(notes.length);
+        // notes = [{test: 1}, {test: 2}]
+        $.post('/songNotes', { notes: JSON.stringify(notes)});
       }
     });
   }
