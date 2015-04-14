@@ -9,8 +9,6 @@ var app = express();
 var http = require('http').Server(app);
 var io = new Sock(http);
 
-// var io = require('socket.io')(http);
-
 var index = require('./routes/index');
 var gameplay = require('./routes/gameplay');
 
@@ -29,14 +27,17 @@ app.get('/echonestCall', index.echonestCall);
 
 app.get('/startSong', gameplay.startGame);
 
-io.on('connection', function(client){
+var count = 0;
+io.on('connection', function(client) {
+  count += 1;
   console.log('a user connected: ' + client.id);
-  client.emit('connecting', client.id);
+  client.emit('connecting', client.id, count);
   client.broadcast.emit('newConnection', client.id);
 
   client.on('disconnect', function() {
     console.log('user disconnected: ' + client.id);
     io.emit('disconnecting', client.id);
+    count -= 1;
   });
 
   client.on('mouseClick', function(point, room) {
@@ -50,8 +51,15 @@ io.on('connection', function(client){
   client.on('joinRoom', function(room) {
     console.log(client.id + ' joining room ' + room);
     client.join(room);
-    io.to(room).emit('joinRoom', client.id, room);
+    console.log('People in room');
+    // console.log(io.sockets.clients(room));
+    var clientObj = io.sockets.adapter.rooms[room];
+    var count = (typeof clientObj !== 'undefined') ? Object.keys(clientObj).length : 0;
+    console.log(clientObj);
+    console.log(count);
+    io.to(room).emit('joinRoom', client.id, room, count);
   });
+  console.log(count + ' users online');
 });
 
 http.listen(PORT, function() {

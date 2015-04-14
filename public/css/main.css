@@ -14,6 +14,14 @@
 	width: 20%;
 }
 
+#number {
+	text-align: left;
+}
+
+#number span {
+	font-weight: bold;
+}
+
 #diff-col, #inst-col, #song-col {
 	position: relative;
 	float: left;
