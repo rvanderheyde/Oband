@@ -38,6 +38,32 @@ var gf = {
               this.context.fillStyle = this.penColor;
               this.objects.push({type:'background'})
             },
+            drawArc: function(cx, cy, r, theta_i, theta_f){
+              this.context.fillStyle = this.penColor;
+              this.context.beginPath();
+              this.context.arc(cx,cy,r,theta_i, theta_f);
+              this.context.stroke();
+              this.context.closePath();
+              return {type: 'Arc',
+                      point: [cx,cy],
+                      radius: r,
+                      theta1: theta_i,
+                      theta2: theta_f,
+                      color: this.penColor
+              }
+            },
+            drawLine: function(x1, y1, x2, y2){
+              this.context.fillStyle = this.penColor;
+              this.context.beginPath();
+              this.context.moveTo(x1,y1);
+              this.context.lineTo(x2,y2);
+              this.context.stroke();
+              return {type:'Line',
+                      point1: [x1,y1],
+                      point2: [x2,y2],
+                      color: this.penColor
+              }
+            },
             drawRect: function(x1, y1, width, height){
               this.context.fillStyle = this.penColor
               this.context.fillRect(x1, y1, width, height)

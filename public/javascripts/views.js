@@ -2,9 +2,10 @@ function drawSinglePlayerSetup(){
 	//function that calls the other draw functions
 	canvas.createBackground()
 	drawTitles(canvas)
+	var songs = getSongs()
 	var difficultyButtons = drawDifficultyButtons(canvas)
 	var instrumentButtons = drawInstrumentButtons(canvas)
-	drawSongSpace(canvas)
+	drawSongSpace(canvas, songs)
 	drawBottomButtons(canvas)
 	
 	return {diff: difficultyButtons,
@@ -50,9 +51,11 @@ function drawInstrumentButtons(canvas){
 			drums: [intr4, rect8]}
 }
 
-function drawSongSpace(canvas){
+function drawSongSpace(canvas, songs){
 	canvas.setPenColor('#787878')
 	var rect1 = canvas.drawRect(canvas.width/6+260+canvas.width/8.41/2, 158, canvas.width*5/8-canvas.width/24, canvas.height/2)
+	canvas.setPenColor(canvas.backgroundColor)
+	var rect2 = canvas.drawRect(canvas.width/6+260+canvas.width/8.41/2+10, 168, canvas.width*5/8-canvas.width/24-20, canvas.height/2-20)
 	canvas.setPenColor('#656565')
 }
 
