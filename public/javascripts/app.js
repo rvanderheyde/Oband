@@ -71,6 +71,7 @@ function main() {
     $('#status').html('Starting da game do');
     console.log('Starting dat game tho');
     console.log(info.notes);
+    playGame({song: info.notes})
   });
 }
 
