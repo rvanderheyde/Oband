@@ -1,7 +1,9 @@
 var path = require('path');
 var echojs = require('echojs');
 
-routes = {}
+var routes = {};
+// I know this is stupid as a global var, but database will come later
+var beats;
 
 routes.indexRender = function (req, res){
   /* GET request to render the homeapge */
@@ -11,6 +13,7 @@ routes.indexRender = function (req, res){
 
 routes.echonestKey = function(req,res) {
   /* GET request to send the EchoNest API key */
+  process.env.ECHONEST_KEY = 'P2KSY2ZXAFTJKGIRG';
 	res.send(process.env.ECHONEST_KEY);
 }
 
@@ -37,7 +40,17 @@ routes.beats = function(req, res) {
 routes.songNotes = function (req, res) {
   /* POST request to receive the remixed and parsed song data */
   var notes = JSON.parse(req.body.notes);
+  beats = notes;
+  console.log('SLKDJFLSDKJF');
   console.log(notes[0]);
+  res.send('.');
 }
 
-module.exports = routes
+routes.getSongInfo = function(req, res) {
+  // Get request for person connecting to get parsed song data
+  console.log('Getting dat song info!');
+  console.log(beats[0]);
+  res.json(beats);
+}
+
+module.exports = routes;

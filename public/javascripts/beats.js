@@ -81,58 +81,66 @@ var playSong = function(player, track, notes) {
   playNotes(notes); // Let's get recursive!      
 }
 
+function runBeats() {
+  // Get the EchoNest API key fromt he server
+  $.get('/echonestKey', function(apiKey) {
+    var trackID = 'TRCYWPQ139279B3308'; // I don't know what this is.
+    var trackURL = 'audio/OKGO.mp3'; // Where the audio file is saved
+    var remixer; // remix.js stuff
+    var player;
+    var track;
+    var remixed;
 
-// Get the EchoNest API key fromt he server
-$.get('echonestKey', function(apiKey) {
-  var trackID = 'TRCYWPQ139279B3308'; // I don't know what this is.
-  var trackURL = 'audio/OKGO.mp3'; // Where the audio file is saved
-  var remixer; // remix.js stuff
-  var player;
-  var track;
-  var remixed;
+    function init() {
 
-  function init() {
+      // Make sure the browser can handle it
+      var contextFunction = window.AudioContext;
+      if (contextFunction === undefined) {
+        console.log("Sorry, this app needs advanced web audio. Your browser doesn't"
+            + " support it. Try the latest version of Chrome?");
+        return;
+      }
 
-    // Make sure the browser can handle it
-    var contextFunction = window.AudioContext;
-    if (contextFunction === undefined) {
-      console.log("Sorry, this app needs advanced web audio. Your browser doesn't"
-          + " support it. Try the latest version of Chrome?");
-      return;
+      // These set up the WebAudio playback environment,
+      // and create the remixer and player.
+      var context = new contextFunction();
+      remixer = createJRemixer(context, $, apiKey);
+      player = remixer.getPlayer();
+      console.log("Loading analysis data...");
+
+      // The key line.  This prepares the track for remixing:  it gets
+      // data from the Echo Nest analyze API and connects it with the audio file.
+      // All the remixing takes place in the callback function.
+      remixer.remixTrackById(trackID, trackURL, function(t, percent) {
+        track = t;
+
+        // Keep the user updated with load times
+        console.log(percent + "% of the track loaded");
+        if (percent == 100) {
+          console.log(percent + "% of the track loaded, remixing...");
+        }
+
+        // Do the remixing!
+        if (track.status == 'ok') {
+          var notes = generateNotes(track.analysis.beats);
+          console.log("Remix complete!");
+          info.notes = notes;
+          info.ready = true;
+          
+          // Uncomment this line to display the beat#s realtime in the 
+          // playSong(player, track, notes);
+
+          // Send the notes to the server.
+          $.post('/songNotes', { notes: JSON.stringify(notes)})
+            .done(function() {
+              socket.emit('songParsed', info.room);
+              console.log('emitting that shit');
+            })
+            .error(onError);
+        }
+      });
     }
 
-    // These set up the WebAudio playback environment,
-    // and create the remixer and player.
-    var context = new contextFunction();
-    remixer = createJRemixer(context, $, apiKey);
-    player = remixer.getPlayer();
-    console.log("Loading analysis data...");
-
-    // The key line.  This prepares the track for remixing:  it gets
-    // data from the Echo Nest analyze API and connects it with the audio file.
-    // All the remixing takes place in the callback function.
-    remixer.remixTrackById(trackID, trackURL, function(t, percent) {
-      track = t;
-
-      // Keep the user updated with load times
-      console.log(percent + "% of the track loaded");
-      if (percent == 100) {
-        console.log(percent + "% of the track loaded, remixing...");
-      }
-
-      // Do the remixing!
-      if (track.status == 'ok') {
-        var notes = generateNotes(track.analysis.beats);
-        console.log("Remix complete!");
-        
-        // Uncomment this line to display the beat#s realtime in the 
-        playSong(player, track, notes);
-
-        // Send the notes to the server.
-        $.post('/songNotes', { notes: JSON.stringify(notes)});
-      }
-    });
-  }
-
-  $(document).ready(init());
-});
+    $(document).ready(init());
+  });
+}
