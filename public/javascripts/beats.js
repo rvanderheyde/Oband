@@ -3,7 +3,6 @@ var millis = function() {
   return new Date().getTime();
 }
 
-
 var choose = function(arr) {
   /* Randomly return one item from the supplied array. */
   return arr[Math.floor(Math.random()*arr.length)];
@@ -81,7 +80,7 @@ var playSong = function(player, track, notes) {
   playNotes(notes); // Let's get recursive!      
 }
 
-function runBeats() {
+function runBeats(onlineFlag) {
   // Get the EchoNest API key fromt he server
   $.get('/echonestKey', function(apiKey) {
     var trackID = 'TRCYWPQ139279B3308'; // I don't know what this is.
@@ -124,19 +123,36 @@ function runBeats() {
         if (track.status == 'ok') {
           var notes = generateNotes(track.analysis.beats);
           console.log("Remix complete!");
+          $('#status').html('Music parsing complete! Starting in 5 seconds')
           info.notes = notes;
           info.ready = true;
+          // setTimeout(function () {
+          //   playGame({song: info.notes});
+          // }
           
           // Uncomment this line to display the beat#s realtime in the 
           // playSong(player, track, notes);
 
-          // Send the notes to the server.
-          $.post('/songNotes', { notes: JSON.stringify(notes)})
-            .done(function() {
-              socket.emit('songParsed', info.room);
-              console.log('emitting that shit');
-            })
-            .error(onError);
+          // Send the notes to the server if you're in online mode
+          if (onlineFlag) {
+            $.post('/songNotes', { notes: JSON.stringify(notes)})
+              .done(function() {
+                socket.emit('songParsed', info.room);
+                console.log('emitting that shit');
+              })
+              .error(onError);
+          } else {
+            var i = 5;
+            a = setInterval(function () {
+              i--;
+              console.log(i);
+              $('#status').html('Music parsing complete! Starting in ' + i + ' seconds');
+              if (i === 0) {
+                clearInterval(a);
+                playGame({song: info.notes});
+              }
+            }, 1000);
+          }
         }
       });
     }
