@@ -68,10 +68,10 @@ function update(dt){
         console.log(input)
         if (note.keys[i] === 'A' && input.a){
           score += 10;
-          alert('SCORE 1')
+          // alert('SCORE 1')
         } else if (note.keys[i] === 'S' && input.s){
           score += 10;
-          alert('SCORE 2')
+          // alert('SCORE 2')
         } else if (note.keys[i] === 'D' && input.d){
           score += 10;
         } else if (note.keys[i] === 'F' && input.f){
@@ -91,9 +91,9 @@ function update(dt){
       song[i].time -= dt;
     }
   }
+  // console.log(score)
   Global.song.song = song;
 }
-var loop = 0;
 
 function render(){
   //draws the game state on screen
@@ -115,11 +115,18 @@ function render(){
         var dx = timeToX(note.time)
         canvas.drawRect(canvas.width*.325,(5000-note.time)/6250*canvas.height ,50,50) 
       }
+      if (note.keys[j] === 'D'){
+        var dx = timeToX(note.time)
+        canvas.drawRect(canvas.width*.425,(5000-note.time)/6250*canvas.height ,50,50)
+      }
+      if (note.keys[j] === 'F'){
+        var dx = timeToX(note.time)
+        canvas.drawRect(canvas.width*.525,(5000-note.time)/6250*canvas.height ,50,50)
+      }
     }
   }
-  var str = loop.toString()
+  var str = score.toString()
   canvas.drawText(str, canvas.width*.75, canvas.height*.5)
-  loop += 1;
 
 }
 
