@@ -3,7 +3,7 @@
 	margin: 0;
 }
 
-#home, #omsetup {
+#home, #omsetup, #singleSetup {
 	text-align: center;
 }
 
@@ -35,7 +35,7 @@
 	width: 50%;
 }
 
-#ominfo {
+#ominfo, #singleInfo {
 	position: relative;
 	float: left;
 	width: 60%;
@@ -43,6 +43,6 @@
 	margin-left: 8%;
 }
 
-#ominfo span {
+#ominfo span, #singleInfo span {
 	font-weight: bold;
 }
