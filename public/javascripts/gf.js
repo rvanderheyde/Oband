@@ -52,6 +52,21 @@ var gf = {
                       color: this.penColor
               }
             },
+            drawFilledCirc: function(cx,cy,r, fillcolor){
+              this.context.strokeStyle = this.penColor;
+              this.context.beginPath();
+              this.context.arc(cx,cy,r,theta_i, theta_f);
+              this.context.stroke();
+              this.context.closePath();
+              this.context.fillcolor = fillcolor;
+              this.context.fill()
+              return {type: 'Circle',
+                      point: [cx,cy],
+                      radius: r,
+                      fillcolor: this.fillcolor,
+                      color: this.penColor
+              }
+            },
             drawLine: function(x1, y1, x2, y2){
               this.context.fillStyle = this.penColor;
               this.context.beginPath();
