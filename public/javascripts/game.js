@@ -64,19 +64,19 @@ function update(dt){
   for(var i = 0; i<song.length; i++){
     if(song[i].time < 100){
       var note = song.shift()
-      for(var i=0; i<note.keys.length; i++){
+      for(var j=0; j<note.keys.length; j++){
         console.log(input)
-        if (note.keys[i] === 'A' && input.a){
+        if (note.keys[j] === 'A' && input.a){
           score += 10;
           alert('SCORE 1')
-        } else if (note.keys[i] === 'S' && input.s){
+        } else if (note.keys[j] === 'S' && input.s){
           score += 10;
           alert('SCORE 2')
-        } else if (note.keys[i] === 'D' && input.d){
+        } else if (note.keys[j] === 'D' && input.d){
           score += 10;
-        } else if (note.keys[i] === 'F' && input.f){
+        } else if (note.keys[j] === 'F' && input.f){
           score += 10;
-        } else if (note.keys[i] === 'G' && input.g){
+        } else if (note.keys[j] === 'G' && input.g){
           score += 10;
         } else {
           if (input.a || input.s || input.d || input.f || input.g){
