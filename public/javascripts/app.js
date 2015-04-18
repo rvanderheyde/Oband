@@ -8,7 +8,7 @@ function main() {
   info.ids = {};
   info.room = false;
   info.roomCount = 0;
-  info.ready = false;
+  info.host = false;
   info.difficulty = false;
   info.instrument = false;
   info.song = false;
@@ -59,7 +59,7 @@ function main() {
     }
   });
   socket.on('roomReady', function(room) {
-    if (!info.ready) {
+    if (!info.host) {
       var data = {
         'difficulty': info.difficulty,
         'instrument': info.instrument,
@@ -71,10 +71,17 @@ function main() {
     }
   });
   socket.on('allReady', function(room) {
-    $('#status').html('Starting da game do');
     console.log('Starting dat game tho');
-    console.log(info.notes);
-    playGame({song: info.notes})
+    var i = 5;
+    a = setInterval(function () {
+      i--;
+      console.log(i);
+      $('#status').html('Ready to begin! Starting in ' + i + ' seconds');
+      if (i === 0) {
+        clearInterval(a);
+        playGame({song: info.notes});
+      }
+    }, 1000);
   });
 }
 
