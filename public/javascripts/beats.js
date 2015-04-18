@@ -1,13 +1,13 @@
 var millis = function() {
   /* Return the number of milliseconds since the epoch. */
   return new Date().getTime();
-}
+};
 
 
 var choose = function(arr) {
   /* Randomly return one item from the supplied array. */
   return arr[Math.floor(Math.random()*arr.length)];
-}
+};
 
 
 var generateNotes = function(beats) {
@@ -19,7 +19,7 @@ var generateNotes = function(beats) {
    * "keys" is a list holding (for now) exactly one of "A", "S", "D", or "F",
    * representing the keyboard button(s) which should be pressed for that note.
    */
-  var notes = new Array();
+  var notes = [];
   var runningTime = 0;
   var beat;
   var duration;
@@ -28,7 +28,7 @@ var generateNotes = function(beats) {
   
   // We're going to add in some notes for each beat.
   for (var i = 0; i < beats.length; i++) {
-    beat = beats[i]
+    beat = beats[i];
     runningTime += duration;
 
     // We will randomly either include 1 or 2 notes per beat. (Usually 1.)
@@ -45,7 +45,7 @@ var generateNotes = function(beats) {
     }
   }
   return notes;
-}
+};
 
 
 var playSong = function(player, track, notes) {
@@ -79,7 +79,7 @@ var playSong = function(player, track, notes) {
     }
   }
   playNotes(notes); // Let's get recursive!      
-}
+};
 
 function runBeats() {
   // Get the EchoNest API key fromt he server
@@ -96,8 +96,8 @@ function runBeats() {
       // Make sure the browser can handle it
       var contextFunction = window.AudioContext;
       if (contextFunction === undefined) {
-        console.log("Sorry, this app needs advanced web audio. Your browser doesn't"
-            + " support it. Try the latest version of Chrome?");
+        console.log("Sorry, this app needs advanced web audio. Your browser doesn't" +
+          " support it. Try the latest version of Chrome?");
         return;
       }
 

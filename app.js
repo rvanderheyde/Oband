@@ -4,7 +4,7 @@ var path = require('path');
 var mongoose = require('mongoose');
 var bodyParser = require('body-parser');
 var Sock = require('socket.io');
-var exphbs = require('express-handlebars')
+var exphbs = require('express-handlebars');
 
 var app = express();
 var http = require('http').Server(app);
@@ -38,7 +38,7 @@ app.get('/getSongInfo', index.getSongInfo);
 app.post('/songNotes', index.songNotes);
 
 // app.get('/startSong', gameplay.startGame);
-var roomStatus = {}
+var roomStatus = {};
 var count = 0;
 
 io.on('connection', function(client) {

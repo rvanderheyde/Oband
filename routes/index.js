@@ -48,9 +48,11 @@ routes.songNotes = function (req, res) {
 
 routes.getSongInfo = function(req, res) {
   // Get request for person connecting to get parsed song data
+  var difficulty = req.body.difficulty
   console.log('Getting dat song info!');
+  console.log('Difficulty: ' + difficulty);
   console.log(beats[0]);
-  res.json(beats);
+  res.json(beats);''
 }
 
 module.exports = routes;
