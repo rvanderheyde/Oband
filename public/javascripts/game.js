@@ -123,6 +123,10 @@ function render(){
         var dx = timeToX(note.time)
         canvas.drawRect(canvas.width*.525,(5000-note.time)/6250*canvas.height ,50,50)
       }
+      if (note.keys[j] === 'G'){
+        var dx = timeToX(note.time)
+        canvas.drawRect(canvas.width*.625,(5000-note.time)/6250*canvas.height ,50,50)
+      }
     }
   }
   var str = score.toString()
@@ -147,7 +151,7 @@ function mainGame(songObj){
         dt -= step;
         update(step);
       }
-    render(dt)
+    drawGame(songObj, dt)
     last = now;
     requestAnimationFrame(function(){ mainGame(songObj) })
   }
@@ -157,8 +161,10 @@ function playGame(songObj){
   //function that starts the game
   canvas = gf.fullCanvas();
   Global.song = songObj;
-  document.addEventListener('keydown', function(ev){ onKey(ev, ev.keyCode, true), false})
-  document.addEventListener('keyup', function(ev){ onKey(ev, ev.keyCode, false), false})
+  document.addEventListener('keydown', 
+        function(ev){ onKey(ev, ev.keyCode, true)}, false);
+  document.addEventListener('keyup', 
+        function(ev){ onKey(ev, ev.keyCode, false)}, false);
   requestAnimationFrame(function(){ mainGame(songObj) })
 }
 
@@ -168,6 +174,37 @@ function main(){
   playGame(songObj)
 }
 
+function drawGame(songObj, dt){
+  //draws the game on its own coordinate system
+  canvas.scale(canvas.width,canvas.height)
+  canvas.setPenColor('#656565')
+  canvas.drawRect(0,1,1,1)
+  canvas.setPenColor('#000000')
+  canvas.drawRect(0,.36,1,.36)
+  for(var i=0; i<songObj.song.length; i++){
+    var note = soundObj.song[i]
+    for(var j=0; j<note.keys.length; j++){
+      if (note.keys[j] === 'A'){
+        canvas.drawFilledCirc(.1, -time/1000 + dt, .09,'#FF0000')
+      }
+      if (note.keys[j] === 'S'){
+        canvas.drawFilledCirc(.1, -time/1000 + dt, .09,'#0000FF')
+      }
+      if (note.keys[j] === 'D'){
+        canvas.drawFilledCirc(.1, -time/1000 + dt, .09,'#00FF00')
+      }
+      if (note.keys[j] === 'F'){
+        canvas.drawFilledCirc(.1, -time/1000 + dt, .09,'#FFFF00')
+      }
+      if (note.keys[j] === 'G'){
+        canvas.drawFilledCirc(.1, -time/1000 + dt, .09,'#FF00FF')
+      }
+    }
+  }
+  var str = score.toString()
+  canvas.drawText(str, .75, .5)
+
+}
 
 
 
