@@ -31,7 +31,7 @@ var last = timestamp();
 var step = 1/60;
 var score = 0;
 
-var input = {a: false, s: false, d: false, f: false, g:false}
+var input = {a: false, s: false, d: false, f: false, g:false};
 
 function timestamp() {
   //find how time delay is between frame updates
@@ -63,15 +63,15 @@ function update(dt){
   var song = Global.song.song;
   for(var i = 0; i<song.length; i++){
     if(song[i].time < 100){
-      var note = song.shift()
-      for(var i=0; i<note.keys.length; i++){
-        console.log(input)
+      var note = song.shift();
+      for (var i=0; i<note.keys.length; i++) {
+        console.log(input);
         if (note.keys[i] === 'A' && input.a){
           score += 10;
-          alert('SCORE 1')
+          alert('SCORE 1');
         } else if (note.keys[i] === 'S' && input.s){
           score += 10;
-          alert('SCORE 2')
+          alert('SCORE 2');
         } else if (note.keys[i] === 'D' && input.d){
           score += 10;
         } else if (note.keys[i] === 'F' && input.f){
@@ -98,27 +98,28 @@ var loop = 0;
 function render(){
   //draws the game state on screen
   canvas.setBackgroundColor('#999999');
-  canvas.createBackground()
-  canvas.setPenColor('#656565')
-  canvas.drawRect(canvas.width*.125, canvas.height*.05, canvas.width*.5, canvas.height*.9)
-  canvas.setPenColor('#000000')
-  canvas.drawLine(canvas.width*.125, canvas.height*.8, canvas.width*.625, canvas.height*.8)
-  canvas.setPenColor('#440044')
+  canvas.createBackground();
+  canvas.setPenColor('#656565');
+  canvas.drawRect(canvas.width*0.125, canvas.height*0.05, canvas.width*0.5, canvas.height*0.9);
+  canvas.setPenColor('#000000');
+  canvas.drawLine(canvas.width*0.125, canvas.height*0.8, canvas.width*0.625, canvas.height*0.8);
+  canvas.setPenColor('#440044');
   for(var i=0; i<Global.song.song.length; i++){
-    var note = Global.song.song[i]
+    var note = Global.song.song[i];
     for(var j=0; j<note.keys.length; j++){
+      var dx;
       if (note.keys[j] === 'A'){
-        var dx = timeToX(note.time)
-        canvas.drawRect(canvas.width*.225,(5000-note.time)/6250*canvas.height ,50,50) 
+        dx = timeToX(note.time);
+        canvas.drawRect(canvas.width*0.225,(5000-note.time)/6250*canvas.height ,50,50);
       }
       if (note.keys[j] === 'S'){
-        var dx = timeToX(note.time)
-        canvas.drawRect(canvas.width*.325,(5000-note.time)/6250*canvas.height ,50,50) 
+        dx = timeToX(note.time);
+        canvas.drawRect(canvas.width*0.325,(5000-note.time)/6250*canvas.height ,50,50);
       }
     }
   }
-  var str = loop.toString()
-  canvas.drawText(str, canvas.width*.75, canvas.height*.5)
+  var str = loop.toString();
+  canvas.drawText(str, canvas.width*0.75, canvas.height*0.5);
   loop += 1;
 
 }
@@ -127,7 +128,7 @@ function timeToX(time){
   //turn time on range 0-5000 to x. 
   //5000 = 0
   //0 = canvas.height*.8
-  return (5000-time)/6250*canvas.height 
+  return (5000-time)/6250*canvas.height;
 }
 
 
@@ -140,9 +141,9 @@ function mainGame(songObj){
         dt -= step;
         update(step);
       }
-    render(dt)
+    render(dt);
     last = now;
-    requestAnimationFrame(function(){ mainGame(songObj) })
+    requestAnimationFrame(function() { mainGame(songObj); });
   }
 }
 
@@ -150,15 +151,15 @@ function playGame(songObj){
   //function that starts the game
   canvas = gf.fullCanvas();
   Global.song = songObj;
-  document.addEventListener('keydown', function(ev){ onKey(ev, ev.keyCode, true), false})
-  document.addEventListener('keyup', function(ev){ onKey(ev, ev.keyCode, false), false})
-  requestAnimationFrame(function(){ mainGame(songObj) })
+  document.addEventListener('keydown', function(ev) { onKey(ev, ev.keyCode, true); }, false);
+  document.addEventListener('keyup', function(ev) { onKey(ev, ev.keyCode, false); }, false);
+  requestAnimationFrame(function() { mainGame(songObj); });
 }
 
 function main(){
   //test function
-  var songObj = { song: [{time: 5000, keys:['A']},{time: 10000, keys:['A','S']},]}
-  playGame(songObj)
+  var songObj = { song: [{time: 5000, keys:['A']},{time: 10000, keys:['A','S']},]};
+  playGame(songObj);
 }
 
 

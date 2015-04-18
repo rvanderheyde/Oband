@@ -74,7 +74,7 @@ function main() {
     $('#status').html('Starting da game do');
     console.log('Starting dat game tho');
     console.log(info.notes);
-    playGame({song: info.notes})
+    playGame({song: info.notes});
   });
 }
 
@@ -119,16 +119,16 @@ $(document).on('click', '#song-col button', function(event) {
 // Success function for joining an existing song and getting song info
 var infoSuccess = function(data, status) {
   console.log('This be the data');
-  console.log(data)
+  console.log(data);
   info.notes = data;
   socket.emit('allReady', info.room);
-}
+};
 
 var onError = function(data, status) {
   $('#status').html('Music loading failed :(');
   console.log(data);
   console.log(status);
-}
+};
 
 // Loads game if start button is clicked
 $(document).on('click', '#start', function(event) {

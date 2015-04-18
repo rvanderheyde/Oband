@@ -123,7 +123,7 @@ function runBeats(onlineFlag) {
         if (track.status == 'ok') {
           var notes = generateNotes(track.analysis.beats);
           console.log("Remix complete!");
-          $('#status').html('Music parsing complete! Starting in 5 seconds')
+          $('#status').html('Music parsing complete! Starting in 5 seconds');
           info.notes = notes;
           info.ready = true;
           // setTimeout(function () {

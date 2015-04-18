@@ -9,13 +9,13 @@ routes.indexRender = function (req, res){
   /* GET request to render the homeapge */
   var url = path.resolve( __dirname + '../../views/index.html');
   res.sendFile(url);
-}
+};
 
 routes.echonestKey = function(req,res) {
   /* GET request to send the EchoNest API key */
   process.env.ECHONEST_KEY = 'P2KSY2ZXAFTJKGIRG';
 	res.send(process.env.ECHONEST_KEY);
-}
+};
 
 var echo = echojs({
   /* Wtf Pip */
@@ -30,12 +30,12 @@ routes.echonestCall = function (req, res) {
   }, function (err, json) {
     console.log(json.response);
   });
-}
+};
 
 routes.beats = function(req, res) {
   /* GET request to render the /beats page */
 	res.render("beats");
-}
+};
 
 routes.songNotes = function (req, res) {
   /* POST request to receive the remixed and parsed song data */
@@ -44,15 +44,15 @@ routes.songNotes = function (req, res) {
   console.log('SLKDJFLSDKJF');
   console.log(notes[0]);
   res.send('.');
-}
+};
 
 routes.getSongInfo = function(req, res) {
   // Get request for person connecting to get parsed song data
-  var difficulty = req.body.difficulty
+  var difficulty = req.body.difficulty;
   console.log('Getting dat song info!');
   console.log('Difficulty: ' + difficulty);
   console.log(beats[0]);
-  res.json(beats);''
-}
+  res.json(beats);
+};
 
 module.exports = routes;

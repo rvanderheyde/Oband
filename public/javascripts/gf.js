@@ -36,7 +36,7 @@ var gf = {
               this.context.fillStyle = this.backgroundColor;
               this.context.fillRect(0,0,this.width,this.height);
               this.context.fillStyle = this.penColor;
-              this.objects.push({type:'background'})
+              this.objects.push({type:'background'});
             },
             drawArc: function(cx, cy, r, theta_i, theta_f){
               this.context.fillStyle = this.penColor;
@@ -50,7 +50,7 @@ var gf = {
                       theta1: theta_i,
                       theta2: theta_f,
                       color: this.penColor
-              }
+              };
             },
             drawLine: function(x1, y1, x2, y2){
               this.context.fillStyle = this.penColor;
@@ -62,12 +62,12 @@ var gf = {
                       point1: [x1,y1],
                       point2: [x2,y2],
                       color: this.penColor
-              }
+              };
             },
             drawRect: function(x1, y1, width, height){
-              this.context.fillStyle = this.penColor
-              this.context.fillRect(x1, y1, width, height)
-              this.objects.push({type:'rect', vars: [x1, y1, width, height], color: this.penColor})
+              this.context.fillStyle = this.penColor;
+              this.context.fillRect(x1, y1, width, height);
+              this.objects.push({type:'rect', vars: [x1, y1, width, height], color: this.penColor});
               return {type: 'Rect',
                       point1: [x1,y1], 
                       point2: [x1+width, y1+height], 
@@ -90,19 +90,19 @@ var gf = {
                           return true;
                         }
                       }
-                    }
+                    };
             },
             drawText: function(text, x, y){
               this.context.fillStyle = this.penColor;
               this.context.font = this.font;
               this.context.fillText(text, x, y);
-              this.objects.push({type:'text', vars: [ text, x, y], font: this.font, color: this.penColor})
+              this.objects.push({type:'text', vars: [ text, x, y], font: this.font, color: this.penColor});
               return {type: 'Text',
                       point: [x,y], 
                       text: text, 
                       font: this.font, 
                       color: this.penColor,
-                    }
+                    };
             },
             move: function(shape, dx, dy){
               if(shape.type === 'Rect'){
@@ -128,32 +128,32 @@ var gf = {
               if(shape.type === 'Text'){
                 this.context.fillStyle = this.backgroundColor;
                 this.context.font = shape.font;
-                this.context.fillText(shape.text, shape.point[0], shape.point[1])
+                this.context.fillText(shape.text, shape.point[0], shape.point[1]);
               }
             },
             redraw: function(){
               for(var i=0; i<this.objects.length;i++){
-                var obj = this.objects[i]
+                var obj = this.objects[i];
                 if (obj.type ==='background'){
                   this.context.fillStyle = this.backgroundColor;
-                  this.context.fillRect(0,0,this.width, this.height)
+                  this.context.fillRect(0,0,this.width, this.height);
                 }
                 if (obj.type === 'rect'){
                   this.context.fillStyle = obj.color;
-                  this.context.fillRect(obj.vars[0], obj.vars[1], obj.vars[2], obj.vars[3])
+                  this.context.fillRect(obj.vars[0], obj.vars[1], obj.vars[2], obj.vars[3]);
                 }
               }
             },
             draw: function(lst){
               for(var i=0; i<lst.length;i++){
-                var obj = lst[i]
+                var obj = lst[i];
                 if (obj.type ==='background'){
                   this.context.fillStyle = this.backgroundColor;
-                  this.context.fillRect(0,0,this.width, this.height)
+                  this.context.fillRect(0,0,this.width, this.height);
                 }
                 if (obj.type === 'rect'){
                   this.context.fillStyle = obj.color;
-                  this.context.fillRect(obj.vars[0], obj.vars[1], obj.vars[2], obj.vars[3])
+                  this.context.fillRect(obj.vars[0], obj.vars[1], obj.vars[2], obj.vars[3]);
                 }
               }
 
@@ -162,8 +162,8 @@ var gf = {
               //ignore this function for now it doesn't work.
               var canvas = this;
               this.redraw();
-              requestAnimationFrame(function(){fun(canvas,objs)})
+              requestAnimationFrame(function() { fun(canvas,objs); } );
             }
-          }
+          };
   }
-}
+};

@@ -31,14 +31,14 @@ function main () {
   socket.on('disconnecting', function(clientId) {
     num_users -= 1;
     delete canvas.ids[clientId];
-    alert('User disconnected: ' + clientId)
+    alert('User disconnected: ' + clientId);
   });
   socket.on('joinRoom', function(clientId, letter) {
     alert(clientId + ' joined room ' + letter);
   });
   ctx = canvas.getContext("2d");
     drawStuff();
-    canvas.addEventListener("mousedown", mouseClickDown)
+    canvas.addEventListener("mousedown", mouseClickDown);
     // scores['user' + num_users] = 0;
     socket.on('mouseClick', function(point, clientId) {
       ctx.beginPath();
@@ -122,7 +122,7 @@ function processClick(event) {
     canvas.room = 'A';
     socket.emit('joinRoom', canvas.room);
   } else if (checkInBox(point, rect2bl, rect2tr)) {
-    console.log('Join Room B')
+    console.log('Join Room B');
     canvas.room = 'B';
     socket.emit('joinRoom', canvas.room);
   } else {
