@@ -36,10 +36,10 @@ function main() {
     console.log('User disconnected: ' + clientId);
     $('#number span').html(info.count);
   });
-  socket.on('joining', function(letter) {
+  socket.on('joining', function(room) {
     // informs host that they joined the room
-    console.log('I joined room: ', + letter);
-    info.room = letter;
+    console.log('I joined room: ' + room);
+    info.room = room;
   });
   socket.on('joinExisting', function(room, ready) {
     // informs you if room you joined is ready
@@ -59,18 +59,18 @@ function main() {
     }
   });
   socket.on('roomReady', function(room) {
-    if (!info.host) {
-      var data = {
-        'difficulty': info.difficulty,
-        'instrument': info.instrument,
-        'song': info.song
-      };
-      $.get('/getSongInfo', data)
-        .done(infoSuccess)
-        .error(onError);
-    }
+    // Get song info from server when host indicates the room is ready
+    var data = {
+      'difficulty': info.difficulty,
+      'instrument': info.instrument,
+      'song': info.song
+    };
+    $.get('/getSongInfo', data)
+      .done(infoSuccess)
+      .error(onError);
   });
   socket.on('allReady', function(room) {
+    // When socket fires indicating that both users are ready, start game
     console.log('Starting dat game tho');
     var i = 5;
     a = setInterval(function () {
