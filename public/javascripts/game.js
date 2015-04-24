@@ -169,6 +169,9 @@ function mainGame(songObj){
 function playGame(songObj){
   //function that starts the game
   $('#content').remove()
+  var audio = document.createElement('audio');
+  audio.src = '/audio/OKGO.mp3';
+  audio.play();
   canvas = gf.fullCanvas();
   Global.song = songObj;
   document.addEventListener('keydown', 
