@@ -3,15 +3,53 @@ var millis = function() {
   return new Date().getTime();
 };
 
-var choose = function(arr) {
+
+var chooseOne = function(arr) {
   /* Randomly return one item from the supplied array. */
   return arr[Math.floor(Math.random()*arr.length)];
 };
 
 
-var generateNotes = function(beats) {
+var choose = function(arr, numberToChoose) {
+  /* Randomly return a list of numberToChoose unique items from arr. */
+  if (numberToChoose < 1 || numberToChoose > arr.length) {
+    throw "ERROR: Called choose() with an invalid numberToChoose in beats.js";
+  } else if (numberToChoose == 1) {
+    return [chooseOne(arr)]
+  } else {
+    var newChoice = chooseOne(arr);
+    var indexOfNewChoice = arr.indexOf(newChoice);
+    var arrCopy = arr.slice();
+    arrCopy.splice(indexOfNewChoice, 1);  // Remove the chosen element.
+    return [newChoice].concat(choose(arrCopy, numberToChoose-1));
+  }
+};
+
+
+var keysets = {
+  "easy": ['A','S','D'],
+  "medium": ['A','S','D','F'],
+  "hard": ['A','S','D','F','G'],
+  "expert": ['A','S','D','F','G','SPACE']
+};
+var beatfreqsets = {
+  "easy": [1],
+  "medium": [1,1,2],
+  "hard": [1,2,2],
+  "expert": [1,1,2,2,4]
+};
+var chordsets = {
+  "easy": [1],
+  "medium": [1,1,1,1,1,1,1,2],
+  "hard": [1,1,1,1,1,2],
+  "expert": [1,1,1,2]
+}
+
+
+var generateNotes = function(beats, difficulty) {
   /**
-   * Return an array of objects representing notes to be played.
+   * Return an array of objects representing notes to be played,
+   * given an array of beats and the appropriate difficulty level.
    * A note object contains two attributes: "time" and "key".
    * "time" is the # of milliseconds into the song
    * when that note should be played.
@@ -123,18 +161,17 @@ function runBeats(onlineFlag) {
         if (track.status == 'ok') {
           var notes = generateNotes(track.analysis.beats);
           console.log("Remix complete!");
-          $('#status').html('Music parsing complete! Starting in 5 seconds');
+          // $('#status').html('Music parsing complete! Starting in 5 seconds')
           info.notes = notes;
-          info.ready = true;
-          // setTimeout(function () {
-          //   playGame({song: info.notes});
-          // }
+          // person who parsed the music is the host
+          info.host = true;
           
-          // Uncomment this line to display the beat#s realtime in the 
+          // Uncomment this line to display the beat#s realtime in the console
           // playSong(player, track, notes);
 
           // Send the notes to the server if you're in online mode
           if (onlineFlag) {
+            $('#status').html('Music parsing complete, waiting for more users...');
             $.post('/songNotes', { notes: JSON.stringify(notes)})
               .done(function() {
                 socket.emit('songParsed', info.room);
