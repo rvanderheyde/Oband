@@ -69,20 +69,32 @@ var generateNotes = function(beats, difficulty) {
     runningTime += duration;
 
     // We will randomly either include 1 or 2 notes per beat. (Usually 1.)
-    numberOfNotesThisBeat = choose([1,1,2]);
+    numberOfNotesThisBeat = chooseOne(beatfreqsets[difficulty]);
     duration = (beat.duration * 1000.0) / numberOfNotesThisBeat;
     for (var j = 0; j < numberOfNotesThisBeat; j++) {
 
       // Create and push each note.
       startTime = beat.start*1000 + (duration * j);
+      var keyset = keysets[difficulty];
+      var chordSize = chordsets[difficulty];
       notes.push({
         time: startTime,
-        keys: [choose(['A','S','D','F'])]
+        keys: [choose(keyset, chordsize)];
       });
     }
   }
   return notes;
 };
+
+
+var generateAllDifficulties = function(beats) {
+  return {
+    "easy": generateNotes(beats, "easy"),
+    "medium": generateNotes(beats, "medium"),
+    "hard": generateNotes(beats, "hard"),
+    "expert": generateNotes(beats, "expert")
+  }
+}
 
 
 var playSong = function(player, track, notes) {
