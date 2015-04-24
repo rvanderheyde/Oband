@@ -58,11 +58,14 @@ function onKey(ev, key, pressed){
   }
 }
 
-function animateHit(note){
+var hit = [];
 
+function animateHit(note){
+  hit.push(note)
 }
 
 function update(dt){
+  hit = []
   //change the game state based on time, User input
   for(var i = 0; i<Global.song.song.length; i++){
     if(Global.song.song[i].time < 0){
@@ -100,45 +103,6 @@ function update(dt){
   }
   // console.log(score)
   // Global.song.song = song;
-}
-
-function render(){
-  //draws the game state on screen
-  canvas.setBackgroundColor('#999999');
-  canvas.createBackground()
-  canvas.setPenColor('#656565')
-  canvas.drawRect(canvas.width*.125, canvas.height*.05, canvas.width*.5, canvas.height*.9)
-  canvas.setPenColor('#000000')
-  canvas.drawLine(canvas.width*.125, canvas.height*.8, canvas.width*.625, canvas.height*.8)
-  canvas.setPenColor('#440044')
-  for(var i=0; i<Global.song.song.length; i++){
-    var note = Global.song.song[i]
-    for(var j=0; j<note.keys.length; j++){
-      if (note.keys[j] === 'A'){
-        var dx = timeToX(note.time)
-        canvas.drawRect(canvas.width*.225,(5000-note.time)/(5000+height)*canvas.height ,50,50) 
-      }
-      if (note.keys[j] === 'S'){
-        var dx = timeToX(note.time)
-        canvas.drawRect(canvas.width*.325,(5000-note.time)/6250*canvas.height ,50,50) 
-      }
-      if (note.keys[j] === 'D'){
-        var dx = timeToX(note.time)
-        canvas.drawRect(canvas.width*.425,(5000-note.time)/6250*canvas.height ,50,50)
-      }
-      if (note.keys[j] === 'F'){
-        var dx = timeToX(note.time)
-        canvas.drawRect(canvas.width*.525,(5000-note.time)/6250*canvas.height ,50,50)
-      }
-      if (note.keys[j] === 'G'){
-        var dx = timeToX(note.time)
-        canvas.drawRect(canvas.width*.625,(5000-note.time)/6250*canvas.height ,50,50)
-      }
-    }
-  }
-  var str = score.toString()
-  canvas.drawText(str, canvas.width*.75, canvas.height*.5)
-
 }
 
 function timeToX(time){
@@ -186,44 +150,58 @@ function main(){
 
 function drawGame(dt){
   //draws the game on its own coordinate system
-  // canvas.context.scale(canvas.width/2,canvas.height)
-  var width = canvas.width/2
-  var height = canvas.height
-  var originX = canvas.width/4
-  canvas.setPenColor('#656565')
-  canvas.drawRect(originX,0,width,height)
-  canvas.setPenColor('#000000')
-  canvas.drawLine(originX,height-.1*width,width+originX,height-.1*width)
+  var width = canvas.width/2;
+  var height = canvas.height;
+  var originX = canvas.width/4;
+  //draw background
+  canvas.setPenColor('#656565');
+  canvas.drawRect(originX,0,width,height);
+  canvas.setPenColor('#000000');
+  canvas.drawLine(originX,height-.1*width,width+originX,height-.1*width);
+  //loop and draw notes
   for(var i=0; i<Global.song.song.length; i++){
-    var note = Global.song.song[i]
+    var note = Global.song.song[i];
     for(var j=0; j<note.keys.length; j++){
       if (note.keys[j] === 'A'){
-        // canvas.setPenColor('#FF0000')
-        canvas.drawFilledCirc(.1*width+originX, (-note.time+5000)/(height+5000)*height, .09*width,'#FF0000')
-        // canvas.drawRect(.01*width+originX, (-note.time+5000)/(height+5000)*height-.09*width, .18*width, .18*width)
+        canvas.drawFilledCirc(.1*width+originX, (-note.time+5000)/(height+5000)*height, .09*width,'#FF0000');
       }
       if (note.keys[j] === 'S'){
-        // canvas.setPenColor('#0000FF')
-        // canvas.drawRect(.21*width+originX, (-note.time+5000)/(height+5000)*height-.09*width, .18*width, .18*width)
-        canvas.drawFilledCirc(.3*width+originX, (5000-note.time)/(height+5000)*height, .09*width,'#0000FF')
+        canvas.drawFilledCirc(.3*width+originX, (5000-note.time)/(height+5000)*height, .09*width,'#0000FF');
       }
       if (note.keys[j] === 'D'){
-        canvas.drawFilledCirc(.5*width+originX, (5000-note.time)/(height+5000)*height, .09*width,'#00FF00')
+        canvas.drawFilledCirc(.5*width+originX, (5000-note.time)/(height+5000)*height, .09*width,'#00FF00');
       }
       if (note.keys[j] === 'F'){
-        canvas.drawFilledCirc(.7*width+originX, (5000-note.time)/(height+5000)*height, .09*width,'#FFFF00')
+        canvas.drawFilledCirc(.7*width+originX, (5000-note.time)/(height+5000)*height, .09*width,'#FFFF00');
       }
       if (note.keys[j] === 'G'){
-        canvas.drawFilledCirc(.9*width+originX, (5000-note.time)/(height+5000)*height, .09*width,'#FF00FF')
+        canvas.drawFilledCirc(.9*width+originX, (5000-note.time)/(height+5000)*height, .09*width,'#FF00FF');
       }
     }
   }
+
   canvas.setPenColor('#2222FF')
-  canvas.drawRect(.7*canvas.width, .45*height, 100,100)
+  canvas.drawRect(.75*canvas.width, .45*height, 50, 50)
   var str = score.toString()
   canvas.setPenColor('#000000')
   canvas.drawText(str, .75*canvas.width, .5*height)
-
+  for(var k=0; k<hit.length; k++){
+    if (hit[k] === 'A'){
+      canvas.drawFilledCirc(.1*width+originX, (-note.time+5000)/(height+5000)*height, .09*width,'#FF0000');
+    }
+    if (hit[k] === 'S'){
+      canvas.drawFilledCirc(.3*width+originX, (5000-note.time)/(height+5000)*height, .09*width,'#0000FF');
+    }
+    if (hit[k] === 'D'){
+      canvas.drawFilledCirc(.5*width+originX, (5000-note.time)/(height+5000)*height, .09*width,'#00FF00');
+    }
+    if (hit[k] === 'F'){
+      canvas.drawFilledCirc(.7*width+originX, (5000-note.time)/(height+5000)*height, .09*width,'#FFFF00');
+    }
+    if (hit[k] === 'G'){
+      canvas.drawFilledCirc(.9*width+originX, (5000-note.time)/(height+5000)*height, .09*width,'#FF00FF');
+    }
+  }
 }
 
 function renderV2(){
