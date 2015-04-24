@@ -3,7 +3,7 @@ var requestAnimationFrame = window.requestAnimationFrame ||
                             window.mozRequestAnimationFrame || 
                             window.webkitRequestAnimationFrame || 
                             window.msRequestAnimationFrame;
-
+//Key number mapping
 var KEY = {
     BACKSPACE: 8,
     TAB:       9,
@@ -24,15 +24,18 @@ var KEY = {
     A:        65, B: 66, C: 67, D: 68, E: 69, F: 70, G: 71, H: 72, I: 73, J: 74, K: 75, L: 76, M: 77, N: 78, O: 79, P: 80, Q: 81, R: 82, S: 83, T: 84, U: 85, V: 86, W: 87, X: 88, Y: 89, Z: 90,
     TILDA:    192
 };
+//make the song object global
 var Global = { song:{} };
+//variables used in loop timing
 var now; 
 var dt =0;
 var last = timestamp();
 var step = 1/60;
+//Score variable used in update and render
 var score = 0;
-
+//object of hit inputs
 var input = {a: false, s: false, d: false, f: false, g:false}
-
+//------------------------------------------------------------------
 function timestamp() {
   //find how time delay is between frame updates
   return window.performance && window.performance.now ? window.performance.now() : new Date().getTime();
@@ -58,20 +61,22 @@ function onKey(ev, key, pressed){
   }
 }
 
+//list of notes hit in a loop
 var hit = [];
 
 function animateHit(note){
+  //add note to hit list
   hit.push(note)
 }
 
 function update(dt){
+  //reset hit list
   hit = []
   //change the game state based on time, User input
   for(var i = 0; i<Global.song.song.length; i++){
-    if(Global.song.song[i].time < 0){
+    if(Global.song.song[i].time < -5){
       var note = Global.song.song.shift()
       for(var j=0; j<note.keys.length; j++){
-        console.log(input)
         if (note.keys[j] === 'A' && input.a){
           score += 10;
           animateHit('a')
@@ -105,14 +110,6 @@ function update(dt){
   // Global.song.song = song;
 }
 
-function timeToX(time){
-  //turn time on range 0-5000 to x. 
-  //5000 = 0
-  //0 = canvas.height*.8
-  return (5000-time)/6250*canvas.height 
-}
-
-
 function mainGame(songObj){
   //game loop function
   if(!songFinished(songObj)){
@@ -123,7 +120,6 @@ function mainGame(songObj){
         update(step);
       }
     drawGame(dt)
-    // render()
     // renderV2()
     last = now;
     requestAnimationFrame(function(){ mainGame(songObj) })
@@ -135,10 +131,12 @@ function playGame(songObj){
   $('#content').remove()
   canvas = gf.fullCanvas();
   Global.song = songObj;
+  //event listening for keyboard inputs
   document.addEventListener('keydown', 
         function(ev){ onKey(ev, ev.keyCode, true)}, false);
   document.addEventListener('keyup', 
         function(ev){ onKey(ev, ev.keyCode, false)}, false);
+  //start game loop 
   requestAnimationFrame(function(){ mainGame(songObj) })
 }
 
@@ -179,32 +177,35 @@ function drawGame(dt){
       }
     }
   }
-
+  //draw score
   canvas.setPenColor('#2222FF')
   canvas.drawRect(.75*canvas.width, .45*height, 50, 50)
   var str = score.toString()
   canvas.setPenColor('#000000')
   canvas.drawText(str, .75*canvas.width, .5*height)
+  //hit animation
+  console.log(hit)
   for(var k=0; k<hit.length; k++){
     if (hit[k] === 'A'){
-      canvas.drawFilledCirc(.1*width+originX, (-note.time+5000)/(height+5000)*height, .09*width,'#FF0000');
+      canvas.drawFilledCirc(.1*width+originX, .09*width+height, .09*width,'#000000');
     }
     if (hit[k] === 'S'){
-      canvas.drawFilledCirc(.3*width+originX, (5000-note.time)/(height+5000)*height, .09*width,'#0000FF');
+      canvas.drawFilledCirc(.3*width+originX, .09*width+height, .09*width,'#000000');
     }
     if (hit[k] === 'D'){
-      canvas.drawFilledCirc(.5*width+originX, (5000-note.time)/(height+5000)*height, .09*width,'#00FF00');
+      canvas.drawFilledCirc(.5*width+originX, .09*width+height, .09*width,'#00FF00');
     }
     if (hit[k] === 'F'){
-      canvas.drawFilledCirc(.7*width+originX, (5000-note.time)/(height+5000)*height, .09*width,'#FFFF00');
+      canvas.drawFilledCirc(.7*width+originX, .09*width+height, .09*width,'#FFFF00');
     }
     if (hit[k] === 'G'){
-      canvas.drawFilledCirc(.9*width+originX, (5000-note.time)/(height+5000)*height, .09*width,'#FF00FF');
+      canvas.drawFilledCirc(.9*width+originX, .09*width+height, .09*width,'#FF00FF');
     }
   }
 }
 
 function renderV2(){
+  //different view style IN PROGRESS
   var width = canvas.width/2
   var height = canvas.height
   var originX = canvas.width/4
