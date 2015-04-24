@@ -8,7 +8,7 @@ function main() {
   info.ids = {};
   info.room = false;
   info.roomCount = 0;
-  info.ready = false;
+  info.host = false;
   info.difficulty = false;
   info.instrument = false;
   info.song = false;
@@ -36,10 +36,10 @@ function main() {
     console.log('User disconnected: ' + clientId);
     $('#number span').html(info.count);
   });
-  socket.on('joining', function(letter) {
+  socket.on('joining', function(room) {
     // informs host that they joined the room
-    console.log('I joined room: ', + letter);
-    info.room = letter;
+    console.log('I joined room: ' + room);
+    info.room = room;
   });
   socket.on('joinExisting', function(room, ready) {
     // informs you if room you joined is ready
@@ -59,22 +59,29 @@ function main() {
     }
   });
   socket.on('roomReady', function(room) {
-    if (!info.ready) {
-      var data = {
-        'difficulty': info.difficulty,
-        'instrument': info.instrument,
-        'song': info.song
-      };
-      $.get('/getSongInfo', data)
-        .done(infoSuccess)
-        .error(onError);
-    }
+    // Get song info from server when host indicates the room is ready
+    var data = {
+      'difficulty': info.difficulty,
+      'instrument': info.instrument,
+      'song': info.song
+    };
+    $.get('/getSongInfo', data)
+      .done(infoSuccess)
+      .error(onError);
   });
   socket.on('allReady', function(room) {
-    $('#status').html('Starting da game do');
+    // When socket fires indicating that both users are ready, start game
     console.log('Starting dat game tho');
-    console.log(info.notes);
-    playGame({song: info.notes})
+    var i = 5;
+    a = setInterval(function () {
+      i--;
+      console.log(i);
+      $('#status').html('Ready to begin! Starting in ' + i + ' seconds');
+      if (i === 0) {
+        clearInterval(a);
+        playGame({song: info.notes});
+      }
+    }, 1000);
   });
 }
 
