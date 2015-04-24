@@ -24,6 +24,11 @@ var KEY = {
     A:        65, B: 66, C: 67, D: 68, E: 69, F: 70, G: 71, H: 72, I: 73, J: 74, K: 75, L: 76, M: 77, N: 78, O: 79, P: 80, Q: 81, R: 82, S: 83, T: 84, U: 85, V: 86, W: 87, X: 88, Y: 89, Z: 90,
     TILDA:    192
 };
+
+// will be updated every second, used for socket firing
+var prevTime = 0;
+var time = 0;
+
 var Global = { song:{} };
 var now; 
 var dt =0;
@@ -68,7 +73,7 @@ function update(dt){
     if(Global.song.song[i].time < 0){
       var note = Global.song.song.shift()
       for(var j=0; j<note.keys.length; j++){
-        console.log(input)
+        // console.log(input)
         if (note.keys[j] === 'A' && input.a){
           score += 10;
           animateHit('a')
@@ -93,7 +98,14 @@ function update(dt){
           }
         }
       }
-      //Update scores on all cleints via sockets here. 
+      // Update scores on all clients via sockets here
+      // Remember to later only make this a thing for multiplayer
+      time = millis()
+      if (time - prevTime >= 1000) {
+        console.log(time);
+        prevTime = time;
+        socket.emit('scoreUpdate', info.room, score, time);
+      }
     } else {
       Global.song.song[i].time -= dt;
     }
@@ -176,6 +188,7 @@ function playGame(songObj){
   document.addEventListener('keyup', 
         function(ev){ onKey(ev, ev.keyCode, false)}, false);
   requestAnimationFrame(function(){ mainGame(songObj) })
+  time = millis();
 }
 
 function main(){

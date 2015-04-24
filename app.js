@@ -115,6 +115,15 @@ io.on('connection', function(client) {
     io.to(room).emit('allReady', room);
   });
 
+  client.on('scoreUpdate', function(room, score, time) {
+    console.log(room);
+    console.log(score);
+    console.log(time);
+    if (room) {
+      client.broadcast.to(room).emit('scoreUpdate', score, time);
+    }
+  });
+
   console.log(count + ' users online');
 });
 

@@ -12,9 +12,11 @@ function main() {
   info.difficulty = false;
   info.instrument = false;
   info.song = false;
+  info.mode = false;
 
   // load home page template
 	$('#content').load('templates/home.html');
+
   socket.on('connecting', function(clientId, count) {
     // called when you connect
     info.count = count;
@@ -22,6 +24,7 @@ function main() {
     info.ids[clientId] = 0;
     console.log(clientId);
   });
+  
   socket.on('newConnection', function(clientId) {
     // informs you of new people connecting and updates info obj
     info.count += 1;
@@ -29,6 +32,7 @@ function main() {
     console.log(clientId + ' connected');
     $('#number span').html(info.count);
   });
+  
   socket.on('disconnecting', function(clientId) {
     // informs you of new people disconnecting and updates info obj
     info.count -= 1;
@@ -36,11 +40,13 @@ function main() {
     console.log('User disconnected: ' + clientId);
     $('#number span').html(info.count);
   });
+  
   socket.on('joining', function(room) {
     // informs host that they joined the room
     console.log('I joined room: ' + room);
     info.room = room;
   });
+  
   socket.on('joinExisting', function(room, ready) {
     // informs you if room you joined is ready
     info.room = room;
@@ -58,6 +64,7 @@ function main() {
       $('#status').html('Room not ready. Please wait...');
     }
   });
+  
   socket.on('roomReady', function(room) {
     // Get song info from server when host indicates the room is ready
     var data = {
@@ -69,19 +76,25 @@ function main() {
       .done(infoSuccess)
       .error(onError);
   });
+  
   socket.on('allReady', function(room) {
     // When socket fires indicating that both users are ready, start game
     console.log('Starting dat game tho');
     var i = 5;
-    a = setInterval(function () {
+    var interval = setInterval(function () {
       i--;
       console.log(i);
       $('#status').html('Ready to begin! Starting in ' + i + ' seconds');
       if (i === 0) {
-        clearInterval(a);
+        clearInterval(interval);
         playGame({song: info.notes});
       }
     }, 1000);
+  });
+
+  socket.on('scoreUpdate', function(otherScore, otherTime) {
+    console.log('\nMy Score: ' + score);
+    console.log('Other Score: ' + otherScore);
   });
 }
 
@@ -95,6 +108,7 @@ $(document).on('click', '#help', function(event) {
 $(document).on('click', '#singlep', function(event) {
   event.preventDefault();
   console.log('Singleplayer');
+  info.mode = 'single';
   $('#content').load('templates/single.html');
 });
 
@@ -102,6 +116,7 @@ $(document).on('click', '#singlep', function(event) {
 $(document).on('click', '#online', function(event) {
   event.preventDefault();
   console.log('Online multiplayer');
+  info.mode = 'online';
   $('#content').load('templates/online.html', function() {
     $('#number span').html(info.count);
   });
