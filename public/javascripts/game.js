@@ -160,6 +160,7 @@ function mainGame(songObj){
       }
     drawGame(dt)
     // render()
+    // renderV2()
     last = now;
     requestAnimationFrame(function(){ mainGame(songObj) })
   }
@@ -167,6 +168,7 @@ function mainGame(songObj){
 
 function playGame(songObj){
   //function that starts the game
+  $('#content').remove()
   canvas = gf.fullCanvas();
   Global.song = songObj;
   document.addEventListener('keydown', 
@@ -229,11 +231,12 @@ function renderV2(){
   var height = canvas.height
   var originX = canvas.width/4
   canvas.setPenColor('#656565');
-  canvas.context.moveTo(originX,height)
-  canvas.context.lineTo(originX+width/height, height)
-  canvas.context.lineTo(originX+width,0)
-  canvas.context.lineTo(originX,0)
+  canvas.context.fillStyle = '#AA22AA'
+  canvas.context.moveTo(originX,0)
+  canvas.context.lineTo(originX+width/10, 0)
+  canvas.context.lineTo(originX+width,height)
   canvas.context.lineTo(originX,height)
+  canvas.context.lineTo(originX,0)
   canvas.context.stroke()
   canvas.context.fill()
 }
