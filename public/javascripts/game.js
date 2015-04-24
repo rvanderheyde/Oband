@@ -58,26 +58,33 @@ function onKey(ev, key, pressed){
   }
 }
 
+function animateHit(note){
+
+}
+
 function update(dt){
   //change the game state based on time, User input
-  var song = Global.song.song;
-  for(var i = 0; i<song.length; i++){
-    if(song[i].time < 100){
-      var note = song.shift()
+  for(var i = 0; i<Global.song.song.length; i++){
+    if(Global.song.song[i].time < 0){
+      var note = Global.song.song.shift()
       for(var j=0; j<note.keys.length; j++){
         console.log(input)
         if (note.keys[j] === 'A' && input.a){
           score += 10;
+          animateHit('a')
           // alert('SCORE 1')
         } else if (note.keys[j] === 'S' && input.s){
           score += 10;
-          // alert('SCORE 2')
+          animateHit('s')
         } else if (note.keys[j] === 'D' && input.d){
           score += 10;
+          animateHit('d')
         } else if (note.keys[j] === 'F' && input.f){
           score += 10;
+          animateHit('f')
         } else if (note.keys[j] === 'G' && input.g){
           score += 10;
+          animateHit('g')
         } else {
           if (input.a || input.s || input.d || input.f || input.g){
             score -= 5;
@@ -88,11 +95,11 @@ function update(dt){
       }
       //Update scores on all cleints via sockets here. 
     } else {
-      song[i].time -= dt;
+      Global.song.song[i].time -= dt;
     }
   }
   // console.log(score)
-  Global.song.song = song;
+  // Global.song.song = song;
 }
 
 function render(){
@@ -109,7 +116,7 @@ function render(){
     for(var j=0; j<note.keys.length; j++){
       if (note.keys[j] === 'A'){
         var dx = timeToX(note.time)
-        canvas.drawRect(canvas.width*.225,(5000-note.time)/6250*canvas.height ,50,50) 
+        canvas.drawRect(canvas.width*.225,(5000-note.time)/(5000+height)*canvas.height ,50,50) 
       }
       if (note.keys[j] === 'S'){
         var dx = timeToX(note.time)
@@ -151,7 +158,9 @@ function mainGame(songObj){
         dt -= step;
         update(step);
       }
-    drawGame(songObj, dt)
+    drawGame(dt)
+    // render()
+    // renderV2()
     last = now;
     requestAnimationFrame(function(){ mainGame(songObj) })
   }
@@ -159,6 +168,7 @@ function mainGame(songObj){
 
 function playGame(songObj){
   //function that starts the game
+  $('#content').remove()
   canvas = gf.fullCanvas();
   Global.song = songObj;
   document.addEventListener('keydown', 
@@ -174,37 +184,60 @@ function main(){
   playGame(songObj)
 }
 
-function drawGame(songObj, dt){
+function drawGame(dt){
   //draws the game on its own coordinate system
-  canvas.scale(canvas.width,canvas.height)
+  // canvas.context.scale(canvas.width/2,canvas.height)
+  var width = canvas.width/2
+  var height = canvas.height
+  var originX = canvas.width/4
   canvas.setPenColor('#656565')
-  canvas.drawRect(0,1,1,1)
+  canvas.drawRect(originX,0,width,height)
   canvas.setPenColor('#000000')
-  canvas.drawRect(0,.36,1,.36)
-  for(var i=0; i<songObj.song.length; i++){
-    var note = soundObj.song[i]
+  canvas.drawLine(originX,height-.1*width,width+originX,height-.1*width)
+  for(var i=0; i<Global.song.song.length; i++){
+    var note = Global.song.song[i]
     for(var j=0; j<note.keys.length; j++){
       if (note.keys[j] === 'A'){
-        canvas.drawFilledCirc(.1, -time/1000 + dt, .09,'#FF0000')
+        // canvas.setPenColor('#FF0000')
+        canvas.drawFilledCirc(.1*width+originX, (-note.time+5000)/(height+5000)*height, .09*width,'#FF0000')
+        // canvas.drawRect(.01*width+originX, (-note.time+5000)/(height+5000)*height-.09*width, .18*width, .18*width)
       }
       if (note.keys[j] === 'S'){
-        canvas.drawFilledCirc(.1, -time/1000 + dt, .09,'#0000FF')
+        // canvas.setPenColor('#0000FF')
+        // canvas.drawRect(.21*width+originX, (-note.time+5000)/(height+5000)*height-.09*width, .18*width, .18*width)
+        canvas.drawFilledCirc(.3*width+originX, (5000-note.time)/(height+5000)*height, .09*width,'#0000FF')
       }
       if (note.keys[j] === 'D'){
-        canvas.drawFilledCirc(.1, -time/1000 + dt, .09,'#00FF00')
+        canvas.drawFilledCirc(.5*width+originX, (5000-note.time)/(height+5000)*height, .09*width,'#00FF00')
       }
       if (note.keys[j] === 'F'){
-        canvas.drawFilledCirc(.1, -time/1000 + dt, .09,'#FFFF00')
+        canvas.drawFilledCirc(.7*width+originX, (5000-note.time)/(height+5000)*height, .09*width,'#FFFF00')
       }
       if (note.keys[j] === 'G'){
-        canvas.drawFilledCirc(.1, -time/1000 + dt, .09,'#FF00FF')
+        canvas.drawFilledCirc(.9*width+originX, (5000-note.time)/(height+5000)*height, .09*width,'#FF00FF')
       }
     }
   }
+  canvas.setPenColor('#2222FF')
+  canvas.drawRect(.7*canvas.width, .45*height, 100,100)
   var str = score.toString()
-  canvas.drawText(str, .75, .5)
+  canvas.setPenColor('#000000')
+  canvas.drawText(str, .75*canvas.width, .5*height)
 
 }
 
-
+function renderV2(){
+  var width = canvas.width/2
+  var height = canvas.height
+  var originX = canvas.width/4
+  canvas.setPenColor('#656565');
+  canvas.context.fillStyle = '#AA22AA'
+  canvas.context.moveTo(originX,0)
+  canvas.context.lineTo(originX+width/10, 0)
+  canvas.context.lineTo(originX+width,height)
+  canvas.context.lineTo(originX,height)
+  canvas.context.lineTo(originX,0)
+  canvas.context.stroke()
+  canvas.context.fill()
+}
 

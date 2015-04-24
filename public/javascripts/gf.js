@@ -39,7 +39,6 @@ var gf = {
               this.objects.push({type:'background'})
             },
             drawArc: function(cx, cy, r, theta_i, theta_f){
-              this.context.fillStyle = this.penColor;
               this.context.beginPath();
               this.context.arc(cx,cy,r,theta_i, theta_f);
               this.context.stroke();
@@ -54,12 +53,13 @@ var gf = {
             },
             drawFilledCirc: function(cx,cy,r, fillcolor){
               this.context.strokeStyle = this.penColor;
+              this.context.fillStyle = fillcolor;
               this.context.beginPath();
-              this.context.arc(cx,cy,r,theta_i, theta_f);
+              this.context.arc(cx,cy,r,0, Math.PI*2);
               this.context.stroke();
-              this.context.closePath();
-              this.context.fillcolor = fillcolor;
               this.context.fill()
+              this.context.closePath();
+              
               return {type: 'Circle',
                       point: [cx,cy],
                       radius: r,
