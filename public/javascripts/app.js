@@ -95,8 +95,7 @@ function main() {
 
   socket.on('scoreUpdate', function(otherScore, otherTime) {
     // Doesnt work if tab is not open b/c we are using client time
-    console.log('\nMy Score: ' + score);
-    console.log('Other Score: ' + otherScore);
+    oppScore = otherScore;
   });
 }
 

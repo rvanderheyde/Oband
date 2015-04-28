@@ -35,6 +35,7 @@ var dt =0;
 var last = timestamp();
 var step = 1/60;
 var score = 0;
+var oppScore = 0;
 
 var input = {a: false, s: false, d: false, f: false, g:false}
 
@@ -102,7 +103,7 @@ function update(dt){
       // Remember to later only make this a thing for multiplayer
       time = millis()
       if (time - prevTime >= 1000) {
-        console.log(time);
+        // console.log(time);
         prevTime = time;
         socket.emit('scoreUpdate', info.room, score, time);
       }
@@ -148,9 +149,8 @@ function render(){
       }
     }
   }
-  var str = score.toString()
-  canvas.drawText(str, canvas.width*.75, canvas.height*.5)
-
+  var str = score.toString();
+  canvas.drawText(str, canvas.width*.75, canvas.height*.5);
 }
 
 function timeToX(time){
@@ -215,28 +215,35 @@ function drawGame(dt){
         canvas.drawFilledCirc(.1*width+originX, (-note.time+5000)/(height+5000)*height, .09*width,'#FF0000')
         // canvas.drawRect(.01*width+originX, (-note.time+5000)/(height+5000)*height-.09*width, .18*width, .18*width)
       }
-      if (note.keys[j] === 'S'){
+      if (note.keys[j] === 'S') {
         // canvas.setPenColor('#0000FF')
         // canvas.drawRect(.21*width+originX, (-note.time+5000)/(height+5000)*height-.09*width, .18*width, .18*width)
         canvas.drawFilledCirc(.3*width+originX, (5000-note.time)/(height+5000)*height, .09*width,'#0000FF')
       }
-      if (note.keys[j] === 'D'){
+      if (note.keys[j] === 'D') {
         canvas.drawFilledCirc(.5*width+originX, (5000-note.time)/(height+5000)*height, .09*width,'#00FF00')
       }
-      if (note.keys[j] === 'F'){
+      if (note.keys[j] === 'F') {
         canvas.drawFilledCirc(.7*width+originX, (5000-note.time)/(height+5000)*height, .09*width,'#FFFF00')
       }
-      if (note.keys[j] === 'G'){
+      if (note.keys[j] === 'G') {
         canvas.drawFilledCirc(.9*width+originX, (5000-note.time)/(height+5000)*height, .09*width,'#FF00FF')
       }
     }
   }
   canvas.setPenColor('#2222FF')
-  canvas.drawRect(.7*canvas.width, .45*height, 100,100)
+  // Rectangle for score and opponents score
+  canvas.drawRect(.7*canvas.width, .45*height, 100, 100)
+  if (info.mode === 'online') {
+    canvas.drawRect(.7*canvas.width, .25*height, 100, 100);
+  }
   var str = score.toString()
   canvas.setPenColor('#000000')
   canvas.drawText(str, .75*canvas.width, .5*height)
-
+  // Only show opponent's score if in online mode
+  if (info.mode === 'online') {
+    canvas.drawText(oppScore.toString(), .75*canvas.width, .3*height);
+  }
 }
 
 function renderV2(){
