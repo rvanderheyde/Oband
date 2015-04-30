@@ -7,21 +7,27 @@ function main() {
   info.count = 0;
   info.ids = {};
   info.room = false;
-  info.roomCount = 0;
+  info.roomCount = {};
   info.host = false;
   info.difficulty = false;
   info.instrument = false;
   info.song = false;
+  info.mode = false;
 
   // load home page template
 	$('#content').load('templates/home.html');
-  socket.on('connecting', function(clientId, count) {
+
+  socket.on('connecting', function(clientId, count, openRooms) {
     // called when you connect
     info.count = count;
+    info.roomCount = openRooms;
     info.myId = clientId;
     info.ids[clientId] = 0;
     console.log(clientId);
+    console.log('ROOMSTATUS');
+    console.log(openRooms);
   });
+  
   socket.on('newConnection', function(clientId) {
     // informs you of new people connecting and updates info obj
     info.count += 1;
@@ -29,6 +35,7 @@ function main() {
     console.log(clientId + ' connected');
     $('#number span').html(info.count);
   });
+  
   socket.on('disconnecting', function(clientId) {
     // informs you of new people disconnecting and updates info obj
     info.count -= 1;
@@ -36,11 +43,13 @@ function main() {
     console.log('User disconnected: ' + clientId);
     $('#number span').html(info.count);
   });
+  
   socket.on('joining', function(room) {
     // informs host that they joined the room
     console.log('I joined room: ' + room);
     info.room = room;
   });
+  
   socket.on('joinExisting', function(room, ready) {
     // informs you if room you joined is ready
     info.room = room;
@@ -58,6 +67,21 @@ function main() {
       $('#status').html('Room not ready. Please wait...');
     }
   });
+
+  // To increment number of open rooms for all clients
+  socket.on('increment', function(room, up) {
+    var letter = '#' + room;
+    if (!info.roomCount[room]) {
+      info.roomCount[room] = 0;
+    }
+    if (up) {
+      info.roomCount[room] += 1;
+    } else {
+      info.roomCount[room] -= 1;
+    }
+    $(letter).html(info.roomCount[room]);
+  })
+  
   socket.on('roomReady', function(room) {
     // Get song info from server when host indicates the room is ready
     var data = {
@@ -69,19 +93,26 @@ function main() {
       .done(infoSuccess)
       .error(onError);
   });
+  
   socket.on('allReady', function(room) {
     // When socket fires indicating that both users are ready, start game
     console.log('Starting dat game tho');
     var i = 5;
-    a = setInterval(function () {
+    var interval = setInterval(function () {
       i--;
       console.log(i);
       $('#status').html('Ready to begin! Starting in ' + i + ' seconds');
       if (i === 0) {
-        clearInterval(a);
+        clearInterval(interval);
         playGame({song: info.notes});
       }
     }, 1000);
+  });
+
+
+  socket.on('scoreUpdate', function(otherScore, otherTime) {
+    // Doesnt work if tab is not open b/c we are using client time
+    oppScore = otherScore;
   });
 }
 
@@ -95,6 +126,7 @@ $(document).on('click', '#help', function(event) {
 $(document).on('click', '#singlep', function(event) {
   event.preventDefault();
   console.log('Singleplayer');
+  info.mode = 'single';
   $('#content').load('templates/single.html');
 });
 
@@ -102,8 +134,17 @@ $(document).on('click', '#singlep', function(event) {
 $(document).on('click', '#online', function(event) {
   event.preventDefault();
   console.log('Online multiplayer');
+  info.mode = 'online';
   $('#content').load('templates/online.html', function() {
     $('#number span').html(info.count);
+    // Updating number of open rooms when each song loading online multip page
+    var rooms = info.roomCount;
+    for (var r in rooms) {
+      if (rooms.hasOwnProperty(r)) {
+        console.log(r + " -> " + rooms[r]);
+        $('#' + r).html(rooms[r]);
+      }
+    }
   });
 });
 
@@ -162,9 +203,13 @@ $(document).on('click', '#join', function(event) {
       'song': info.song
     };
     // Join existing socket room
-    socket.emit('joinExisting', data.song);
+    if (info.roomCount[data.song] > 0) {
+      socket.emit('joinExisting', data.song);
+    } else {
+      $('#status').html('No open rooms for this song. Please start a new game instead');
+    }
   } else {
-    console.log('Please select a difficulty, instrument, and song');
+    $('#status').html('Please select a difficulty, instrument, and song');
   }
 });
 
