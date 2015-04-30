@@ -7,7 +7,7 @@ function main() {
   info.count = 0;
   info.ids = {};
   info.room = false;
-  info.roomCount = 0;
+  info.roomCount = {};
   info.host = false;
   info.difficulty = false;
   info.instrument = false;
@@ -17,12 +17,15 @@ function main() {
   // load home page template
 	$('#content').load('templates/home.html');
 
-  socket.on('connecting', function(clientId, count) {
+  socket.on('connecting', function(clientId, count, openRooms) {
     // called when you connect
     info.count = count;
+    info.roomCount = openRooms;
     info.myId = clientId;
     info.ids[clientId] = 0;
     console.log(clientId);
+    console.log('ROOMSTATUS');
+    console.log(openRooms);
   });
   
   socket.on('newConnection', function(clientId) {
@@ -64,6 +67,20 @@ function main() {
       $('#status').html('Room not ready. Please wait...');
     }
   });
+
+  // To increment number of open rooms for all clients
+  socket.on('increment', function(room, up) {
+    var letter = '#' + room;
+    if (!info.roomCount[room]) {
+      info.roomCount[room] = 0;
+    }
+    if (up) {
+      info.roomCount[room] += 1;
+    } else {
+      info.roomCount[room] -= 1;
+    }
+    $(letter).html(info.roomCount[room]);
+  })
   
   socket.on('roomReady', function(room) {
     // Get song info from server when host indicates the room is ready
@@ -120,6 +137,14 @@ $(document).on('click', '#online', function(event) {
   info.mode = 'online';
   $('#content').load('templates/online.html', function() {
     $('#number span').html(info.count);
+    // Updating number of open rooms when each song loading online multip page
+    var rooms = info.roomCount;
+    for (var r in rooms) {
+      if (rooms.hasOwnProperty(r)) {
+        console.log(r + " -> " + rooms[r]);
+        $('#' + r).html(rooms[r]);
+      }
+    }
   });
 });
 
@@ -178,9 +203,13 @@ $(document).on('click', '#join', function(event) {
       'song': info.song
     };
     // Join existing socket room
-    socket.emit('joinExisting', data.song);
+    if (info.roomCount[data.song] > 0) {
+      socket.emit('joinExisting', data.song);
+    } else {
+      $('#status').html('No open rooms for this song. Please start a new game instead');
+    }
   } else {
-    console.log('Please select a difficulty, instrument, and song');
+    $('#status').html('Please select a difficulty, instrument, and song');
   }
 });
 

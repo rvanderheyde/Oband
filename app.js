@@ -37,18 +37,19 @@ app.get('/getSongInfo', index.getSongInfo);
 
 app.post('/songNotes', index.songNotes);
 
-// app.get('/startSong', gameplay.startGame);
-
 // roomStatus obj to indicate how room joining works
 var roomStatus = {};
 // index will be incremented whenever someone joins a new room 
 var roomIdx = {};
+// number of open rooms for each song
+var openRooms = {};
+// number of people online
 var count = 0;
 
 io.on('connection', function(client) {
   count += 1;
   console.log('a user connected: ' + client.id);
-  client.emit('connecting', client.id, count);
+  client.emit('connecting', client.id, count, openRooms);
   client.broadcast.emit('newConnection', client.id);
 
   client.on('disconnect', function() {
@@ -73,16 +74,22 @@ io.on('connection', function(client) {
     if (roomStatus[song]) {
       room = song + roomStatus[song].length;
       roomStatus[song].push(false);
+      openRooms[song] += 1;
     } else {
       room = song + 0;
       // Set index for this song to 0
       roomIdx[song] = 0;
+      // Indicate that there is an open room for this song
       roomStatus[song] = [false];
+      // Increment number of open rooms for this song
+      openRooms[song] = 1;
     }
     console.log(roomStatus);
+    console.log(openRooms);
     console.log(room);
     client.join(room);
     client.emit('joining', room);
+    io.emit('increment', room[0], true);
   });
 
   client.on('joinExisting', function(song) {
@@ -91,6 +98,7 @@ io.on('connection', function(client) {
     room = song + roomIdx[song];
     client.join(room);
     roomIdx[song] += 1;
+    openRooms[song] -= 1;
     console.log(room);
     console.log(roomStatus);
     console.log(roomIdx);
@@ -100,6 +108,7 @@ io.on('connection', function(client) {
     } else {
       client.emit('joinExisting', room, false);
     }
+    io.emit('increment', room[0], false);
   });
 
   client.on('songParsed', function(room) {
