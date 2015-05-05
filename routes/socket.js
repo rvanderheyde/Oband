@@ -9,11 +9,8 @@ var openRooms = {};
 // number of people online
 var count = 0;
 
-// module.exports = function (client) {
-
 module.exports.listen = function(app) {
   io = socketio.listen(app);
-  client = io.of('/users');
 
   io.on('connection', function(client) {
     count += 1;
