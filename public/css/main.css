@@ -7,6 +7,15 @@
 	text-align: center;
 }
 
+#name {
+	color: #fff;
+	position: relative;
+	float: right;
+	margin-top: .75%;
+	margin-right: 5%;
+	font-size: 80%;
+}
+
 #home button {
 	display: block;
 	margin-left: auto;

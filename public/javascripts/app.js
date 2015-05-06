@@ -116,6 +116,13 @@ function main() {
   });
 }
 
+// $(document).on('click', '#login', function(event) {
+//   event.preventDefault();
+//   $.get('/auth/facebook')
+//     .done(loginSuccess)
+//     .error(onError);
+// });
+
 // Toggles help information
 $(document).on('click', '#help', function(event) {
   event.preventDefault();
@@ -163,6 +170,11 @@ $(document).on('click', '#song-col button', function(event) {
   info.song = $(this).html();
   $('#song').html(info.song);
 });
+
+// Success function for logging in
+var loginSuccess = function(data, status) {
+
+}
 
 // Success function for joining an existing song and getting song info
 var infoSuccess = function(data, status) {
