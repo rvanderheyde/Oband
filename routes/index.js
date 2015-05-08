@@ -51,8 +51,8 @@ routes.getSongInfo = function(req, res) {
   var difficulty = req.body.difficulty;
   console.log('Getting dat song info!');
   console.log('Difficulty: ' + difficulty);
-  console.log(beats[0]);
-  res.json(beats);
+  console.log(beats[difficulty][0]);
+  res.json(beats[difficulty]);
 };
 
 module.exports = routes;
