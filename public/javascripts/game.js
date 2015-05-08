@@ -69,7 +69,7 @@ function update(dt){
   //change the game state based on time, User input
   for(var i = 0; i<Global.song.song.length; i++){
     if (Global.song.song[i].time <-1000){ Global.song.song.splice(i,1) }
-    if(Global.song.song[i].time < -5){
+    if(Global.song.song[i].time < 10 && Global.song.song[i].time > -10){
       Global.song.song[i].time -= dt;
       var note = Global.song.song[i]
       for(var j=0; j<note.keys.length; j++){
@@ -162,19 +162,19 @@ function drawGame(dt){
     var note = Global.song.song[i];
     for(var j=0; j<note.keys.length; j++){
       if (note.keys[j] === 'A'){
-        canvas.drawFilledCirc(.1*width+originX, (-note.time+3000)/(height+3000)*height, .09*width,'#FF0000');
+        canvas.drawFilledCirc(.1*width+originX, (-note.time+3000)/(height+3000)*height, .045*width,'#FF0000');
       }
       if (note.keys[j] === 'S'){
-        canvas.drawFilledCirc(.3*width+originX, (3000-note.time)/(height+3000)*height, .09*width,'#0000FF');
+        canvas.drawFilledCirc(.3*width+originX, (3000-note.time)/(height+3000)*height, .045*width,'#0000FF');
       }
       if (note.keys[j] === 'D'){
-        canvas.drawFilledCirc(.5*width+originX, (3000-note.time)/(height+3000)*height, .09*width,'#00FF00');
+        canvas.drawFilledCirc(.5*width+originX, (3000-note.time)/(height+3000)*height, .045*width,'#00FF00');
       }
       if (note.keys[j] === 'F'){
-        canvas.drawFilledCirc(.7*width+originX, (3000-note.time)/(height+3000)*height, .09*width,'#FFFF00');
+        canvas.drawFilledCirc(.7*width+originX, (3000-note.time)/(height+3000)*height, .045*width,'#FFFF00');
       }
       if (note.keys[j] === 'G'){
-        canvas.drawFilledCirc(.9*width+originX, (3000-note.time)/(height+3000)*height, .09*width,'#FF00FF');
+        canvas.drawFilledCirc(.9*width+originX, (3000-note.time)/(height+3000)*height, .045*width,'#FF00FF');
       }
     }
   }
@@ -185,23 +185,23 @@ function drawGame(dt){
     canvas.drawText('A HIT', .1*canvas.width, .5*height);
     if (hit[i] === 'a'){
       canvas.drawText('A', .15*canvas.width, .5*height)
-      canvas.drawFilledCirc(.1*width+originX, -.09*width+height, .09*width,'#000000');
+      canvas.drawFilledCirc(.1*width+originX, -.09*width+height, .045*width,'#000000');
     }
     if (hit[i] === 's'){
       canvas.drawText('S', .15*canvas.width, .5*height)
-      canvas.drawFilledCirc(.3*width+originX, -.09*width+height, .09*width,'#000000');
+      canvas.drawFilledCirc(.3*width+originX, -.09*width+height, .045*width,'#000000');
     }
     if (hit[i] === 'd'){
       canvas.drawText('D', .15*canvas.width, .5*height)
-      canvas.drawFilledCirc(.5*width+originX, -.09*width+height, .09*width,'#000000');
+      canvas.drawFilledCirc(.5*width+originX, -.09*width+height, .045*width,'#000000');
     }
     if (hit[i] === 'f'){
       canvas.drawText('F', .15*canvas.width, .5*height)
-      canvas.drawFilledCirc(.7*width+originX, -.09*width+height, .09*width,'#000000');
+      canvas.drawFilledCirc(.7*width+originX, -.09*width+height, .045*width,'#000000');
     }
     if (hit[i] === 'g'){
       canvas.drawText('G', .15*canvas.width, .5*height)
-      canvas.drawFilledCirc(.9*width+originX, -.09*width+height, .09*width,'#000000');
+      canvas.drawFilledCirc(.9*width+originX, -.09*width+height, .045*width,'#000000');
     }
   }
   hit.shift()
