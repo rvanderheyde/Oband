@@ -51,7 +51,7 @@ routes.getSongInfo = function(req, res) {
   // Get request for person connecting to get parsed song data
   console.log('Getting dat song info!');
   console.log(beats[0]);
-  res.json(beats);
+  res.send(beats);
 }
 
 routes.cacheSongData = function(req, res) {
