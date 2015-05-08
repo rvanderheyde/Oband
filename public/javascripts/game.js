@@ -182,10 +182,12 @@ function drawGame(dt){
   var height = canvas.height;
   var originX = canvas.width/4;
   //draw background
-  canvas.setPenColor('#656565');
+  canvas.setPenColor('#454545');
   canvas.drawRect(originX,0,width,height);
+  canvas.setPenColor('#FFFFFF');
+  // canvas.drawLine(originX,height-.05*width,width+originX,height-.05*width);
+  canvas.drawRect(originX,height-.075*width,width,.05*width)
   canvas.setPenColor('#000000');
-  canvas.drawLine(originX,height-.05*width,width+originX,height-.05*width);
   //loop and draw notes
   for(var i=0; i<Global.song.song.length; i++){
     var note = Global.song.song[i];
