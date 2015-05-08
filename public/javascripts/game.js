@@ -68,16 +68,20 @@ function update(dt){
   //reset hit list
   //change the game state based on time, User input
   for(var i = 0; i<Global.song.song.length; i++){
-    if (Global.song.song[i].time <-1000){ Global.song.song.splice(i,1) }
+    //remove the note after a while
+    if (Global.song.song[i].time <-500){ Global.song.song.splice(i,1) }
+    //check if user has hit note at proper time
     if(Global.song.song[i].time < 10 && Global.song.song[i].time > -10){
       Global.song.song[i].time -= dt;
       var note = Global.song.song[i]
       for(var j=0; j<note.keys.length; j++){
         if (note.keys[j] === 'A' && input.a){
+          //add to score
           score += 10;
+          //remove note if hit
           Global.song.song.splice(i,1)
+          //add to hit list for hit animation in render function. 
           hit.push('a')
-          // alert('SCORE 1')
         } else if (note.keys[j] === 'S' && input.s){
           score += 10;
           Global.song.song.splice(i,1)
@@ -233,7 +237,7 @@ function drawGame(dt){
   
   //draw score
   canvas.setPenColor('#2222FF')
-  canvas.drawRect(.75*canvas.width, .45*height, 50, 50)
+  canvas.drawRect(.75*canvas.width, .47*height, 100, 30)
   var str = score.toString()
   canvas.setPenColor('#000000')
   canvas.drawText(str, .75*canvas.width, .5*height)
