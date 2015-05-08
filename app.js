@@ -34,8 +34,10 @@ app.get('/echonestCall', index.echonestCall);
 app.get('/beats', index.beats);
 app.get('/echonestKey', index.echonestKey);
 app.get('/getSongInfo', index.getSongInfo);
+app.get('/getCachedSongData', index.getCachedSongData);
 
 app.post('/songNotes', index.songNotes);
+app.post('/cacheSongData', index.cacheSongData);
 
 // roomStatus obj to indicate how room joining works
 var roomStatus = {};
