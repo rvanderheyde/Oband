@@ -24,6 +24,12 @@ var KEY = {
     A:        65, B: 66, C: 67, D: 68, E: 69, F: 70, G: 71, H: 72, I: 73, J: 74, K: 75, L: 76, M: 77, N: 78, O: 79, P: 80, Q: 81, R: 82, S: 83, T: 84, U: 85, V: 86, W: 87, X: 88, Y: 89, Z: 90,
     TILDA:    192
 };
+
+
+// will be updated every second, used for socket firing
+var prevTime = 0;
+var time = 0;
+
 //make the song object global
 var Global = { song:{} };
 //variables used in loop timing
@@ -31,8 +37,11 @@ var now;
 var dt =0;
 var last = timestamp();
 var step = 1/60;
+
 //Score variable used in update and render
 var score = 0;
+var oppScore = 0;
+
 //object of hit inputs
 var input = {a: false, s: false, d: false, f: false, g:false}
 //------------------------------------------------------------------
@@ -106,11 +115,56 @@ function update(dt){
           }
         }
       }
-      //Update scores on all cleints via sockets here. 
+      // Update scores on all clients via sockets here
+      // Remember to later only make this a thing for multiplayer
+      time = millis()
+      if (time - prevTime >= 1000) {
+        // console.log(time);
+        prevTime = time;
+        socket.emit('scoreUpdate', info.room, score, time);
+      }
     } else {
       Global.song.song[i].time -= dt;
     }
   }
+}
+
+function render(){
+  //draws the game state on screen
+  canvas.setBackgroundColor('#999999');
+  canvas.createBackground()
+  canvas.setPenColor('#656565')
+  canvas.drawRect(canvas.width*.125, canvas.height*.05, canvas.width*.5, canvas.height*.9)
+  canvas.setPenColor('#000000')
+  canvas.drawLine(canvas.width*.125, canvas.height*.8, canvas.width*.625, canvas.height*.8)
+  canvas.setPenColor('#440044')
+  for(var i=0; i<Global.song.song.length; i++){
+    var note = Global.song.song[i]
+    for(var j=0; j<note.keys.length; j++){
+      if (note.keys[j] === 'A'){
+        var dx = timeToX(note.time)
+        canvas.drawRect(canvas.width*.225,(5000-note.time)/(5000+height)*canvas.height ,50,50) 
+      }
+      if (note.keys[j] === 'S'){
+        var dx = timeToX(note.time)
+        canvas.drawRect(canvas.width*.325,(5000-note.time)/6250*canvas.height ,50,50) 
+      }
+      if (note.keys[j] === 'D'){
+        var dx = timeToX(note.time)
+        canvas.drawRect(canvas.width*.425,(5000-note.time)/6250*canvas.height ,50,50)
+      }
+      if (note.keys[j] === 'F'){
+        var dx = timeToX(note.time)
+        canvas.drawRect(canvas.width*.525,(5000-note.time)/6250*canvas.height ,50,50)
+      }
+      if (note.keys[j] === 'G'){
+        var dx = timeToX(note.time)
+        canvas.drawRect(canvas.width*.625,(5000-note.time)/6250*canvas.height ,50,50)
+      }
+    }
+  }
+  var str = score.toString();
+  canvas.drawText(str, canvas.width*.75, canvas.height*.5);
 }
 
 function mainGame(songObj){
@@ -155,6 +209,7 @@ function playGame(songObj){
         function(ev){ onKey(ev, ev.keyCode, false)}, false);
   //start game loop 
   requestAnimationFrame(function(){ mainGame(songObj) })
+  time = millis();
 }
 function playGameTest(songObj){
   //function that starts the game test
@@ -240,9 +295,18 @@ function drawGame(dt){
   //draw score
   canvas.setPenColor('#2222FF')
   canvas.drawRect(.75*canvas.width, .47*height, 100, 30)
+  // Rectangle for score and opponents score
+  canvas.drawRect(.7*canvas.width, .45*height, 100, 100)
+  if (info.mode === 'online') {
+    canvas.drawRect(.7*canvas.width, .25*height, 100, 100);
+  }
   var str = score.toString()
   canvas.setPenColor('#000000')
   canvas.drawText(str, .75*canvas.width, .5*height)
+  // Only show opponent's score if in online mode
+  if (info.mode === 'online') {
+    canvas.drawText(oppScore.toString(), .75*canvas.width, .3*height);
+  }
 }
 
 function renderV2(){

@@ -123,18 +123,17 @@ function runBeats(onlineFlag) {
         if (track.status == 'ok') {
           var notes = generateNotes(track.analysis.beats);
           console.log("Remix complete!");
-          $('#status').html('Music parsing complete! Starting in 5 seconds')
+          // $('#status').html('Music parsing complete! Starting in 5 seconds')
           info.notes = notes;
-          info.ready = true;
-          // setTimeout(function () {
-          //   playGame({song: info.notes});
-          // }
+          // person who parsed the music is the host
+          info.host = true;
           
-          // Uncomment this line to display the beat#s realtime in the 
+          // Uncomment this line to display the beat#s realtime in the console
           // playSong(player, track, notes);
 
           // Send the notes to the server if you're in online mode
           if (onlineFlag) {
+            $('#status').html('Music parsing complete, waiting for more users...');
             $.post('/songNotes', { notes: JSON.stringify(notes)})
               .done(function() {
                 socket.emit('songParsed', info.room);
