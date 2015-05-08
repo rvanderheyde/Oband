@@ -62,7 +62,7 @@ function onKey(ev, key, pressed){
 }
 
 //list of notes hit in a loop
-var hit = {}
+var hit = []
 
 function update(dt){
   //reset hit list
@@ -76,44 +76,24 @@ function update(dt){
         if (note.keys[j] === 'A' && input.a){
           score += 10;
           Global.song.song.splice(i,1)
-          if (hit[note.time]){
-            hit[note.time] += 'a'
-          } else {
-            hit[note.time] = 'a'
-          }
+          hit.push('a')
           // alert('SCORE 1')
         } else if (note.keys[j] === 'S' && input.s){
           score += 10;
           Global.song.song.splice(i,1)
-          if (hit[note.time]){
-            hit[note.time] += 's'
-          } else {
-            hit[note.time] = 's'
-          }
+          hit.push('s')
         } else if (note.keys[j] === 'D' && input.d){
           score += 10;
           Global.song.song.splice(i,1)
-          if (hit[note.time]){
-            hit[note.time] += 'd'
-          } else {
-            hit[note.time] = 'd'
-          }
+          hit.push('d')
         } else if (note.keys[j] === 'F' && input.f){
           score += 10;
           Global.song.song.splice(i,1)
-          if (hit[note.time]){
-            hit[note.time] += 'f'
-          } else {
-            hit[note.time] = 'f'
-          }
+          hit.push('f')
         } else if (note.keys[j] === 'G' && input.g){
           score += 10;
           Global.song.song.splice(i,1)
-          if (hit[note.time]){
-            hit[note.time] += 'g'
-          } else {
-            hit[note.time] = 'g'
-          }
+          hit.push('g')
         } else {
           if (input.a || input.s || input.d || input.f || input.g){
             score -= 10;
@@ -200,35 +180,31 @@ function drawGame(dt){
   }
   canvas.setPenColor('#FF0000');
   canvas.drawRect(.1*canvas.width, .47*height, 100, 30);
-  var attr = Object.keys(hit);
-  for(var k=attr.length-1; k>=0; k--){  
+  for(var i=0; i<hit.length; i++){
     canvas.setPenColor('#000000');
     canvas.drawText('A HIT', .1*canvas.width, .5*height);
-    var str = hit[attr[k]];
-    for(var i=0; i<str.length; i++){
-      if (str[i] === 'a'){
-        canvas.drawText('A', .15*canvas.width, .5*height)
-        canvas.drawFilledCirc(.1*width+originX, -.09*width+height, .09*width,'#000000');
-      }
-      if (str[i] === 's'){
-        canvas.drawText('S', .15*canvas.width, .5*height)
-        canvas.drawFilledCirc(.3*width+originX, -.09*width+height, .09*width,'#000000');
-      }
-      if (str[i] === 'd'){
-        canvas.drawText('D', .15*canvas.width, .5*height)
-        canvas.drawFilledCirc(.5*width+originX, -.09*width+height, .09*width,'#00FF00');
-      }
-      if (str[i] === 'f'){
-        canvas.drawText('F', .15*canvas.width, .5*height)
-        canvas.drawFilledCirc(.7*width+originX, -.09*width+height, .09*width,'#FFFF00');
-      }
-      if (str[i] === 'g'){
-        canvas.drawText('G', .15*canvas.width, .5*height)
-        canvas.drawFilledCirc(.9*width+originX, -.09*width+height, .09*width,'#FF00FF');
-      }
+    if (hit[i] === 'a'){
+      canvas.drawText('A', .15*canvas.width, .5*height)
+      canvas.drawFilledCirc(.1*width+originX, -.09*width+height, .09*width,'#000000');
     }
-    
+    if (hit[i] === 's'){
+      canvas.drawText('S', .15*canvas.width, .5*height)
+      canvas.drawFilledCirc(.3*width+originX, -.09*width+height, .09*width,'#000000');
+    }
+    if (hit[i] === 'd'){
+      canvas.drawText('D', .15*canvas.width, .5*height)
+      canvas.drawFilledCirc(.5*width+originX, -.09*width+height, .09*width,'#000000');
+    }
+    if (hit[i] === 'f'){
+      canvas.drawText('F', .15*canvas.width, .5*height)
+      canvas.drawFilledCirc(.7*width+originX, -.09*width+height, .09*width,'#000000');
+    }
+    if (hit[i] === 'g'){
+      canvas.drawText('G', .15*canvas.width, .5*height)
+      canvas.drawFilledCirc(.9*width+originX, -.09*width+height, .09*width,'#000000');
+    }
   }
+  hit.shift()
   
   //draw score
   canvas.setPenColor('#2222FF')
