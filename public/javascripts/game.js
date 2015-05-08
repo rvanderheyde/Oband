@@ -210,28 +210,28 @@ function drawGame(dt){
   }
   //hit animations
   canvas.setPenColor('#FF0000');
-  canvas.drawRect(.1*canvas.width, .47*height, 100, 30);
+  canvas.drawRect(3/16*canvas.width, .47*height, 1/16*canvas.width, 30);
   for(var i=0; i<hit.length; i++){
     canvas.setPenColor('#000000');
-    canvas.drawText('A HIT', .1*canvas.width, .5*height);
+    canvas.drawText('A HIT', 3/16*canvas.width, .5*height);
     if (hit[i] === 'a'){
-      canvas.drawText('A', .15*canvas.width, .5*height)
+      canvas.drawText('A', .23*canvas.width, .5*height)
       canvas.drawFilledCirc(.1*width+originX, -.045*width+height, .045*width,'#000000');
     }
     if (hit[i] === 's'){
-      canvas.drawText('S', .15*canvas.width, .5*height)
+      canvas.drawText('S', .23*canvas.width, .5*height)
       canvas.drawFilledCirc(.3*width+originX, -.045*width+height, .045*width,'#000000');
     }
     if (hit[i] === 'd'){
-      canvas.drawText('D', .15*canvas.width, .5*height)
+      canvas.drawText('D', .23*canvas.width, .5*height)
       canvas.drawFilledCirc(.5*width+originX, -.045*width+height, .045*width,'#000000');
     }
     if (hit[i] === 'f'){
-      canvas.drawText('F', .15*canvas.width, .5*height)
+      canvas.drawText('F', .23*canvas.width, .5*height)
       canvas.drawFilledCirc(.7*width+originX, -.045*width+height, .045*width,'#000000');
     }
     if (hit[i] === 'g'){
-      canvas.drawText('G', .15*canvas.width, .5*height)
+      canvas.drawText('G', .23*canvas.width, .5*height)
       canvas.drawFilledCirc(.9*width+originX, -.045*width+height, .045*width,'#000000');
     }
   }
