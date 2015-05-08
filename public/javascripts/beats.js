@@ -134,7 +134,7 @@ function runBeats(onlineFlag) {
           // Send the notes to the server if you're in online mode
           if (onlineFlag) {
             $('#status').html('Music parsing complete, waiting for more users...');
-            $.post('/songNotes', { notes: JSON.stringify(notes)})
+            $.post('/songNotes', {notes: JSON.stringify(notes), track: trackURL})
               .done(function() {
                 socket.emit('songParsed', info.room);
                 console.log('emitting that shit');
@@ -148,7 +148,7 @@ function runBeats(onlineFlag) {
               $('#status').html('Music parsing complete! Starting in ' + i + ' seconds');
               if (i === 0) {
                 clearInterval(a);
-                playGame({song: info.notes});
+                playGame({song: info.notes, track: trackURL});
               }
             }, 1000);
           }

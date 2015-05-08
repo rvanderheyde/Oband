@@ -13,6 +13,7 @@ function main() {
   info.instrument = false;
   info.song = false;
   info.mode = false;
+  info.track = false;
 
   // load home page template
 	$('#content').load('templates/home.html');
@@ -58,7 +59,8 @@ function main() {
       var data = {
         'difficulty': info.difficulty,
         'instrument': info.instrument,
-        'song': info.song
+        'song': info.song,
+        'track': info.track
       };
       $.get('/getSongInfo', data)
         .done(infoSuccess)
@@ -87,7 +89,8 @@ function main() {
     var data = {
       'difficulty': info.difficulty,
       'instrument': info.instrument,
-      'song': info.song
+      'song': info.song,
+      'track': info.track
     };
     $.get('/getSongInfo', data)
       .done(infoSuccess)
@@ -104,7 +107,7 @@ function main() {
       $('#status').html('Ready to begin! Starting in ' + i + ' seconds');
       if (i === 0) {
         clearInterval(interval);
-        playGame({song: info.notes});
+        playGame({song: info.notes, track: info.track});
       }
     }, 1000);
   });
