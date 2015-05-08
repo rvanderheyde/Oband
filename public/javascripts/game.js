@@ -69,7 +69,7 @@ function update(dt){
   //change the game state based on time, User input
   for(var i = 0; i<Global.song.song.length; i++){
     //remove the note after a while
-    if (Global.song.song[i].time <-500){ Global.song.song.splice(i,1) }
+    if (Global.song.song[i].time <-250){ Global.song.song.splice(i,1) }
     //check if user has hit note at proper time
     if(Global.song.song[i].time < 10 && Global.song.song[i].time > -10){
       Global.song.song[i].time -= dt;
@@ -171,7 +171,7 @@ function playGameTest(songObj){
 }
 function mainTest(){
   //test function
-  var songObj = { song: [{time: 3000, keys:['A']},{time: 0, keys:['A','S']},]}
+  var songObj = { song: [{time: 2000, keys:['A']},{time: 0, keys:['A','S']},]}
   playGameTest(songObj)
 }
 
@@ -192,19 +192,19 @@ function drawGame(dt){
     var note = Global.song.song[i];
     for(var j=0; j<note.keys.length; j++){
       if (note.keys[j] === 'A'){
-        canvas.drawFilledCirc(.1*width+originX, (-note.time+3000-.2*width)/(3000)*height, .045*width,'#FF0000');
+        canvas.drawFilledCirc(.1*width+originX, (-note.time+2000-.2*width)/(2000)*height, .045*width,'#FF0000');
       }
       if (note.keys[j] === 'S'){
-        canvas.drawFilledCirc(.3*width+originX, (3000-note.time-.2*width)/(3000)*height, .045*width,'#0000FF');
+        canvas.drawFilledCirc(.3*width+originX, (2000-note.time-.2*width)/(2000)*height, .045*width,'#0000FF');
       }
       if (note.keys[j] === 'D'){
-        canvas.drawFilledCirc(.5*width+originX, (3000-note.time-.2*width)/(3000)*height, .045*width,'#00FF00');
+        canvas.drawFilledCirc(.5*width+originX, (2000-note.time-.2*width)/(2000)*height, .045*width,'#00FF00');
       }
       if (note.keys[j] === 'F'){
-        canvas.drawFilledCirc(.7*width+originX, (3000-note.time-.2*width)/(3000)*height, .045*width,'#FFFF00');
+        canvas.drawFilledCirc(.7*width+originX, (2000-note.time-.2*width)/(2000)*height, .045*width,'#FFFF00');
       }
       if (note.keys[j] === 'G'){
-        canvas.drawFilledCirc(.9*width+originX, (3000-note.time-.2*width)/(3000)*height, .045*width,'#FF00FF');
+        canvas.drawFilledCirc(.9*width+originX, (2000-note.time-.2*width)/(2000)*height, .045*width,'#FF00FF');
       }
     }
   }
