@@ -1,5 +1,6 @@
 var path = require('path');
 var echojs = require('echojs');
+var mgschema = require('../models/schema.js');
 
 var routes = {};
 // I know this is stupid as a global var, but database will come later
@@ -51,6 +52,20 @@ routes.getSongInfo = function(req, res) {
   console.log('Getting dat song info!');
   console.log(beats[0]);
   res.json(beats);
+}
+
+routes.cacheSongData = function(req, res) {
+  // POST request to store a beats-file in the remote db.
+  var songObj = new mgschema.Song({
+    title: JSON.parse(req.body.songpath),
+    data: JSON.parse(req.body.beats)
+  });
+  songObj.save(function (err) {
+    if (err) {
+      console.log("Problem caching song data: ", err);
+    }
+  });
+  res.end("");
 }
 
 module.exports = routes;
