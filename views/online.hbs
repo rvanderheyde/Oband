@@ -1,0 +1,50 @@
+<nav class='top-bar'>
+  <section class='top-bar-section'>
+    <ul class='left'>
+      <li><a class='button' href="/">Home</a></li>
+      {{#if data.loggedIn}}
+        <li><a class='button' id='logout'>Logout</a></li>
+        <li id='name'>Log in to start playing!</li>
+      {{else}}
+        <li><a class='button' id='login' href='/auth/facebook'>Login with Facebook</a></li>
+        <li id='name'>Welcome, <span>{{data.name}}</span></li>
+      {{/if}}
+    </ul>
+  </section>  
+</nav>
+<div id='omsetup'>
+  <p id='number'><span></span> people online</p>
+  <div id='diff-col'>
+    <h3>Difficulty</h3>
+    <button>Easy</button>
+    <button>Medium</button>
+    <button>Hard</button>
+    <button>Expert</button>
+  </div>
+  <div id='inst-col'>
+    <h3>Instrument</h3>
+    <button>Guitar</button>
+    <button>Bass</button>
+    <button>Piano</button>
+    <button>Drums</button>
+  </div>
+  <div id='song-col'>
+    <h3>Pick a Song!</h3>
+    <div>
+      <button>A</button>
+      <p>(<span id='A'>0</span> open rooms)</p>
+    </div>
+    <div>
+      <button>B</button>
+      <p>(<span id='B'>0</span> open rooms)</p>
+    </div>
+  </div>
+  <div id='ominfo'>
+    <p>Difficulty: <span id='diff'></span></p>
+    <p>Instrument: <span id='inst'></span></p>
+    <p>Song: <span id='song'></span></p>
+    <button id='start'>Create New Game</button>
+    <button id='join'>Join Existing Game</button>
+    <p id='status'></p>
+  </div>
+</div>

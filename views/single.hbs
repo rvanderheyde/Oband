@@ -1,0 +1,42 @@
+<nav class='top-bar'>
+  <section class='top-bar-section'>
+    <ul class='left'>
+      <li><a class='button' href="/">Home</a></li>
+      {{#if data.loggedIn}}
+        <li><a class='button' id='logout'>Logout</a></li>
+        <li id='name'>Log in to start playing!</li>
+      {{else}}
+        <li><a class='button' id='login' href='/auth/facebook'>Login with Facebook</a></li>
+        <li id='name'>Welcome, <span>{{data.name}}</span></li>
+      {{/if}}
+    </ul>
+  </section>  
+</nav>
+<div id='singleSetup'>
+  <div id='diff-col'>
+    <h3>Difficulty</h3>
+    <button>Easy</button>
+    <button>Medium</button>
+    <button>Hard</button>
+    <button>Expert</button>
+  </div>
+  <div id='inst-col'>
+    <h3>Instrument</h3>
+    <button>Guitar</button>
+    <button>Bass</button>
+    <button>Piano</button>
+    <button>Drums</button>
+  </div>
+  <div id='song-col'>
+    <h3>Pick a Song!</h3>
+    <button>A</button>
+    <button>B</button>
+  </div>
+  <div id='singleInfo'>
+    <p>Difficulty: <span id='diff'></span></p>
+    <p>Instrument: <span id='inst'></span></p>
+    <p>Song: <span id='song'></span></p>
+    <button id='singleStart'>Start Game</button>
+    <p id='status'></p>
+  </div>
+</div>
