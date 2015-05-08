@@ -104,7 +104,7 @@ function main() {
       $('#status').html('Ready to begin! Starting in ' + i + ' seconds');
       if (i === 0) {
         clearInterval(interval);
-        playGame({song: info.notes});
+        playGame({song: info.notes, track: info.track});
       }
     }, 1000);
   });
