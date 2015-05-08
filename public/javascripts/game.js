@@ -111,8 +111,6 @@ function update(dt){
       Global.song.song[i].time -= dt;
     }
   }
-  // console.log(score)
-  // Global.song.song = song;
 }
 
 function mainGame(songObj){
@@ -121,6 +119,7 @@ function mainGame(songObj){
     now = timestamp();
     dt += Math.min(1000, (now - last));
     while(dt > step) {
+        //to keep processing at 60fps
         dt -= step;
         update(step);
       }
@@ -131,7 +130,7 @@ function mainGame(songObj){
   }
 }
 function mainGameTest(songObj){
-  //game loop function
+  //game loop function test
   if(!songFinished(songObj)){
     now = timestamp();
     dt += Math.min(1000, (now - last));
@@ -158,7 +157,7 @@ function playGame(songObj){
   requestAnimationFrame(function(){ mainGame(songObj) })
 }
 function playGameTest(songObj){
-  //function that starts the game
+  //function that starts the game test
   $('#content').remove()
   canvas = gf.fullCanvas();
   Global.song = songObj;
@@ -209,6 +208,7 @@ function drawGame(dt){
       }
     }
   }
+  //hit animations
   canvas.setPenColor('#FF0000');
   canvas.drawRect(.1*canvas.width, .47*height, 100, 30);
   for(var i=0; i<hit.length; i++){
@@ -243,7 +243,6 @@ function drawGame(dt){
   var str = score.toString()
   canvas.setPenColor('#000000')
   canvas.drawText(str, .75*canvas.width, .5*height)
-  
 }
 
 function renderV2(){
