@@ -62,16 +62,10 @@ function onKey(ev, key, pressed){
 }
 
 //list of notes hit in a loop
-var hit = [];
-
-function animateHit(note){
-  //add note to hit list
-  hit.push(note)
-}
+var hit = []
 
 function update(dt){
   //reset hit list
-  hit = []
   //change the game state based on time, User input
   for(var i = 0; i<Global.song.song.length; i++){
     if(Global.song.song[i].time < -5){
@@ -79,20 +73,20 @@ function update(dt){
       for(var j=0; j<note.keys.length; j++){
         if (note.keys[j] === 'A' && input.a){
           score += 10;
-          animateHit('a')
+          hit.push('a')
           // alert('SCORE 1')
         } else if (note.keys[j] === 'S' && input.s){
           score += 10;
-          animateHit('s')
+          hit.push('s')
         } else if (note.keys[j] === 'D' && input.d){
           score += 10;
-          animateHit('d')
+          hit.push('d')
         } else if (note.keys[j] === 'F' && input.f){
           score += 10;
-          animateHit('f')
+          hit.push('f')
         } else if (note.keys[j] === 'G' && input.g){
           score += 10;
-          animateHit('g')
+          hit.push('g')
         } else {
           if (input.a || input.s || input.d || input.f || input.g){
             score -= 5;
@@ -177,6 +171,28 @@ function drawGame(dt){
       }
     }
   }
+  canvas.setPenColor('#FF0000')
+  canvas.drawRect(.1*canvas.width, .47*height, 100, 30)
+  for(var k=0; k<hit.length; k++){  
+    canvas.setPenColor('#000000')
+    canvas.drawText('A HIT', .1*canvas.width, .5*height)
+    if (hit[k] === 'a'){
+      canvas.drawFilledCirc(.1*width+originX, .09*width+height, .09*width,'#000000');
+    }
+    if (hit[k] === 's'){
+      canvas.drawFilledCirc(.3*width+originX, .09*width+height, .09*width,'#000000');
+    }
+    if (hit[k] === 'd'){
+      canvas.drawFilledCirc(.5*width+originX, .09*width+height, .09*width,'#00FF00');
+    }
+    if (hit[k] === 'f'){
+      canvas.drawFilledCirc(.7*width+originX, .09*width+height, .09*width,'#FFFF00');
+    }
+    if (hit[k] === 'g'){
+      canvas.drawFilledCirc(.9*width+originX, .09*width+height, .09*width,'#FF00FF');
+    }
+  }
+  hit = []
   //draw score
   canvas.setPenColor('#2222FF')
   canvas.drawRect(.75*canvas.width, .45*height, 50, 50)
@@ -184,24 +200,10 @@ function drawGame(dt){
   canvas.setPenColor('#000000')
   canvas.drawText(str, .75*canvas.width, .5*height)
   //hit animation
-  console.log(hit)
-  for(var k=0; k<hit.length; k++){
-    if (hit[k] === 'A'){
-      canvas.drawFilledCirc(.1*width+originX, .09*width+height, .09*width,'#000000');
-    }
-    if (hit[k] === 'S'){
-      canvas.drawFilledCirc(.3*width+originX, .09*width+height, .09*width,'#000000');
-    }
-    if (hit[k] === 'D'){
-      canvas.drawFilledCirc(.5*width+originX, .09*width+height, .09*width,'#00FF00');
-    }
-    if (hit[k] === 'F'){
-      canvas.drawFilledCirc(.7*width+originX, .09*width+height, .09*width,'#FFFF00');
-    }
-    if (hit[k] === 'G'){
-      canvas.drawFilledCirc(.9*width+originX, .09*width+height, .09*width,'#FF00FF');
-    }
-  }
+  // for(var k=0; k<hit.length; k++){
+  
+  // }
+  // hit = []
 }
 
 function renderV2(){
