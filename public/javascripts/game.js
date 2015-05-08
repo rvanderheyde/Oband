@@ -62,36 +62,63 @@ function onKey(ev, key, pressed){
 }
 
 //list of notes hit in a loop
-var hit = []
+var hit = {}
 
 function update(dt){
   //reset hit list
   //change the game state based on time, User input
   for(var i = 0; i<Global.song.song.length; i++){
+    if (Global.song.song[i].time <-1000){ Global.song.song.splice(i,1) }
     if(Global.song.song[i].time < -5){
-      var note = Global.song.song.shift()
+      Global.song.song[i].time -= dt;
+      var note = Global.song.song[i]
       for(var j=0; j<note.keys.length; j++){
         if (note.keys[j] === 'A' && input.a){
           score += 10;
-          hit.push('a')
+          Global.song.song.splice(i,1)
+          if (hit[note.time]){
+            hit[note.time] += 'a'
+          } else {
+            hit[note.time] = 'a'
+          }
           // alert('SCORE 1')
         } else if (note.keys[j] === 'S' && input.s){
           score += 10;
-          hit.push('s')
+          Global.song.song.splice(i,1)
+          if (hit[note.time]){
+            hit[note.time] += 's'
+          } else {
+            hit[note.time] = 's'
+          }
         } else if (note.keys[j] === 'D' && input.d){
           score += 10;
-          hit.push('d')
+          Global.song.song.splice(i,1)
+          if (hit[note.time]){
+            hit[note.time] += 'd'
+          } else {
+            hit[note.time] = 'd'
+          }
         } else if (note.keys[j] === 'F' && input.f){
           score += 10;
-          hit.push('f')
+          Global.song.song.splice(i,1)
+          if (hit[note.time]){
+            hit[note.time] += 'f'
+          } else {
+            hit[note.time] = 'f'
+          }
         } else if (note.keys[j] === 'G' && input.g){
           score += 10;
-          hit.push('g')
+          Global.song.song.splice(i,1)
+          if (hit[note.time]){
+            hit[note.time] += 'g'
+          } else {
+            hit[note.time] = 'g'
+          }
         } else {
           if (input.a || input.s || input.d || input.f || input.g){
-            score -= 5;
+            score -= 10;
           } else {
-            score -= 2;
+            score -= 5;
           }
         }
       }
@@ -136,7 +163,7 @@ function playGame(songObj){
 
 function main(){
   //test function
-  var songObj = { song: [{time: 5000, keys:['A']},{time: 10000, keys:['A','S']},]}
+  var songObj = { song: [{time: 3000, keys:['A']},{time: 10000, keys:['A','S']},]}
   playGame(songObj)
 }
 
@@ -155,44 +182,54 @@ function drawGame(dt){
     var note = Global.song.song[i];
     for(var j=0; j<note.keys.length; j++){
       if (note.keys[j] === 'A'){
-        canvas.drawFilledCirc(.1*width+originX, (-note.time+5000)/(height+5000)*height, .09*width,'#FF0000');
+        canvas.drawFilledCirc(.1*width+originX, (-note.time+3000)/(height+3000)*height, .09*width,'#FF0000');
       }
       if (note.keys[j] === 'S'){
-        canvas.drawFilledCirc(.3*width+originX, (5000-note.time)/(height+5000)*height, .09*width,'#0000FF');
+        canvas.drawFilledCirc(.3*width+originX, (3000-note.time)/(height+3000)*height, .09*width,'#0000FF');
       }
       if (note.keys[j] === 'D'){
-        canvas.drawFilledCirc(.5*width+originX, (5000-note.time)/(height+5000)*height, .09*width,'#00FF00');
+        canvas.drawFilledCirc(.5*width+originX, (3000-note.time)/(height+3000)*height, .09*width,'#00FF00');
       }
       if (note.keys[j] === 'F'){
-        canvas.drawFilledCirc(.7*width+originX, (5000-note.time)/(height+5000)*height, .09*width,'#FFFF00');
+        canvas.drawFilledCirc(.7*width+originX, (3000-note.time)/(height+3000)*height, .09*width,'#FFFF00');
       }
       if (note.keys[j] === 'G'){
-        canvas.drawFilledCirc(.9*width+originX, (5000-note.time)/(height+5000)*height, .09*width,'#FF00FF');
+        canvas.drawFilledCirc(.9*width+originX, (3000-note.time)/(height+3000)*height, .09*width,'#FF00FF');
       }
     }
   }
-  canvas.setPenColor('#FF0000')
-  canvas.drawRect(.1*canvas.width, .47*height, 100, 30)
-  for(var k=0; k<hit.length; k++){  
-    canvas.setPenColor('#000000')
-    canvas.drawText('A HIT', .1*canvas.width, .5*height)
-    if (hit[k] === 'a'){
-      canvas.drawFilledCirc(.1*width+originX, .09*width+height, .09*width,'#000000');
+  canvas.setPenColor('#FF0000');
+  canvas.drawRect(.1*canvas.width, .47*height, 100, 30);
+  var attr = Object.keys(hit);
+  for(var k=attr.length-1; k>=0; k--){  
+    canvas.setPenColor('#000000');
+    canvas.drawText('A HIT', .1*canvas.width, .5*height);
+    var str = hit[attr[k]];
+    for(var i=0; i<str.length; i++){
+      if (str[i] === 'a'){
+        canvas.drawText('A', .15*canvas.width, .5*height)
+        canvas.drawFilledCirc(.1*width+originX, -.09*width+height, .09*width,'#000000');
+      }
+      if (str[i] === 's'){
+        canvas.drawText('S', .15*canvas.width, .5*height)
+        canvas.drawFilledCirc(.3*width+originX, -.09*width+height, .09*width,'#000000');
+      }
+      if (str[i] === 'd'){
+        canvas.drawText('D', .15*canvas.width, .5*height)
+        canvas.drawFilledCirc(.5*width+originX, -.09*width+height, .09*width,'#00FF00');
+      }
+      if (str[i] === 'f'){
+        canvas.drawText('F', .15*canvas.width, .5*height)
+        canvas.drawFilledCirc(.7*width+originX, -.09*width+height, .09*width,'#FFFF00');
+      }
+      if (str[i] === 'g'){
+        canvas.drawText('G', .15*canvas.width, .5*height)
+        canvas.drawFilledCirc(.9*width+originX, -.09*width+height, .09*width,'#FF00FF');
+      }
     }
-    if (hit[k] === 's'){
-      canvas.drawFilledCirc(.3*width+originX, .09*width+height, .09*width,'#000000');
-    }
-    if (hit[k] === 'd'){
-      canvas.drawFilledCirc(.5*width+originX, .09*width+height, .09*width,'#00FF00');
-    }
-    if (hit[k] === 'f'){
-      canvas.drawFilledCirc(.7*width+originX, .09*width+height, .09*width,'#FFFF00');
-    }
-    if (hit[k] === 'g'){
-      canvas.drawFilledCirc(.9*width+originX, .09*width+height, .09*width,'#FF00FF');
-    }
+    
   }
-  hit = []
+  
   //draw score
   canvas.setPenColor('#2222FF')
   canvas.drawRect(.75*canvas.width, .45*height, 50, 50)
