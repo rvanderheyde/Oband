@@ -4,10 +4,10 @@
       <li><a class='button' href="/">Home</a></li>
       {{#if data.loggedIn}}
         <li><a class='button' id='logout'>Logout</a></li>
-        <li id='name'>Log in to start playing!</li>
+        <li id='name'>Welcome, <span>{{data.name}}</span></li>
       {{else}}
         <li><a class='button' id='login' href='/auth/facebook'>Login with Facebook</a></li>
-        <li id='name'>Welcome, <span>{{data.name}}</span></li>
+        <li id='name'>Log in to start playing!</li>
       {{/if}}
     </ul>
   </section>  

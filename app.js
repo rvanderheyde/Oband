@@ -29,8 +29,8 @@ var mongoURI = process.env.MONGOURI || "mongodb://localhost/test";
 
 mongoose.connect(mongoURI);
 
-app.engine('.hbs',exphbs({extname: '.hbs', defaultLayout: 'main'}));
-app.set('view engine', '.hbs');
+app.engine('handlebars', exphbs({defaultLayout: 'main'}));
+app.set('view engine', 'handlebars');
 
 app.use(logger('dev'));
 app.use(bodyParser.json());
