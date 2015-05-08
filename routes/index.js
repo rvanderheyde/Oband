@@ -4,7 +4,6 @@ var echojs = require('echojs');
 var routes = {};
 // I know this is stupid as a global var, but database will come later
 var beats;
-var track;
 
 routes.indexRender = function (req, res){
   /* GET request to render the homeapge */
@@ -44,7 +43,6 @@ routes.songNotes = function (req, res) {
   beats = notes;
   console.log('SLKDJFLSDKJF');
   console.log(notes[0]);
-  track = trackURL;
   res.send('.');
 }
 
@@ -52,7 +50,7 @@ routes.getSongInfo = function(req, res) {
   // Get request for person connecting to get parsed song data
   console.log('Getting dat song info!');
   console.log(beats[0]);
-  res.json(beats);
+  res.send(beats);
 }
 
 module.exports = routes;

@@ -134,7 +134,7 @@ function runBeats(onlineFlag) {
           // Send the notes to the server if you're in online mode
           if (onlineFlag) {
             $('#status').html('Music parsing complete, waiting for more users...');
-            $.post('/songNotes', {notes: JSON.stringify(notes), track: trackURL})
+            $.post('/songNotes', {notes: JSON.stringify(notes)})
               .done(function() {
                 socket.emit('songParsed', info.room);
                 console.log('emitting that shit');

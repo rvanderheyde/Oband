@@ -13,7 +13,6 @@ function main() {
   info.instrument = false;
   info.song = false;
   info.mode = false;
-  info.track = false;
 
   // load home page template
 	$('#content').load('templates/home.html');
@@ -59,8 +58,7 @@ function main() {
       var data = {
         'difficulty': info.difficulty,
         'instrument': info.instrument,
-        'song': info.song,
-        'track': info.track
+        'song': info.song
       };
       $.get('/getSongInfo', data)
         .done(infoSuccess)
@@ -89,8 +87,7 @@ function main() {
     var data = {
       'difficulty': info.difficulty,
       'instrument': info.instrument,
-      'song': info.song,
-      'track': info.track
+      'song': info.song
     };
     $.get('/getSongInfo', data)
       .done(infoSuccess)
