@@ -33,6 +33,8 @@ var last = timestamp();
 var step = 1/60;
 //Score variable used in update and render
 var score = 0;
+var noteCounter = 0;
+var hitNotes = 0;
 //object of hit inputs
 var input = {a: false, s: false, d: false, f: false, g:false}
 //------------------------------------------------------------------
@@ -67,55 +69,56 @@ var hit = []
 function update(dt){
   //reset hit list
   //change the game state based on time, User input
-  for(var i = 0; i<Global.song.song.length; i++){
-    //remove the note after a while
-    if (Global.song.song[i].time <-250){ Global.song.song.splice(i,1) }
-    //check if user has hit note at proper time
-    if(Global.song.song[i].time < 10 && Global.song.song[i].time > -10){
-      Global.song.song[i].time -= dt;
-      var note = Global.song.song[i]
-      for(var j=0; j<note.keys.length; j++){
-        if (note.keys[j] === 'A' && input.a){
-          //add to score
-          score += 10;
-          //remove note if hit
-          Global.song.song.splice(i,1)
-          //add to hit list for hit animation in render function. 
-          hit.push('a')
-        } else if (note.keys[j] === 'S' && input.s){
-          score += 10;
-          Global.song.song.splice(i,1)
-          hit.push('s')
-        } else if (note.keys[j] === 'D' && input.d){
-          score += 10;
-          Global.song.song.splice(i,1)
-          hit.push('d')
-        } else if (note.keys[j] === 'F' && input.f){
-          score += 10;
-          Global.song.song.splice(i,1)
-          hit.push('f')
-        } else if (note.keys[j] === 'G' && input.g){
-          score += 10;
-          Global.song.song.splice(i,1)
-          hit.push('g')
-        } else {
-          if (input.a || input.s || input.d || input.f || input.g){
-            score -= 10;
-          } else {
-            score -= 5;
+  if(Global.song.song.length!=0){
+    for(var i = 0; i<Global.song.song.length; i++){
+      //remove the note after a while
+      if (Global.song.song[i].time <-250){ Global.song.song.splice(i,1) }
+      //check if user has hit note at proper time
+      else if(Global.song.song[i].time < 10 && Global.song.song[i].time > -10){
+        Global.song.song[i].time -= dt;
+        var note = Global.song.song[i]
+        for(var j=0; j<note.keys.length; j++){
+          if (note.keys[j] === 'A' && input.a){
+            //add to score
+            score += 10;
+            //remove note if hit
+            Global.song.song.splice(i,1)
+            //add to hit list for hit animation in render function. 
+            hit.push('a')
+            hitNotes += 1;
+          } else if (note.keys[j] === 'S' && input.s){
+            score += 10;
+            Global.song.song.splice(i,1)
+            hit.push('s')
+            hitNotes += 1;
+          } else if (note.keys[j] === 'D' && input.d){
+            score += 10;
+            Global.song.song.splice(i,1)
+            hit.push('d')
+            hitNotes += 1;
+          } else if (note.keys[j] === 'F' && input.f){
+            score += 10;
+            Global.song.song.splice(i,1)
+            hit.push('f')
+            hitNotes += 1;
+          } else if (note.keys[j] === 'G' && input.g){
+            score += 10;
+            Global.song.song.splice(i,1)
+            hit.push('g')
+            hitNotes += 1;
           }
         }
+        //Update scores on all cleints via sockets here. 
+      } else {
+        Global.song.song[i].time -= dt;
       }
-      //Update scores on all cleints via sockets here. 
-    } else {
-      Global.song.song[i].time -= dt;
     }
   }
 }
 
 function mainGame(songObj){
   //game loop function
-  if(!songFinished(songObj)){
+  if(!songFinished(Global.song)){
     now = timestamp();
     dt += Math.min(1000, (now - last));
     while(dt > step) {
@@ -126,7 +129,14 @@ function mainGame(songObj){
     drawGame(dt)
     // renderV2()
     last = now;
-    requestAnimationFrame(function(){ mainGame(songObj) })
+    requestAnimationFrame(function(){ mainGame(Global.song) })
+  } else {
+    //load after game screen
+    var width = canvas.width/2;
+    var height = canvas.height;
+    var originX = canvas.width/4;
+    canvas.setPenColor('#000000');
+    canvas.drawText('Game Over', width, .5*height);
   }
 }
 function mainGameTest(songObj){
@@ -141,13 +151,19 @@ function mainGameTest(songObj){
     drawGame(dt)
     // renderV2()
     last = now;
-  }
+  } 
 }
 function playGame(songObj){
   //function that starts the game
   $('#content').remove()
   canvas = gf.fullCanvas();
   Global.song = songObj;
+  for(var i = 0; i<Global.song.song.length; i++){
+    var note = Global.song.song[i]
+    for(var j=0; j<note.keys.length; j++){
+      noteCounter += 1;
+    }
+  }
   //event listening for keyboard inputs
   document.addEventListener('keydown', 
         function(ev){ onKey(ev, ev.keyCode, true)}, false);
@@ -239,7 +255,7 @@ function drawGame(dt){
   
   //draw score
   canvas.setPenColor('#2222FF')
-  canvas.drawRect(.75*canvas.width, .47*height, 100, 30)
+  canvas.drawRect(.75*canvas.width, .47*height, 1/16*canvas.width, 30)
   var str = score.toString()
   canvas.setPenColor('#000000')
   canvas.drawText(str, .75*canvas.width, .5*height)
