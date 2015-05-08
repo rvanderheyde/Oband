@@ -126,7 +126,20 @@ function mainGame(songObj){
     requestAnimationFrame(function(){ mainGame(songObj) })
   }
 }
-
+function mainGameTest(songObj){
+  //game loop function
+  if(!songFinished(songObj)){
+    now = timestamp();
+    dt += Math.min(1000, (now - last));
+    while(dt > step) {
+        dt -= step;
+        update(step);
+      }
+    drawGame(dt)
+    // renderV2()
+    last = now;
+  }
+}
 function playGame(songObj){
   //function that starts the game
   $('#content').remove()
@@ -140,11 +153,23 @@ function playGame(songObj){
   //start game loop 
   requestAnimationFrame(function(){ mainGame(songObj) })
 }
-
-function main(){
+function playGameTest(songObj){
+  //function that starts the game
+  $('#content').remove()
+  canvas = gf.fullCanvas();
+  Global.song = songObj;
+  //event listening for keyboard inputs
+  document.addEventListener('keydown', 
+        function(ev){ onKey(ev, ev.keyCode, true)}, false);
+  document.addEventListener('keyup', 
+        function(ev){ onKey(ev, ev.keyCode, false)}, false);
+  //start game loop 
+  mainGameTest(songObj)
+}
+function mainTest(){
   //test function
-  var songObj = { song: [{time: 3000, keys:['A']},{time: 10000, keys:['A','S']},]}
-  playGame(songObj)
+  var songObj = { song: [{time: 3000, keys:['A']},{time: 0, keys:['A','S']},]}
+  playGameTest(songObj)
 }
 
 function drawGame(dt){
@@ -156,25 +181,25 @@ function drawGame(dt){
   canvas.setPenColor('#656565');
   canvas.drawRect(originX,0,width,height);
   canvas.setPenColor('#000000');
-  canvas.drawLine(originX,height-.1*width,width+originX,height-.1*width);
+  canvas.drawLine(originX,height-.05*width,width+originX,height-.05*width);
   //loop and draw notes
   for(var i=0; i<Global.song.song.length; i++){
     var note = Global.song.song[i];
     for(var j=0; j<note.keys.length; j++){
       if (note.keys[j] === 'A'){
-        canvas.drawFilledCirc(.1*width+originX, (-note.time+3000)/(height+3000)*height, .045*width,'#FF0000');
+        canvas.drawFilledCirc(.1*width+originX, (-note.time+3000-.2*width)/(3000)*height, .045*width,'#FF0000');
       }
       if (note.keys[j] === 'S'){
-        canvas.drawFilledCirc(.3*width+originX, (3000-note.time)/(height+3000)*height, .045*width,'#0000FF');
+        canvas.drawFilledCirc(.3*width+originX, (3000-note.time-.2*width)/(3000)*height, .045*width,'#0000FF');
       }
       if (note.keys[j] === 'D'){
-        canvas.drawFilledCirc(.5*width+originX, (3000-note.time)/(height+3000)*height, .045*width,'#00FF00');
+        canvas.drawFilledCirc(.5*width+originX, (3000-note.time-.2*width)/(3000)*height, .045*width,'#00FF00');
       }
       if (note.keys[j] === 'F'){
-        canvas.drawFilledCirc(.7*width+originX, (3000-note.time)/(height+3000)*height, .045*width,'#FFFF00');
+        canvas.drawFilledCirc(.7*width+originX, (3000-note.time-.2*width)/(3000)*height, .045*width,'#FFFF00');
       }
       if (note.keys[j] === 'G'){
-        canvas.drawFilledCirc(.9*width+originX, (3000-note.time)/(height+3000)*height, .045*width,'#FF00FF');
+        canvas.drawFilledCirc(.9*width+originX, (3000-note.time-.2*width)/(3000)*height, .045*width,'#FF00FF');
       }
     }
   }
@@ -185,23 +210,23 @@ function drawGame(dt){
     canvas.drawText('A HIT', .1*canvas.width, .5*height);
     if (hit[i] === 'a'){
       canvas.drawText('A', .15*canvas.width, .5*height)
-      canvas.drawFilledCirc(.1*width+originX, -.09*width+height, .045*width,'#000000');
+      canvas.drawFilledCirc(.1*width+originX, -.045*width+height, .045*width,'#000000');
     }
     if (hit[i] === 's'){
       canvas.drawText('S', .15*canvas.width, .5*height)
-      canvas.drawFilledCirc(.3*width+originX, -.09*width+height, .045*width,'#000000');
+      canvas.drawFilledCirc(.3*width+originX, -.045*width+height, .045*width,'#000000');
     }
     if (hit[i] === 'd'){
       canvas.drawText('D', .15*canvas.width, .5*height)
-      canvas.drawFilledCirc(.5*width+originX, -.09*width+height, .045*width,'#000000');
+      canvas.drawFilledCirc(.5*width+originX, -.045*width+height, .045*width,'#000000');
     }
     if (hit[i] === 'f'){
       canvas.drawText('F', .15*canvas.width, .5*height)
-      canvas.drawFilledCirc(.7*width+originX, -.09*width+height, .045*width,'#000000');
+      canvas.drawFilledCirc(.7*width+originX, -.045*width+height, .045*width,'#000000');
     }
     if (hit[i] === 'g'){
       canvas.drawText('G', .15*canvas.width, .5*height)
-      canvas.drawFilledCirc(.9*width+originX, -.09*width+height, .045*width,'#000000');
+      canvas.drawFilledCirc(.9*width+originX, -.045*width+height, .045*width,'#000000');
     }
   }
   hit.shift()
@@ -212,11 +237,7 @@ function drawGame(dt){
   var str = score.toString()
   canvas.setPenColor('#000000')
   canvas.drawText(str, .75*canvas.width, .5*height)
-  //hit animation
-  // for(var k=0; k<hit.length; k++){
   
-  // }
-  // hit = []
 }
 
 function renderV2(){
