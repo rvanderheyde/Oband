@@ -24,12 +24,18 @@ var KEY = {
     A:        65, B: 66, C: 67, D: 68, E: 69, F: 70, G: 71, H: 72, I: 73, J: 74, K: 75, L: 76, M: 77, N: 78, O: 79, P: 80, Q: 81, R: 82, S: 83, T: 84, U: 85, V: 86, W: 87, X: 88, Y: 89, Z: 90,
     TILDA:    192
 };
+
+// will be updated every second, used for socket firing
+var prevTime = 0;
+var time = 0;
+
 var Global = { song:{} };
 var now; 
 var dt =0;
 var last = timestamp();
 var step = 1/60;
 var score = 0;
+var oppScore = 0;
 
 var input = {a: false, s: false, d: false, f: false, g:false}
 
@@ -68,7 +74,7 @@ function update(dt){
     if(Global.song.song[i].time < 0){
       var note = Global.song.song.shift()
       for(var j=0; j<note.keys.length; j++){
-        console.log(input)
+        // console.log(input)
         if (note.keys[j] === 'A' && input.a){
           score += 10;
           animateHit('a')
@@ -93,7 +99,14 @@ function update(dt){
           }
         }
       }
-      //Update scores on all cleints via sockets here. 
+      // Update scores on all clients via sockets here
+      // Remember to later only make this a thing for multiplayer
+      time = millis()
+      if (time - prevTime >= 1000) {
+        // console.log(time);
+        prevTime = time;
+        socket.emit('scoreUpdate', info.room, score, time);
+      }
     } else {
       Global.song.song[i].time -= dt;
     }
@@ -136,9 +149,8 @@ function render(){
       }
     }
   }
-  var str = score.toString()
-  canvas.drawText(str, canvas.width*.75, canvas.height*.5)
-
+  var str = score.toString();
+  canvas.drawText(str, canvas.width*.75, canvas.height*.5);
 }
 
 function timeToX(time){
@@ -179,6 +191,7 @@ function playGame(songObj){
   document.addEventListener('keyup', 
         function(ev){ onKey(ev, ev.keyCode, false)}, false);
   requestAnimationFrame(function(){ mainGame(songObj) })
+  time = millis();
 }
 
 function main(){
@@ -205,28 +218,35 @@ function drawGame(dt){
         canvas.drawFilledCirc(.1*width+originX, (-note.time+5000)/(height+5000)*height, .09*width,'#FF0000')
         // canvas.drawRect(.01*width+originX, (-note.time+5000)/(height+5000)*height-.09*width, .18*width, .18*width)
       }
-      if (note.keys[j] === 'S'){
+      if (note.keys[j] === 'S') {
         // canvas.setPenColor('#0000FF')
         // canvas.drawRect(.21*width+originX, (-note.time+5000)/(height+5000)*height-.09*width, .18*width, .18*width)
         canvas.drawFilledCirc(.3*width+originX, (5000-note.time)/(height+5000)*height, .09*width,'#0000FF')
       }
-      if (note.keys[j] === 'D'){
+      if (note.keys[j] === 'D') {
         canvas.drawFilledCirc(.5*width+originX, (5000-note.time)/(height+5000)*height, .09*width,'#00FF00')
       }
-      if (note.keys[j] === 'F'){
+      if (note.keys[j] === 'F') {
         canvas.drawFilledCirc(.7*width+originX, (5000-note.time)/(height+5000)*height, .09*width,'#FFFF00')
       }
-      if (note.keys[j] === 'G'){
+      if (note.keys[j] === 'G') {
         canvas.drawFilledCirc(.9*width+originX, (5000-note.time)/(height+5000)*height, .09*width,'#FF00FF')
       }
     }
   }
   canvas.setPenColor('#2222FF')
-  canvas.drawRect(.7*canvas.width, .45*height, 100,100)
+  // Rectangle for score and opponents score
+  canvas.drawRect(.7*canvas.width, .45*height, 100, 100)
+  if (info.mode === 'online') {
+    canvas.drawRect(.7*canvas.width, .25*height, 100, 100);
+  }
   var str = score.toString()
   canvas.setPenColor('#000000')
   canvas.drawText(str, .75*canvas.width, .5*height)
-
+  // Only show opponent's score if in online mode
+  if (info.mode === 'online') {
+    canvas.drawText(oppScore.toString(), .75*canvas.width, .3*height);
+  }
 }
 
 function renderV2(){
