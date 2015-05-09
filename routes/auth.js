@@ -51,8 +51,8 @@ exports.login = function(req, res) {
 exports.loggingOut = function(req, res) {
   req.session.passport = {};
   req.session.userid = '';
-  
-  // send something to client to redirect to login page
+
+  // redirect client to home page (to log them out)
   res.send('.');
 };
 

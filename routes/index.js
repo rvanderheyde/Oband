@@ -17,10 +17,28 @@ routes.home = function(req, res) {
   res.render('home', {'data': data});
 }
 
-routes.indexRender = function (req, res){
-  /* GET request to render the homeapge */
-  var url = path.resolve( __dirname + '../../views/index.html');
-  res.sendFile(url);
+routes.single = function(req, res) {
+  data = {};
+  if (isEmpty(req.session.passport)) {
+    data.loggedIn = false;
+  } else {
+    data.loggedIn = true;
+    data.name = req.session.passport.user.displayName;
+  }
+
+  res.render('single', {'data': data});
+}
+
+routes.online = function(req, res) {
+  data = {};
+  if (isEmpty(req.session.passport)) {
+    data.loggedIn = false;
+  } else {
+    data.loggedIn = true;
+    data.name = req.session.passport.user.displayName;
+  }
+
+  res.render('online', {'data': data});
 }
 
 routes.echonestKey = function(req,res) {

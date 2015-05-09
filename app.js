@@ -70,12 +70,14 @@ app.get('/auth/facebook', passport.authenticate('facebook'), function (req, res)
 app.get('/auth/facebook/callback', passport.authenticate('facebook', { failureRedirect: '/login' }), auth.auth);
 
 app.get('/', index.home);
-// app.get('/login', auth.login);
 app.get('/end', end.endRender);
 app.get('/echonestCall', index.echonestCall);
 app.get('/beats', index.beats);
 app.get('/echonestKey', index.echonestKey);
 app.get('/getSongInfo', index.getSongInfo);
+
+app.get('/singlep', index.single);
+app.get('/online', index.online);
 
 app.post('/loggingOut', auth.loggingOut);
 app.post('/songNotes', index.songNotes);
