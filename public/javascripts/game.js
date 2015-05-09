@@ -132,11 +132,7 @@ function mainGame(songObj){
     requestAnimationFrame(function(){ mainGame(Global.song) })
   } else {
     //load after game screen
-    var width = canvas.width/2;
-    var height = canvas.height;
-    var originX = canvas.width/4;
-    canvas.setPenColor('#000000');
-    canvas.drawText('Game Over', width, .5*height);
+    window.location.replace('http://localhost:3000/end')
   }
 }
 function mainGameTest(songObj){
