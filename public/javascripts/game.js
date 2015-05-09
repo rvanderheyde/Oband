@@ -24,6 +24,8 @@ var KEY = {
     A:        65, B: 66, C: 67, D: 68, E: 69, F: 70, G: 71, H: 72, I: 73, J: 74, K: 75, L: 76, M: 77, N: 78, O: 79, P: 80, Q: 81, R: 82, S: 83, T: 84, U: 85, V: 86, W: 87, X: 88, Y: 89, Z: 90,
     TILDA:    192
 };
+var prevTime = 0;
+var time = 0;
 //make the song object global
 var Global = { song:{} };
 //variables used in loop timing
@@ -113,6 +115,14 @@ function update(dt){
         Global.song.song[i].time -= dt;
       }
     }
+    if (info.mode === 'online') {
+      time = millis()
+      if (time - prevTime >= 1000) {
+        // console.log(time);
+        prevTime = time;
+        socket.emit('scoreUpdate', info.room, score, time);
+      }
+    }
   }
 }
 
@@ -132,7 +142,7 @@ function mainGame(songObj){
     requestAnimationFrame(function(){ mainGame(Global.song) })
   } else {
     //load after game screen
-    window.location.replace('http://localhost:3000/end')
+    window.location.replace('http://localhost:3000/')
   }
 }
 function mainGameTest(songObj){
@@ -252,9 +262,15 @@ function drawGame(dt){
   //draw score
   canvas.setPenColor('#2222FF')
   canvas.drawRect(.75*canvas.width, .47*height, 1/16*canvas.width, 30)
+  if (info.mode === 'online') {
+    canvas.drawRect(.75*canvas.width, .25*height, 1/16*canvas.width, 30);
+  }
   var str = score.toString()
   canvas.setPenColor('#000000')
   canvas.drawText(str, .75*canvas.width, .5*height)
+  if (info.mode === 'online') {
+    canvas.drawText(oppScore.toString(), .75*canvas.width, .3*height);
+  }
 }
 
 function renderV2(){
