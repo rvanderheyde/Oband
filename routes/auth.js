@@ -1,5 +1,5 @@
 var passport = require('passport');
-var schema = require('./../models/schema.js');
+var schema = require('./../models/schema');
 var User = schema.User;
 
 var exports = {};

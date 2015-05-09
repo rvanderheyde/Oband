@@ -1,11 +1,24 @@
 var path = require('path');
 var echojs = require('echojs');
+var schema = require('./../models/schema');
+var User = schema.User;
 
 var routes = {};
 // I know this is stupid as a global var, but database will come later
 var beats;
 
 routes.home = function(req, res) {
+  // Simple way to empty DB, normally left commented out
+  // User.remove({}, function(err) { 
+  //  console.log('collection removed') 
+  // });
+  
+  // Simple way to confirm that DB stuff works as we change schema, can later be deleted
+  User.find()
+    .exec(function(err, users) {
+      console.log(users);
+    });
+
   data = {};
   if (isEmpty(req.session.passport)) {
     data.loggedIn = false;
