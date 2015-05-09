@@ -141,8 +141,10 @@ function mainGame(songObj){
     last = now;
     requestAnimationFrame(function(){ mainGame(Global.song) })
   } else {
+    //post score to server 
+    $.post('endGame', {score: score, number: noteCounter}).error(function(){ alert("Failed to submit score!")})
     //load after game screen
-    window.location.replace('http://localhost:3000/')
+    window.location.replace('http://localhost:3000/end')
   }
 }
 function mainGameTest(songObj){
