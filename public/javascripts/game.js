@@ -35,6 +35,7 @@ var last = timestamp();
 var step = 1/60;
 //Score variable used in update and render
 var score = 0;
+var oppScore = 0;
 var noteCounter = 0;
 var hitNotes = 0;
 //object of hit inputs
