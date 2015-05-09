@@ -26,7 +26,7 @@ routes.single = function(req, res) {
     data.name = req.session.passport.user.displayName;
   }
 
-  res.render('single', {'data': data});
+  res.render('single', {'data': data, 'layout': false});
 }
 
 routes.online = function(req, res) {
@@ -38,7 +38,7 @@ routes.online = function(req, res) {
     data.name = req.session.passport.user.displayName;
   }
 
-  res.render('online', {'data': data});
+  res.render('online', {'data': data, 'layout': false});
 }
 
 routes.echonestKey = function(req,res) {

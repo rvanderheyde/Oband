@@ -13,7 +13,7 @@ function main() {
   info.instrument = false;
   info.song = false;
   info.mode = false;
-  
+
   socket.on('connecting', function(clientId, count, openRooms) {
     // called when you connect
     info.count = count;
@@ -156,7 +156,7 @@ $(document).on('click', '#online', function(event) {
   // $('#content').load('templates/online.html', function() {
   $.get('/online')
     .done(function(data) {
-      $('body').html(data), function() {
+      $('body').html(data) //, function() {
         info.mode = 'online';
         console.log('Online multiplayer');
         $('#number span').html(info.count);
@@ -168,7 +168,7 @@ $(document).on('click', '#online', function(event) {
             $('#' + r).html(rooms[r]);
           }
         }
-      };
+      // };
     })
     .error(onError);
 });
