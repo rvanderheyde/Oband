@@ -28,6 +28,7 @@ var prevTime = 0;
 var time = 0;
 //make the song object global
 var Global = { song:{} };
+var last = true;
 //variables used in loop timing
 var now; 
 var dt =0;
@@ -56,6 +57,7 @@ function songFinished(songObj){
 }
 
 function onKey(ev, key, pressed){
+  last = !last
   //set input based on key response
   switch(key){
     case KEY.A: input.a = pressed; break;
