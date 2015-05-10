@@ -8,7 +8,7 @@ db.once('open', function (callback) {});
 
 // defining schema for users
 var userSchema = mongoose.Schema({
-  name: String,
+  name: String
 });
 
 exports.User = mongoose.model('User', userSchema);
