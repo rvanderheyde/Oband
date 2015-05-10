@@ -37,6 +37,7 @@ app.get('/getSongInfo', index.getSongInfo);
 
 app.post('/songNotes', index.songNotes);
 
+
 // roomStatus obj to indicate how room joining works
 var roomStatus = {};
 // index will be incremented whenever someone joins a new room 
