@@ -145,9 +145,18 @@ function mainGame(songObj){
     requestAnimationFrame(function(){ mainGame(Global.song) })
   } else {
     //post score to server 
-    $.post('endGame', {score: score, number: noteCounter}).error(function(){ alert("Failed to submit score!")})
-    //load after game screen
-    window.location.replace('http://localhost:3000/end')
+    $.post('endGame', {score: score, oppScore: oppScore, number: noteCounter})
+      .done(function(data) {
+        //load after game screen
+        $.get('end', data)
+          .success(function(data) {
+            $('body').html(data);
+          })
+          .error(onError);
+      })
+      .error(function() { 
+        alert("Failed to submit score!");
+      });
   }
 }
 function mainGameTest(songObj){
@@ -273,6 +282,8 @@ function drawGame(dt){
   canvas.drawRect(.75*canvas.width, .47*height, 1/16*canvas.width, 30)
   if (info.mode === 'online') {
     canvas.drawRect(.75*canvas.width, .25*height, 1/16*canvas.width, 30);
+  } else {
+    oppScore = false;
   }
   var str = score.toString()
   canvas.setPenColor('#000000')

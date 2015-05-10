@@ -10,7 +10,6 @@ function main() {
   info.roomCount = {};
   info.host = false;
   info.difficulty = false;
-  info.instrument = false;
   info.song = false;
   info.mode = false;
 
@@ -54,7 +53,6 @@ function main() {
       // Get request to server for song information
       var data = {
         'difficulty': info.difficulty,
-        'instrument': info.instrument,
         'song': info.song
       };
       $.get('/getSongInfo', data)
@@ -83,7 +81,6 @@ function main() {
     // Get song info from server when host indicates the room is ready
     var data = {
       'difficulty': info.difficulty,
-      'instrument': info.instrument,
       'song': info.song
     };
     $.get('/getSongInfo', data)
@@ -112,13 +109,6 @@ function main() {
     oppScore = otherScore;
   });
 }
-
-// $(document).on('click', '#login', function(event) {
-//   event.preventDefault();
-//   $.get('/auth/facebook')
-//     .done(loginSuccess)
-//     .error(onError);
-// });
 
 // Logs out
 $(document).on('click', '#logout', function(event) {
@@ -153,7 +143,6 @@ $(document).on('click', '#singlep', function(event) {
 // Loads online multiplayer page
 $(document).on('click', '#online', function(event) {
   event.preventDefault();
-  // $('#content').load('templates/online.html', function() {
   $.get('/online')
     .done(function(data) {
       $('body').html(data) //, function() {
@@ -168,7 +157,6 @@ $(document).on('click', '#online', function(event) {
             $('#' + r).html(rooms[r]);
           }
         }
-      // };
     })
     .error(onError);
 });
@@ -177,11 +165,6 @@ $(document).on('click', '#online', function(event) {
 $(document).on('click', '#diff-col button', function(event) {
   info.difficulty = $(this).html();
   $('#diff').html(info.difficulty);
-});
-
-$(document).on('click', '#inst-col button', function(event) {
-  info.instrument = $(this).html();
-  $('#inst').html(info.instrument);
 });
 
 $(document).on('click', '#song-col button', function(event) {
@@ -206,7 +189,7 @@ var onError = function(data, status) {
 
 // Loads game if start button is clicked
 $(document).on('click', '#start', function(event) {
-  if (info.difficulty && info.instrument && info.song) {
+  if (info.difficulty && info.song) {
     console.log('Start Song!');
     $('#status').html('Loading music data...');
     // Create new socket room
@@ -214,18 +197,17 @@ $(document).on('click', '#start', function(event) {
     // runBeats() to save notes object to info w/ true flag for online play
     runBeats(true);
   } else {
-    console.log('Please select a difficulty, instrument, and song');
+    console.log('Please select a difficulty and song');
   }
 });
 
 // Load game if join button is clicked
 $(document).on('click', '#join', function(event) {
-  if (info.difficulty && info.instrument && info.song) {
+  if (info.difficulty && info.song) {
     console.log('Join Song!');
     $('#status').html('Loading music data...');
     var data = {
       'difficulty': info.difficulty,
-      'instrument': info.instrument,
       'song': info.song
     };
     // Join existing socket room
@@ -235,25 +217,24 @@ $(document).on('click', '#join', function(event) {
       $('#status').html('No open rooms for this song. Please start a new game instead');
     }
   } else {
-    $('#status').html('Please select a difficulty, instrument, and song');
+    $('#status').html('Please select a difficulty and song');
   }
 });
 
 // Load game for a single player experience
 $(document).on('click', '#singleStart', function(event) {
-  if (info.difficulty && info.instrument && info.song) {
+  if (info.difficulty && info.song) {
     console.log('Begin Song!');
     $('#status').html('Loading music data...');
     // For when runBeats() actually takes in user inputs
     var data = {
       'difficulty': info.difficulty,
-      'instrument': info.instrument,
       'song': info.song
     };
     // runBeats to get notes object (w/ false flag because singleplayer)
     runBeats(false);
 
   } else {
-    console.log('Please select a difficulty, instrument, and song');
+    console.log('Please select a difficulty and song');
   }
 });
