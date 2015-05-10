@@ -28,6 +28,8 @@ var prevTime = 0;
 var time = 0;
 //make the song object global
 var Global = { song:{} };
+var keyDown = false;
+var keyCount = 0;
 //variables used in loop timing
 var now; 
 var dt =0;
@@ -55,7 +57,9 @@ function songFinished(songObj){
   }
 }
 
-function onKey(ev, key, pressed){
+function onKeyDown(ev, key, pressed){
+  keyDown = true;
+  keyCount+=1;
   //set input based on key response
   switch(key){
     case KEY.A: input.a = pressed; break;
@@ -65,7 +69,18 @@ function onKey(ev, key, pressed){
     case KEY.G: input.g = pressed; break;
   }
 }
-
+function onKeyUp(ev, key, pressed){
+  keyDown = false;
+  keyCount = 0;
+  //set input based on key response
+  switch(key){
+    case KEY.A: input.a = pressed; break;
+    case KEY.S: input.s = pressed; break;
+    case KEY.D: input.d = pressed; break;
+    case KEY.F: input.f = pressed; break;
+    case KEY.G: input.g = pressed; break;
+  }
+}
 //list of notes hit in a loop
 var hit = []
 
@@ -81,7 +96,7 @@ function update(dt){
         Global.song.song[i].time -= dt;
         var note = Global.song.song[i]
         for(var j=0; j<note.keys.length; j++){
-          if (note.keys[j] === 'A' && input.a){
+          if (note.keys[j] === 'A' && input.a && keyCount<=1){
             //add to score
             score += 10;
             //remove note if hit
@@ -89,22 +104,22 @@ function update(dt){
             //add to hit list for hit animation in render function. 
             hit.push('a')
             hitNotes += 1;
-          } else if (note.keys[j] === 'S' && input.s){
+          } else if (note.keys[j] === 'S' && input.s && keyCount<=1){
             score += 10;
             Global.song.song.splice(i,1)
             hit.push('s')
             hitNotes += 1;
-          } else if (note.keys[j] === 'D' && input.d){
+          } else if (note.keys[j] === 'D' && input.d && keyCount<=1){
             score += 10;
             Global.song.song.splice(i,1)
             hit.push('d')
             hitNotes += 1;
-          } else if (note.keys[j] === 'F' && input.f){
+          } else if (note.keys[j] === 'F' && input.f && keyCount<=1){
             score += 10;
             Global.song.song.splice(i,1)
             hit.push('f')
             hitNotes += 1;
-          } else if (note.keys[j] === 'G' && input.g){
+          } else if (note.keys[j] === 'G' && input.g && keyCount<=1){
             score += 10;
             Global.song.song.splice(i,1)
             hit.push('g')
@@ -175,12 +190,13 @@ function playGame(songObj){
       noteCounter += 1;
     }
   }
+  console.log(noteCounter)
   console.log(Global.song.song[Global.song.song.length-1])
   //event listening for keyboard inputs
   document.addEventListener('keydown', 
-        function(ev){ onKey(ev, ev.keyCode, true)}, false);
+        function(ev){ onKeyDown(ev, ev.keyCode, true)}, false);
   document.addEventListener('keyup', 
-        function(ev){ onKey(ev, ev.keyCode, false)}, false);
+        function(ev){ onKeyUp(ev, ev.keyCode, false)}, false);
   //start game loop 
   audio.play();
   requestAnimationFrame(function(){ mainGame(songObj) })
