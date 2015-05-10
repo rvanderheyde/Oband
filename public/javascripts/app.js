@@ -14,9 +14,6 @@ function main() {
   info.song = false;
   info.mode = false;
 
-  // load home page template
-	$('#content').load('templates/home.html');
-
   socket.on('connecting', function(clientId, count, openRooms) {
     // called when you connect
     info.count = count;
@@ -116,6 +113,23 @@ function main() {
   });
 }
 
+// $(document).on('click', '#login', function(event) {
+//   event.preventDefault();
+//   $.get('/auth/facebook')
+//     .done(loginSuccess)
+//     .error(onError);
+// });
+
+// Logs out
+$(document).on('click', '#logout', function(event) {
+  event.preventDefault();
+  $.post('/loggingOut')
+    .done(function() {
+      window.location.replace('/');
+    }) 
+    .error(onError);
+});
+
 // Toggles help information
 $(document).on('click', '#help', function(event) {
   event.preventDefault();
@@ -125,27 +139,38 @@ $(document).on('click', '#help', function(event) {
 // Loads singleplayer page
 $(document).on('click', '#singlep', function(event) {
   event.preventDefault();
-  console.log('Singleplayer');
-  info.mode = 'single';
-  $('#content').load('templates/single.html');
+  
+  // $('#content').load('templates/single.html');
+  $.get('/singlep')
+    .done(function(data) {
+      $('body').html(data);
+      console.log('Singleplayer');
+      info.mode = 'single';
+    })
+    .error(onError);
 });
 
 // Loads online multiplayer page
 $(document).on('click', '#online', function(event) {
   event.preventDefault();
-  console.log('Online multiplayer');
-  info.mode = 'online';
-  $('#content').load('templates/online.html', function() {
-    $('#number span').html(info.count);
-    // Updating number of open rooms when each song loading online multip page
-    var rooms = info.roomCount;
-    for (var r in rooms) {
-      if (rooms.hasOwnProperty(r)) {
-        console.log(r + " -> " + rooms[r]);
-        $('#' + r).html(rooms[r]);
-      }
-    }
-  });
+  // $('#content').load('templates/online.html', function() {
+  $.get('/online')
+    .done(function(data) {
+      $('body').html(data) //, function() {
+        info.mode = 'online';
+        console.log('Online multiplayer');
+        $('#number span').html(info.count);
+        // Updating number of open rooms when each song loading online multip page
+        var rooms = info.roomCount;
+        for (var r in rooms) {
+          if (rooms.hasOwnProperty(r)) {
+            console.log(r + " -> " + rooms[r]);
+            $('#' + r).html(rooms[r]);
+          }
+        }
+      // };
+    })
+    .error(onError);
 });
 
 // Functions to update vars when setup buttons are clicked
@@ -168,7 +193,8 @@ $(document).on('click', '#song-col button', function(event) {
 var infoSuccess = function(data, status) {
   console.log('This be the data');
   console.log(data)
-  info.notes = data;
+  info.notes = data.beats;
+  info.track = data.track;
   socket.emit('allReady', info.room);
 }
 
