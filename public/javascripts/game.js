@@ -167,7 +167,6 @@ function playGame(songObj){
   $('#content').remove()
   var audio = document.createElement('audio');
   audio.src = songObj.track;
-  audio.play();
   canvas = gf.fullCanvas();
   Global.song = songObj;
   for(var i = 0; i<Global.song.song.length; i++){
@@ -176,12 +175,14 @@ function playGame(songObj){
       noteCounter += 1;
     }
   }
+  console.log(Global.song.song[Global.song.song.length-1])
   //event listening for keyboard inputs
   document.addEventListener('keydown', 
         function(ev){ onKey(ev, ev.keyCode, true)}, false);
   document.addEventListener('keyup', 
         function(ev){ onKey(ev, ev.keyCode, false)}, false);
   //start game loop 
+  audio.play();
   requestAnimationFrame(function(){ mainGame(songObj) })
 }
 function playGameTest(songObj){

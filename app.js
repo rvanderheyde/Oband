@@ -78,9 +78,8 @@ app.get('/getSongInfo', index.getSongInfo);
 
 app.get('/singlep', index.single);
 app.get('/online', index.online);
-
-app.post('/loggingOut', auth.loggingOut);
 app.post('/songNotes', index.songNotes);
+app.post('/loggingOut', auth.loggingOut);
 
 server.listen(PORT, function() {
   console.log("Application running on port:", PORT);
