@@ -7,4 +7,7 @@ routes.endRender = function (req, res){
   res.sendFile(url);
 }
 
+routes.submitScore = function(req, res){
+	
+}
 module.exports = routes;

@@ -36,6 +36,7 @@ app.get('/echonestKey', index.echonestKey);
 app.get('/getSongInfo', index.getSongInfo);
 
 app.post('/songNotes', index.songNotes);
+app.post('/endGame', end.submitScore);
 
 // roomStatus obj to indicate how room joining works
 var roomStatus = {};
