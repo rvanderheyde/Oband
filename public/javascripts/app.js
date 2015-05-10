@@ -189,16 +189,12 @@ $(document).on('click', '#song-col button', function(event) {
   $('#song').html(info.song);
 });
 
-// Success function for logging in
-var loginSuccess = function(data, status) {
-
-}
-
 // Success function for joining an existing song and getting song info
 var infoSuccess = function(data, status) {
   console.log('This be the data');
   console.log(data)
-  info.notes = data;
+  info.notes = data.beats;
+  info.track = data.track;
   socket.emit('allReady', info.room);
 }
 

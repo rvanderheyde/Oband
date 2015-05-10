@@ -6,6 +6,7 @@ var User = schema.User;
 var routes = {};
 // I know this is stupid as a global var, but database will come later
 var beats;
+var track;
 
 routes.home = function(req, res) {
   // Simple way to empty DB, normally left commented out
@@ -84,6 +85,7 @@ routes.songNotes = function (req, res) {
   /* POST request to receive the remixed and parsed song data */
   var notes = JSON.parse(req.body.notes);
   beats = notes;
+  track = req.body.track;
   console.log('SLKDJFLSDKJF');
   console.log(notes[0]);
   res.send('.');
@@ -91,9 +93,13 @@ routes.songNotes = function (req, res) {
 
 routes.getSongInfo = function(req, res) {
   // Get request for person connecting to get parsed song data
+  data = {};
+  data.beats = beats;
+  data.track = track;
   console.log('Getting dat song info!');
-  console.log(beats[0]);
-  res.send(beats);
+  console.log(data.beats[0]);
+  res.json(data);
+  // res.send(beats);
 }
 
 function isEmpty(obj) {
