@@ -144,7 +144,7 @@ function update(dt){
 
 function mainGame(songObj){
   //game loop function
-  if(!songFinished(Global.song)){
+  if(!songFinished(Global.song) && !audio.ended){
     now = timestamp();
     dt += Math.min(1000, (now - last));
     while(dt > step) {
@@ -158,6 +158,7 @@ function mainGame(songObj){
     requestAnimationFrame(function(){ mainGame(Global.song) })
   } else {
     //post score to server 
+    console.log(audio.ended)
     $.post('endGame', {score: score, number: noteCounter}).error(function(){ alert("Failed to submit score!")})
     //load after game screen
     window.location.replace('http://localhost:3000/end')
@@ -180,13 +181,12 @@ function mainGameTest(songObj){
 function playGame(songObj){
   //function that starts the game
   $('#content').remove()
-  var audio = document.createElement('audio');
+  audio = document.createElement('audio');
   audio.src = songObj.track;
   canvas = gf.fullCanvas();
   Global.song = songObj;
   for(var i = 0; i<Global.song.song.length; i++){
-    var note = Global.song.song[i]
-    for(var j=0; j<note.keys.length; j++){
+    for(var j=0; j<Global.song.song[i].keys.length; j++){
       noteCounter += 1;
     }
   }
@@ -199,6 +199,9 @@ function playGame(songObj){
         function(ev){ onKeyUp(ev, ev.keyCode, false)}, false);
   //start game loop 
   audio.play();
+  // audio.onended= function() {
+  //   alert("The audio has ended");
+  // };
   requestAnimationFrame(function(){ mainGame(songObj) })
 }
 function playGameTest(songObj){
