@@ -86,18 +86,30 @@ function runBeats(onlineFlag, trackURL) {
    * Otherwise, remix the beats using the echonest API.
    * TODO: Get this to work with different tracks.
    */
-  info.trackURL = trackURL;
+  info.track = trackURL;
 
   // First, check whether this song has already been cached.
-  var cacheQuery = { title: info.trackURL }
+  var cacheQuery = { title: info.track }
   $.get('/getCachedSongData', cacheQuery, function(cachedBeats) {
 
     // If we found this song in the cache,
     if (cachedBeats) {
       console.log("Found cached song data");
       notes = cachedBeats;
-      info.notes = cachedBeats;
+      info.notes = notes;
       info.host = true;
+
+      // Send the notes to the server if you're in online mode
+      if (onlineFlag) {
+        $('#status').html('Music parsing complete, waiting for more users...');
+        info.track = trackURL;
+        $.post('/songNotes', {notes: JSON.stringify(notes), track: trackURL})
+          .done(function() { ￼Kings of Summer
+            socket.emit('songParsed', info.room);
+            console.log('emitting that shit');
+          })
+          .error(onError);
+      }
 
     // If no song data was found,
     } else { 
@@ -105,7 +117,7 @@ function runBeats(onlineFlag, trackURL) {
         console.log("NOTES " , info.notes.length)
 
         // Send the song data to the cache.
-        var songDataQuery = { title: info.trackURL, data: info.notes };
+        var songDataQuery = { title: info.track, data: info.notes };
         songDataQuery = JSON.stringify(songDataQuery);
         console.log("Firing /cacheSongData POST request");
         $.post('/cacheSongData', songDataQuery).done(function(data) {

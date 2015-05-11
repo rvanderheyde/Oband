@@ -3,6 +3,7 @@ var echojs = require('echojs');
 var schema = require('./../models/schema');
 var User = schema.User;
 var Leader = schema.Leader;
+var Song = schema.Song;
 
 var routes = {};
 // I know this is stupid as a global var, but database will come later
@@ -18,11 +19,20 @@ routes.home = function(req, res) {
   // Simple way to confirm that DB stuff works as we change schema, can later be deleted
   User.find()
     .exec(function(err, users) {
+      console.log("USERS:");
       console.log(users);
     });
   Leader.find()
     .exec(function(err, leaders) {
+      console.log("LEADERS:");
       console.log(leaders);
+    });
+  Song.find()
+    .exec(function(err, songs) {
+      console.log("SONGS:");
+      for (var i = 0; i < songs.length; i++) {
+        console.log(songs[i].title);
+      }
     });
 
   data = {};

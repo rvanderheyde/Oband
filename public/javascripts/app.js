@@ -10,7 +10,7 @@ var roomMap = {
 
 // URL where the audio file can be found
 // TODO: Tie this to the song select feature
-var trackURL = 'audio/OKGO.mp3';
+var trackURL = 'audio/KOS.mp3';
 
 
 function main() {
@@ -217,7 +217,7 @@ $(document).on('click', '#start', function(event) {
     // Create new socket room
     socket.emit('joinRoom', info.song);
     // runBeats() to save notes object to info w/ true flag for online play
-    runBeats(true);
+    runBeats(true, trackURL);
   } else {
     console.log('Please select a difficulty and song');
   }
