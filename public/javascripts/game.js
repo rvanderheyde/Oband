@@ -159,7 +159,7 @@ function mainGame(songObj){
   } else {
     //post score to server
     console.log(info.mode);
-    $.post('endGame', {score: score, oppScore: oppScore, number: noteCounter, mode: info.mode})
+    $.post('endGame', {score: score, oppScore: oppScore, number: noteCounter, mode: info.mode, song: info.song})
       .done(function(data) {
         //load after game screen
         $.get('end', data)
