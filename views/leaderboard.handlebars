@@ -1,0 +1,19 @@
+<nav class='top-bar'>
+  <section class='top-bar-section'>
+    <ul class='left'>
+      <li><a class='button' href="/">Home</a></li>
+      {{#if data.loggedIn}}
+        <li><a class='button' id='logout'>Logout</a></li>
+        <li id='name'>Welcome, <span>{{data.name}}</span></li>
+      {{else}}
+        <li><a class='button' id='login' href='/auth/facebook'>Login with Facebook</a></li>
+        <li id='name'>Log in to start playing!</li>
+      {{/if}}
+    </ul>
+  </section>  
+</nav>  
+<ul> 
+{{#each score}}
+  <li><h3>{{this.user}}</h3> <p>{{this.score}} {{this.song}}</p></li>
+{{/each}}
+</ul>

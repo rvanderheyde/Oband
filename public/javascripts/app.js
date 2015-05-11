@@ -2,6 +2,16 @@ var socket = io();
 
 // Info object for each user
 var info = {};
+// Room map for ID and song names
+var roomMap = {
+  'Ok Go': 'A',
+  'Sail': 'B'
+};
+
+// URL where the audio file can be found
+// TODO: Tie this to the song select feature
+var trackURL = 'audio/KOS.mp3';
+
 
 function main() {
   info.count = 0;
@@ -10,12 +20,8 @@ function main() {
   info.roomCount = {};
   info.host = false;
   info.difficulty = false;
-  info.instrument = false;
   info.song = false;
   info.mode = false;
-
-  // load home page template
-	$('#content').load('templates/home.html');
 
   socket.on('connecting', function(clientId, count, openRooms) {
     // called when you connect
@@ -57,7 +63,6 @@ function main() {
       // Get request to server for song information
       var data = {
         'difficulty': info.difficulty,
-        'instrument': info.instrument,
         'song': info.song
       };
       $.get('/getSongInfo', data)
@@ -70,6 +75,7 @@ function main() {
 
   // To increment number of open rooms for all clients
   socket.on('increment', function(room, up) {
+    console.log(room);
     var letter = '#' + room;
     if (!info.roomCount[room]) {
       info.roomCount[room] = 0;
@@ -86,7 +92,6 @@ function main() {
     // Get song info from server when host indicates the room is ready
     var data = {
       'difficulty': info.difficulty,
-      'instrument': info.instrument,
       'song': info.song
     };
     $.get('/getSongInfo', data)
@@ -104,7 +109,7 @@ function main() {
       $('#status').html('Ready to begin! Starting in ' + i + ' seconds');
       if (i === 0) {
         clearInterval(interval);
-        playGame({song: info.notes});
+        playGame({song: info.notes, track: info.track});
       }
     }, 1000);
   });
@@ -116,6 +121,16 @@ function main() {
   });
 }
 
+// Logs out
+$(document).on('click', '#logout', function(event) {
+  event.preventDefault();
+  $.post('/loggingOut')
+    .done(function() {
+      window.location.replace('/');
+    }) 
+    .error(onError);
+});
+
 // Toggles help information
 $(document).on('click', '#help', function(event) {
   event.preventDefault();
@@ -125,38 +140,53 @@ $(document).on('click', '#help', function(event) {
 // Loads singleplayer page
 $(document).on('click', '#singlep', function(event) {
   event.preventDefault();
-  console.log('Singleplayer');
-  info.mode = 'single';
-  $('#content').load('templates/single.html');
+  
+  var loggedIn = $('#name').html();
+  if (loggedIn[0] === 'W') {
+    $.get('/singlep')
+      .done(function(data) {
+        $('body').html(data);
+        console.log('Singleplayer');
+        info.mode = 'single';
+      })
+      .error(onError);
+  } else {
+    $('#help_info').show();
+  }
 });
 
 // Loads online multiplayer page
 $(document).on('click', '#online', function(event) {
   event.preventDefault();
-  console.log('Online multiplayer');
-  info.mode = 'online';
-  $('#content').load('templates/online.html', function() {
-    $('#number span').html(info.count);
-    // Updating number of open rooms when each song loading online multip page
-    var rooms = info.roomCount;
-    for (var r in rooms) {
-      if (rooms.hasOwnProperty(r)) {
-        console.log(r + " -> " + rooms[r]);
-        $('#' + r).html(rooms[r]);
-      }
-    }
-  });
+  var loggedIn = $('#name').html();
+  if (loggedIn[0] === 'W') {
+    $.get('/online')
+      .done(function(data) {
+        $('body').html(data) //, function() {
+          info.mode = 'online';
+          console.log('Online multiplayer');
+          $('#number span').html(info.count);
+          // Updating number of open rooms when each song loading online multip page
+          var rooms = info.roomCount;
+          console.log(rooms);
+          for (var r in rooms) {
+            if (rooms.hasOwnProperty(r)) {
+              console.log(r + " -> " + rooms[r]);
+              // Render update on screen, using roomMap to get correct ID
+              $('#' + r).html(rooms[r]);
+            }
+          }
+      })
+      .error(onError);
+  } else {
+    $('#help_info').show();
+  }
 });
 
 // Functions to update vars when setup buttons are clicked
 $(document).on('click', '#diff-col button', function(event) {
   info.difficulty = $(this).html();
   $('#diff').html(info.difficulty);
-});
-
-$(document).on('click', '#inst-col button', function(event) {
-  info.instrument = $(this).html();
-  $('#inst').html(info.instrument);
 });
 
 $(document).on('click', '#song-col button', function(event) {
@@ -167,8 +197,9 @@ $(document).on('click', '#song-col button', function(event) {
 // Success function for joining an existing song and getting song info
 var infoSuccess = function(data, status) {
   console.log('This be the data');
-  console.log(data);
-  info.notes = data;
+  console.log(data)
+  info.notes = data.beats;
+  info.track = data.track;
   socket.emit('allReady', info.room);
 };
 
@@ -180,54 +211,65 @@ var onError = function(data, status) {
 
 // Loads game if start button is clicked
 $(document).on('click', '#start', function(event) {
-  if (info.difficulty && info.instrument && info.song) {
+  if (info.difficulty && info.song) {
     console.log('Start Song!');
     $('#status').html('Loading music data...');
     // Create new socket room
     socket.emit('joinRoom', info.song);
     // runBeats() to save notes object to info w/ true flag for online play
-    runBeats(true);
+    runBeats(true, trackURL);
   } else {
-    console.log('Please select a difficulty, instrument, and song');
+    console.log('Please select a difficulty and song');
   }
 });
 
 // Load game if join button is clicked
 $(document).on('click', '#join', function(event) {
-  if (info.difficulty && info.instrument && info.song) {
+  if (info.difficulty && info.song) {
     console.log('Join Song!');
     $('#status').html('Loading music data...');
     var data = {
       'difficulty': info.difficulty,
-      'instrument': info.instrument,
       'song': info.song
     };
     // Join existing socket room
-    if (info.roomCount[data.song] > 0) {
+    if (info.roomCount[roomMap[data.song]] > 0) {
       socket.emit('joinExisting', data.song);
     } else {
       $('#status').html('No open rooms for this song. Please start a new game instead');
     }
   } else {
-    $('#status').html('Please select a difficulty, instrument, and song');
+    $('#status').html('Please select a difficulty and song');
   }
 });
 
 // Load game for a single player experience
 $(document).on('click', '#singleStart', function(event) {
-  if (info.difficulty && info.instrument && info.song) {
+  if (info.difficulty && info.song) {
     console.log('Begin Song!');
     $('#status').html('Loading music data...');
     // For when runBeats() actually takes in user inputs
     var data = {
       'difficulty': info.difficulty,
-      'instrument': info.instrument,
       'song': info.song
     };
     // runBeats to get notes object (w/ false flag because singleplayer)
-    runBeats(false);
+    runBeats(false, trackURL);
+
+    // Play the game, after a countdown.
+    var i = 5;
+    a = setInterval(function () {
+      i--;
+      console.log(i);
+      $('#status').html('Music parsing complete! Starting in ' + i + ' seconds');
+      if (i === 0) {
+        clearInterval(a);
+        playGame({song: info.notes, track: trackURL});
+      }
+    }, 1000);
+
 
   } else {
-    console.log('Please select a difficulty, instrument, and song');
+    console.log('Please select a difficulty and song');
   }
 });

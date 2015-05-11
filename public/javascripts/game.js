@@ -3,7 +3,7 @@ var requestAnimationFrame = window.requestAnimationFrame ||
                             window.mozRequestAnimationFrame || 
                             window.webkitRequestAnimationFrame || 
                             window.msRequestAnimationFrame;
-
+//Key number mapping
 var KEY = {
     BACKSPACE: 8,
     TAB:       9,
@@ -24,21 +24,25 @@ var KEY = {
     A:        65, B: 66, C: 67, D: 68, E: 69, F: 70, G: 71, H: 72, I: 73, J: 74, K: 75, L: 76, M: 77, N: 78, O: 79, P: 80, Q: 81, R: 82, S: 83, T: 84, U: 85, V: 86, W: 87, X: 88, Y: 89, Z: 90,
     TILDA:    192
 };
-
-// will be updated every second, used for socket firing
 var prevTime = 0;
 var time = 0;
-
+//make the song object global
 var Global = { song:{} };
+var keyDown = false;
+var keyCount = 0;
+//variables used in loop timing
 var now; 
 var dt =0;
 var last = timestamp();
 var step = 1/60;
+//Score variable used in update and render
 var score = 0;
 var oppScore = 0;
-
-var input = {a: false, s: false, d: false, f: false, g:false};
-
+var noteCounter = 0;
+var hitNotes = 0;
+//object of hit inputs
+var input = {a: false, s: false, d: false, f: false, g:false}
+//------------------------------------------------------------------
 function timestamp() {
   //find how time delay is between frame updates
   return window.performance && window.performance.now ? window.performance.now() : new Date().getTime();
@@ -53,7 +57,9 @@ function songFinished(songObj){
   }
 }
 
-function onKey(ev, key, pressed){
+function onKeyDown(ev, key, pressed){
+  keyDown = true;
+  keyCount+=1;
   //set input based on key response
   switch(key){
     case KEY.A: input.a = pressed; break;
@@ -63,106 +69,113 @@ function onKey(ev, key, pressed){
     case KEY.G: input.g = pressed; break;
   }
 }
-
-function animateHit(note){
-
+function onKeyUp(ev, key, pressed){
+  keyDown = false;
+  keyCount = 0;
+  //set input based on key response
+  switch(key){
+    case KEY.A: input.a = pressed; break;
+    case KEY.S: input.s = pressed; break;
+    case KEY.D: input.d = pressed; break;
+    case KEY.F: input.f = pressed; break;
+    case KEY.G: input.g = pressed; break;
+  }
 }
+//list of notes hit in a loop
+var hit = []
 
 function update(dt){
+  //reset hit list
   //change the game state based on time, User input
-  for(var i = 0; i<Global.song.song.length; i++){
-    if(Global.song.song[i].time < 0){
-      var note = Global.song.song.shift()
-      for(var j=0; j<note.keys.length; j++){
-        // console.log(input)
-        if (note.keys[j] === 'A' && input.a){
-          score += 10;
-          animateHit('a')
-          // alert('SCORE 1')
-        } else if (note.keys[j] === 'S' && input.s){
-          score += 10;
-          animateHit('s')
-        } else if (note.keys[j] === 'D' && input.d){
-          score += 10;
-          animateHit('d')
-        } else if (note.keys[j] === 'F' && input.f){
-          score += 10;
-          animateHit('f')
-        } else if (note.keys[j] === 'G' && input.g){
-          score += 10;
-          animateHit('g')
-        } else {
-          if (input.a || input.s || input.d || input.f || input.g){
-            score -= 5;
-          } else {
-            score -= 2;
+  if(Global.song.song.length!=0){
+    for(var i = 0; i<Global.song.song.length; i++){
+      //remove the note after a while
+      if (Global.song.song[i].time <-250){ Global.song.song.splice(i,1) }
+      //check if user has hit note at proper time
+      else if(Global.song.song[i].time < 10 && Global.song.song[i].time > -10){
+        Global.song.song[i].time -= dt;
+        var note = Global.song.song[i]
+        for(var j=0; j<note.keys.length; j++){
+          if (note.keys[j] === 'A' && input.a && keyCount<=1){
+            //add to score
+            score += 10;
+            //remove note if hit
+            Global.song.song.splice(i,1)
+            //add to hit list for hit animation in render function. 
+            hit.push('a')
+            hitNotes += 1;
+          } else if (note.keys[j] === 'S' && input.s && keyCount<=1){
+            score += 10;
+            Global.song.song.splice(i,1)
+            hit.push('s')
+            hitNotes += 1;
+          } else if (note.keys[j] === 'D' && input.d && keyCount<=1){
+            score += 10;
+            Global.song.song.splice(i,1)
+            hit.push('d')
+            hitNotes += 1;
+          } else if (note.keys[j] === 'F' && input.f && keyCount<=1){
+            score += 10;
+            Global.song.song.splice(i,1)
+            hit.push('f')
+            hitNotes += 1;
+          } else if (note.keys[j] === 'G' && input.g && keyCount<=1){
+            score += 10;
+            Global.song.song.splice(i,1)
+            hit.push('g')
+            hitNotes += 1;
           }
         }
+        //Update scores on all cleints via sockets here. 
+      } else {
+        Global.song.song[i].time -= dt;
       }
-      // Update scores on all clients via sockets here
-      // Remember to later only make this a thing for multiplayer
+    }
+    if (info.mode === 'online') {
       time = millis()
       if (time - prevTime >= 1000) {
         // console.log(time);
         prevTime = time;
         socket.emit('scoreUpdate', info.room, score, time);
       }
-    } else {
-      Global.song.song[i].time -= dt;
     }
   }
-  // console.log(score)
-  // Global.song.song = song;
 }
-
-function render(){
-  //draws the game state on screen
-  canvas.setBackgroundColor('#999999');
-  canvas.createBackground();
-  canvas.setPenColor('#656565');
-  canvas.drawRect(canvas.width*0.125, canvas.height*0.05, canvas.width*0.5, canvas.height*0.9);
-  canvas.setPenColor('#000000');
-  canvas.drawLine(canvas.width*0.125, canvas.height*0.8, canvas.width*0.625, canvas.height*0.8);
-  canvas.setPenColor('#440044');
-  for(var i=0; i<Global.song.song.length; i++){
-    var note = Global.song.song[i];
-    for(var j=0; j<note.keys.length; j++){
-      if (note.keys[j] === 'A'){
-        var dx = timeToX(note.time)
-        canvas.drawRect(canvas.width*0.225, (5000-note.time)/(5000+height)*canvas.height, 50, 50) 
-      }
-      if (note.keys[j] === 'S'){
-        dx = timeToX(note.time);
-        canvas.drawRect(canvas.width*0.325, (5000-note.time)/6250*canvas.height, 50, 50);
-      }
-      if (note.keys[j] === 'D'){
-        var dx = timeToX(note.time);
-        canvas.drawRect(canvas.width*0.425, (5000-note.time)/6250*canvas.height, 50, 50);
-      }
-      if (note.keys[j] === 'F'){
-        var dx = timeToX(note.time);
-        canvas.drawRect(canvas.width*0.525, (5000-note.time)/6250*canvas.height, 50, 50);
-      }
-      if (note.keys[j] === 'G'){
-        var dx = timeToX(note.time);
-        canvas.drawRect(canvas.width*0.625, (5000-note.time)/6250*canvas.height, 50, 50);
-      }
-    }
-  }
-  var str = score.toString();
-  canvas.drawText(str, canvas.width*.75, canvas.height*.5);
-}
-
-function timeToX(time){
-  //turn time on range 0-5000 to x. 
-  //5000 = 0
-  //0 = canvas.height*.8
-  return (5000-time)/6250*canvas.height;
-}
-
 
 function mainGame(songObj){
   //game loop function
+  if(!songFinished(Global.song) && !audio.ended){
+    now = timestamp();
+    dt += Math.min(1000, (now - last));
+    while(dt > step) {
+        //to keep processing at 60fps
+        dt -= step;
+        update(step);
+      }
+    drawGame(dt)
+    // renderV2()
+    last = now;
+    requestAnimationFrame(function(){ mainGame(Global.song) })
+  } else {
+    //post score to server
+    console.log(info.mode);
+    $.post('endGame', {score: score, oppScore: oppScore, number: noteCounter, mode: info.mode, song: info.song})
+      .done(function(data) {
+        //load after game screen
+        $.get('end', data)
+          .success(function(data) {
+            console.log(data);
+            $('body').html(data);
+          })
+          .error(onError);
+      })
+      .error(function() { 
+        alert("Failed to submit score!");
+      });
+  }
+}
+function mainGameTest(songObj){
+  //game loop function test
   if(!songFinished(songObj)){
     now = timestamp();
     dt += Math.min(1000, (now - last));
@@ -171,80 +184,143 @@ function mainGame(songObj){
         update(step);
       }
     drawGame(dt)
+    // renderV2()
     last = now;
-    requestAnimationFrame(function() { mainGame(songObj); });
-  }
+  } 
 }
-
 function playGame(songObj){
   //function that starts the game
-  $('#content').remove();
+  $('#content').remove()
+  audio = document.createElement('audio');
+  audio.src = songObj.track;
+  audio.oncanplaythrough = function(){
+    canvas = gf.fullCanvas();
+    Global.song = songObj;
+    totalTime= audio.duration*1000;
+    console.log(totalTime);
+    console.log(Global.song.song.length);
+    for(var i = 0; i<Global.song.song.length; i++){
+      // if (Global.song.song[i].time+10000>totalTime){
+      //   Global.song.song.splice(i,1)
+      // }else{
+        for(var j=0; j<Global.song.song[i].keys.length; j++){
+          noteCounter += 1;
+        }
+      // } 
+    }
+    console.log(Global.song.song.length);
+    console.log(Global.song.song[Global.song.song.length-1].time);
+    //event listening for keyboard inputs
+    document.addEventListener('keydown', 
+          function(ev){ onKeyDown(ev, ev.keyCode, true)}, false);
+    document.addEventListener('keyup', 
+          function(ev){ onKeyUp(ev, ev.keyCode, false)}, false);
+    //start game loop 
+
+    audio.play();
+    // audio.onended= function() {
+    //   alert("The audio has ended");
+    // };
+    requestAnimationFrame(function(){ mainGame(Global.song) })
+  }
+}
+function playGameTest(songObj){
+  //function that starts the game test
+  $('#content').remove()
   canvas = gf.fullCanvas();
   Global.song = songObj;
+  //event listening for keyboard inputs
   document.addEventListener('keydown', 
         function(ev){ onKey(ev, ev.keyCode, true)}, false);
   document.addEventListener('keyup', 
         function(ev){ onKey(ev, ev.keyCode, false)}, false);
-  requestAnimationFrame(function() { mainGame(songObj); });
-  time = millis();
+  //start game loop 
+  mainGameTest(songObj)
 }
-
-function main(){
+function mainTest(){
   //test function
-  var songObj = { song: [{time: 5000, keys:['A']},{time: 10000, keys:['A','S']},]};
-  playGame(songObj);
+  var songObj = { song: [{time: 2000, keys:['A']},{time: 0, keys:['A','S']},]}
+  playGameTest(songObj)
 }
 
 function drawGame(dt){
   //draws the game on its own coordinate system
-  // canvas.context.scale(canvas.width/2,canvas.height)
   var width = canvas.width/2;
   var height = canvas.height;
   var originX = canvas.width/4;
-  canvas.setPenColor('#656565');
+  //draw background
+  canvas.setPenColor('#454545');
   canvas.drawRect(originX,0,width,height);
+  canvas.setPenColor('#FFFFFF');
+  // canvas.drawLine(originX,height-.05*width,width+originX,height-.05*width);
+  canvas.drawRect(originX,height-.075*width,width,.05*width)
   canvas.setPenColor('#000000');
-  canvas.drawLine(originX,height-.1*width,width+originX,height-.1*width);
-  for (var i=0; i<Global.song.song.length; i++){
+  //loop and draw notes
+  for(var i=0; i<Global.song.song.length; i++){
     var note = Global.song.song[i];
-    for (var j=0; j<note.keys.length; j++) {
-      if (note.keys[j] === 'A') {
-        // canvas.setPenColor('#FF0000')
-        canvas.drawFilledCirc(.1*width+originX, (-note.time+5000)/(height+5000)*height, .09*width,'#FF0000');
-        // canvas.drawRect(.01*width+originX, (-note.time+5000)/(height+5000)*height-.09*width, .18*width, .18*width)
+    for(var j=0; j<note.keys.length; j++){
+      if (note.keys[j] === 'A'){
+        canvas.drawFilledCirc(.1*width+originX, (-note.time+2000-.2*width)/(2000)*height, .045*width,'#FF0000');
       }
-      if (note.keys[j] === 'S') {
-        // canvas.setPenColor('#0000FF')
-        // canvas.drawRect(.21*width+originX, (-note.time+5000)/(height+5000)*height-.09*width, .18*width, .18*width)
-        canvas.drawFilledCirc(.3*width+originX, (5000-note.time)/(height+5000)*height, .09*width,'#0000FF')
+      if (note.keys[j] === 'S'){
+        canvas.drawFilledCirc(.3*width+originX, (2000-note.time-.2*width)/(2000)*height, .045*width,'#0000FF');
       }
-      if (note.keys[j] === 'D') {
-        canvas.drawFilledCirc(.5*width+originX, (5000-note.time)/(height+5000)*height, .09*width,'#00FF00')
+      if (note.keys[j] === 'D'){
+        canvas.drawFilledCirc(.5*width+originX, (2000-note.time-.2*width)/(2000)*height, .045*width,'#00FF00');
       }
-      if (note.keys[j] === 'F') {
-        canvas.drawFilledCirc(.7*width+originX, (5000-note.time)/(height+5000)*height, .09*width,'#FFFF00')
+      if (note.keys[j] === 'F'){
+        canvas.drawFilledCirc(.7*width+originX, (2000-note.time-.2*width)/(2000)*height, .045*width,'#FFFF00');
       }
-      if (note.keys[j] === 'G') {
-        canvas.drawFilledCirc(.9*width+originX, (5000-note.time)/(height+5000)*height, .09*width,'#FF00FF')
+      if (note.keys[j] === 'G'){
+        canvas.drawFilledCirc(.9*width+originX, (2000-note.time-.2*width)/(2000)*height, .045*width,'#FF00FF');
       }
     }
   }
-  canvas.setPenColor('#2222FF')
-  // Rectangle for score and opponents score
-  canvas.drawRect(.7*canvas.width, .45*height, 100, 100)
-  if (info.mode === 'online') {
-    canvas.drawRect(.7*canvas.width, .25*height, 100, 100);
+  //hit animations
+  canvas.setPenColor('#FF0000');
+  canvas.drawRect(3/16*canvas.width, .47*height, 1/16*canvas.width, 30);
+  for(var i=0; i<hit.length; i++){
+    canvas.setPenColor('#000000');
+    canvas.drawText('A HIT', 3/16*canvas.width, .5*height);
+    if (hit[i] === 'a'){
+      canvas.drawText('A', .23*canvas.width, .5*height)
+      canvas.drawFilledCirc(.1*width+originX, -.045*width+height, .045*width,'#000000');
+    }
+    if (hit[i] === 's'){
+      canvas.drawText('S', .23*canvas.width, .5*height)
+      canvas.drawFilledCirc(.3*width+originX, -.045*width+height, .045*width,'#000000');
+    }
+    if (hit[i] === 'd'){
+      canvas.drawText('D', .23*canvas.width, .5*height)
+      canvas.drawFilledCirc(.5*width+originX, -.045*width+height, .045*width,'#000000');
+    }
+    if (hit[i] === 'f'){
+      canvas.drawText('F', .23*canvas.width, .5*height)
+      canvas.drawFilledCirc(.7*width+originX, -.045*width+height, .045*width,'#000000');
+    }
+    if (hit[i] === 'g'){
+      canvas.drawText('G', .23*canvas.width, .5*height)
+      canvas.drawFilledCirc(.9*width+originX, -.045*width+height, .045*width,'#000000');
+    }
   }
+  hit.shift()
+  
+  //draw score
+  canvas.setPenColor('#2222FF')
+  canvas.drawRect(.75*canvas.width, .47*height, 1/16*canvas.width, 30)
   var str = score.toString()
   canvas.setPenColor('#000000')
   canvas.drawText(str, .75*canvas.width, .5*height)
-  // Only show opponent's score if in online mode
   if (info.mode === 'online') {
+    canvas.setPenColor('#2222FF')
+    canvas.drawRect(.75*canvas.width, .27*height, 1/16*canvas.width, 30);
+    canvas.setPenColor('#000000')
     canvas.drawText(oppScore.toString(), .75*canvas.width, .3*height);
   }
 }
 
 function renderV2(){
+  //different view style IN PROGRESS
   var width = canvas.width/2
   var height = canvas.height
   var originX = canvas.width/4
