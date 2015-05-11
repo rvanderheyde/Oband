@@ -3,10 +3,7 @@ var echojs = require('echojs');
 var schema = require('./../models/schema');
 var User = schema.User;
 var Leader = schema.Leader;
-<<<<<<< HEAD
-=======
 
->>>>>>> master
 var routes = {};
 // I know this is stupid as a global var, but database will come later
 var beats;
