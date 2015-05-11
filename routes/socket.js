@@ -8,6 +8,11 @@ var roomIdx = {};
 var openRooms = {};
 // number of people online
 var count = 0;
+// Room map for ID and song names
+var roomMap = {
+  'Ok Go': 'A',
+  'Kings of Summer': 'B'
+};
 
 module.exports.listen = function(app) {
   io = socketio.listen(app);
@@ -33,6 +38,7 @@ module.exports.listen = function(app) {
     });
 
     client.on('joinRoom', function(song) {
+      song = roomMap[song];
       console.log(client.id + ' creating room for song: ' + song);
       console.log('\nROOMSTATUS');
       console.log(roomStatus);
@@ -59,6 +65,7 @@ module.exports.listen = function(app) {
     });
 
     client.on('joinExisting', function(song) {
+      song = roomMap[song];
       console.log(client.id + ' joining room for existing song: ' + song);
       // Find room to connect to based on roomStatus['_index'], then increment the index
       room = song + roomIdx[song];
@@ -85,12 +92,14 @@ module.exports.listen = function(app) {
     });
 
     client.on('allReady', function(room) {
+      // room = roomMap[room];
       // inform all clients in a room that the room is ready to start playing
       console.log('yaa its all ready');
       io.to(room).emit('allReady', room);
     });
 
     client.on('scoreUpdate', function(room, score, time) {
+      // room = roomMap[room];
       console.log(room);
       console.log(score);
       console.log(time);

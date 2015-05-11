@@ -159,7 +159,7 @@ function mainGame(songObj){
   } else {
     //post score to server
     console.log(info.mode);
-    $.post('endGame', {score: score, oppScore: oppScore, number: noteCounter, mode: info.mode})
+    $.post('endGame', {score: score, oppScore: oppScore, number: noteCounter, mode: info.mode, song: info.song})
       .done(function(data) {
         //load after game screen
         $.get('end', data)
@@ -212,6 +212,9 @@ function playGame(songObj){
   // audio.onended= function() {
   //   alert("The audio has ended");
   // };
+  // commented out hacky fix for quick testing
+  // songObj = {song:[]};
+  // Global.song = {song:[]};
   requestAnimationFrame(function(){ mainGame(songObj) })
 }
 function playGameTest(songObj){
