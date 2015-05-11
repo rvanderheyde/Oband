@@ -182,6 +182,7 @@ function isEmpty(obj) {
   return Object.keys(obj).length === 0;
 }
 
+
 routes.cacheSongData = function(req, res) {
   // POST request to store a beats-file in the remote db.
   var reqbody = JSON.parse(Object.keys(req.body)[0])
@@ -214,6 +215,12 @@ routes.getCachedSongData = function(req, res) {
       res.json(null); // return null.
     }
   });
+}
+
+routes.leaderboardRender = function(req, res) {
+  Leader.find({}).sort({score: -1}).exec(function(err, data){
+    res.render('leaderboard', {score: data})
+  })
 }
 
 module.exports = routes;

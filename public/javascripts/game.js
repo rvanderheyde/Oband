@@ -193,29 +193,36 @@ function playGame(songObj){
   $('#content').remove()
   audio = document.createElement('audio');
   audio.src = songObj.track;
-  canvas = gf.fullCanvas();
-  Global.song = songObj;
-  for(var i = 0; i<Global.song.song.length; i++){
-    for(var j=0; j<Global.song.song[i].keys.length; j++){
-      noteCounter += 1;
+  audio.oncanplaythrough = function(){
+    canvas = gf.fullCanvas();
+    Global.song = songObj;
+    totalTime= audio.duration*1000;
+    console.log(totalTime);
+    console.log(Global.song.song.length);
+    for(var i = 0; i<Global.song.song.length; i++){
+      // if (Global.song.song[i].time+10000>totalTime){
+      //   Global.song.song.splice(i,1)
+      // }else{
+        for(var j=0; j<Global.song.song[i].keys.length; j++){
+          noteCounter += 1;
+        }
+      // } 
     }
+    console.log(Global.song.song.length);
+    console.log(Global.song.song[Global.song.song.length-1].time);
+    //event listening for keyboard inputs
+    document.addEventListener('keydown', 
+          function(ev){ onKeyDown(ev, ev.keyCode, true)}, false);
+    document.addEventListener('keyup', 
+          function(ev){ onKeyUp(ev, ev.keyCode, false)}, false);
+    //start game loop 
+
+    audio.play();
+    // audio.onended= function() {
+    //   alert("The audio has ended");
+    // };
+    requestAnimationFrame(function(){ mainGame(Global.song) })
   }
-  console.log(noteCounter);
-  console.log(Global.song.song[Global.song.song.length-1]);
-  //event listening for keyboard inputs
-  document.addEventListener('keydown', 
-        function(ev){ onKeyDown(ev, ev.keyCode, true)}, false);
-  document.addEventListener('keyup', 
-        function(ev){ onKeyUp(ev, ev.keyCode, false)}, false);
-  //start game loop 
-  audio.play();
-  // audio.onended= function() {
-  //   alert("The audio has ended");
-  // };
-  // commented out hacky fix for quick testing
-  // songObj = {song:[]};
-  // Global.song = {song:[]};
-  requestAnimationFrame(function(){ mainGame(songObj) })
 }
 function playGameTest(songObj){
   //function that starts the game test
