@@ -264,7 +264,7 @@ $(document).on('click', '#singleStart', function(event) {
       $('#status').html('Music parsing complete! Starting in ' + i + ' seconds');
       if (i === 0) {
         clearInterval(a);
-        playGame({song: info.notes, track: trackURL});
+        playGame({song: info.notes[info.difficulty], track: trackURL});
       }
     }, 1000);
 

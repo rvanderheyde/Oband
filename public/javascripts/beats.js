@@ -6,6 +6,7 @@ var millis = function() {
 
 var chooseOne = function(arr) {
   /* Randomly return one item from the supplied array. */
+  console.log(arr);
   return arr[Math.floor(Math.random()*arr.length)];
 };
 
@@ -27,22 +28,22 @@ var choose = function(arr, numberToChoose) {
 
 
 var keysets = {
-  "easy": ['A','S','D'],
-  "medium": ['A','S','D','F'],
-  "hard": ['A','S','D','F','G'],
-  "expert": ['A','S','D','F','G','SPACE']
+  "Easy": ['A','S','D'],
+  "Medium": ['A','S','D','F'],
+  "Hard": ['A','S','D','F','G'],
+  "Expert": ['A','S','D','F','G','SPACE']
 };
 var beatfreqsets = {
-  "easy": [1],
-  "medium": [1,1,2],
-  "hard": [1,2,2],
-  "expert": [1,1,2,2,4]
+  "Easy": [1],
+  "Medium": [1,1,2],
+  "Hard": [1,2,2],
+  "Expert": [1,1,2,2,4]
 };
 var chordsets = {
-  "easy": [1],
-  "medium": [1,1,1,1,1,1,1,2],
-  "hard": [1,1,1,1,1,2],
-  "expert": [1,1,1,2]
+  "Easy": [1],
+  "Medium": [1,1,1,1,1,1,1,2],
+  "Hard": [1,1,1,1,1,2],
+  "Expert": [1,1,1,2]
 }
 
 
@@ -79,7 +80,7 @@ var generateNotes = function(beats, difficulty) {
       var chordSize = chordsets[difficulty];
       notes.push({
         time: startTime,
-        keys: [choose(keyset, chordsize)];
+        keys: [choose(keyset, chordsize)]
       });
     }
   }
@@ -89,10 +90,10 @@ var generateNotes = function(beats, difficulty) {
 
 var generateAllDifficulties = function(beats) {
   return {
-    "easy": generateNotes(beats, "easy"),
-    "medium": generateNotes(beats, "medium"),
-    "hard": generateNotes(beats, "hard"),
-    "expert": generateNotes(beats, "expert")
+    "Easy": generateNotes(beats, "Easy"),
+    "Medium": generateNotes(beats, "Medium"),
+    "Hard": generateNotes(beats, "Hard"),
+    "Expert": generateNotes(beats, "Expert")
   }
 }
 
