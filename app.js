@@ -74,12 +74,15 @@ app.get('/echonestCall', index.echonestCall);
 app.get('/beats', index.beats);
 app.get('/echonestKey', index.echonestKey);
 app.get('/getSongInfo', index.getSongInfo);
+app.get('/getCachedSongData', index.getCachedSongData);
 app.get('/leaderboard', index.leaderboardRender)
 
 app.get('/singlep', index.single);
 app.get('/online', index.online);
 app.get('/end', index.end);
+
 app.post('/songNotes', index.songNotes);
+app.post('/cacheSongData', index.cacheSongData);
 app.post('/loggingOut', auth.loggingOut);
 app.post('/endGame', index.endGame);
 

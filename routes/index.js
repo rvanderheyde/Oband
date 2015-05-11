@@ -3,6 +3,7 @@ var echojs = require('echojs');
 var schema = require('./../models/schema');
 var User = schema.User;
 var Leader = schema.Leader;
+var Song = schema.Song;
 
 var routes = {};
 // I know this is stupid as a global var, but database will come later
@@ -18,11 +19,20 @@ routes.home = function(req, res) {
   // Simple way to confirm that DB stuff works as we change schema, can later be deleted
   User.find()
     .exec(function(err, users) {
+      console.log("USERS:");
       console.log(users);
     });
   Leader.find()
     .exec(function(err, leaders) {
+      console.log("LEADERS:");
       console.log(leaders);
+    });
+  Song.find()
+    .exec(function(err, songs) {
+      console.log("SONGS:");
+      for (var i = 0; i < songs.length; i++) {
+        console.log(songs[i].title);
+      }
     });
 
   data = {};
@@ -182,9 +192,45 @@ function isEmpty(obj) {
   return Object.keys(obj).length === 0;
 }
 
+
+routes.cacheSongData = function(req, res) {
+  // POST request to store a beats-file in the remote db.
+  var reqbody = JSON.parse(Object.keys(req.body)[0])
+  console.log("Caching " + reqbody.title);
+  var songObj = new schema.Song({
+    title: reqbody.title,
+    data: reqbody.data
+  });
+  songObj.save(function (err) {
+    if (err) {
+      console.log("Problem caching song data: ", err);
+    }
+  });
+  res.end("");
+}
+
+routes.getCachedSongData = function(req, res) {
+  // GET request to retrieve a song's data if it has been cached.
+  // If it has not been cached, instead return null.
+  console.log("CHECKING IN: " + req.query.title);
+  var query = schema.Song.where({ title: req.query.title });
+  query.findOne(function (err, song) {
+    if (err) {
+      console.log("Problem searching for song: ", err);
+      res.end();
+    } else if (song) { // If we found a cached song,
+      console.log(song);
+      res.json(song.data); // send it.
+    } else { // If it has not been cached yet,
+      res.json(null); // return null.
+    }
+  });
+}
+
 routes.leaderboardRender = function(req, res) {
   Leader.find({}).sort({score: -1}).exec(function(err, data){
     res.render('leaderboard', {score: data})
   })
 }
+
 module.exports = routes;
