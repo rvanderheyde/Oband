@@ -5,7 +5,7 @@ var info = {};
 // Room map for ID and song names
 var roomMap = {
   'Ok Go': 'A',
-  'Kings of Summer': 'B'
+  'Sail': 'B'
 };
 
 function main() {

@@ -11,7 +11,7 @@ var count = 0;
 // Room map for ID and song names
 var roomMap = {
   'Ok Go': 'A',
-  'Kings of Summer': 'B'
+  'Sail': 'B'
 };
 
 module.exports.listen = function(app) {
