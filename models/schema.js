@@ -11,7 +11,7 @@ exports.db = db;
 var userSchema = mongoose.Schema({
   name: String,
   songs: [String],
-  scores: [String]
+  scores: [Number]
 });
 
 exports.User = mongoose.model('User', userSchema);
@@ -28,8 +28,7 @@ var leaderSchema = mongoose.Schema({
   score: Number,
   user: String,
   song: String,
-  user_id: {type: mongoose.Schema.Types.ObjectId, ref: 'User'},
-  song_id: {type: mongoose.Schema.Types.ObjectId, ref: 'Song'}
+  user_id: {type: mongoose.Schema.Types.ObjectId, ref: 'User'}
 });
 
 exports.Leader = mongoose.model('Leader', leaderSchema);

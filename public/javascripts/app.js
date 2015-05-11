@@ -2,6 +2,11 @@ var socket = io();
 
 // Info object for each user
 var info = {};
+// Room map for ID and song names
+var roomMap = {
+  'Ok Go': 'A',
+  'Kings of Summer': 'B'
+};
 
 // URL where the audio file can be found
 // TODO: Tie this to the song select feature
@@ -70,6 +75,7 @@ function main() {
 
   // To increment number of open rooms for all clients
   socket.on('increment', function(room, up) {
+    console.log(room);
     var letter = '#' + room;
     if (!info.roomCount[room]) {
       info.roomCount[room] = 0;
@@ -162,9 +168,11 @@ $(document).on('click', '#online', function(event) {
           $('#number span').html(info.count);
           // Updating number of open rooms when each song loading online multip page
           var rooms = info.roomCount;
+          console.log(rooms);
           for (var r in rooms) {
             if (rooms.hasOwnProperty(r)) {
               console.log(r + " -> " + rooms[r]);
+              // Render update on screen, using roomMap to get correct ID
               $('#' + r).html(rooms[r]);
             }
           }
@@ -225,7 +233,7 @@ $(document).on('click', '#join', function(event) {
       'song': info.song
     };
     // Join existing socket room
-    if (info.roomCount[data.song] > 0) {
+    if (info.roomCount[roomMap[data.song]] > 0) {
       socket.emit('joinExisting', data.song);
     } else {
       $('#status').html('No open rooms for this song. Please start a new game instead');

@@ -2,6 +2,7 @@ var path = require('path');
 var echojs = require('echojs');
 var schema = require('./../models/schema');
 var User = schema.User;
+var Leader = schema.Leader;
 
 var routes = {};
 // I know this is stupid as a global var, but database will come later
@@ -18,6 +19,10 @@ routes.home = function(req, res) {
   User.find()
     .exec(function(err, users) {
       console.log(users);
+    });
+  Leader.find()
+    .exec(function(err, leaders) {
+      console.log(leaders);
     });
 
   data = {};
@@ -104,23 +109,62 @@ routes.getSongInfo = function(req, res) {
 
 routes.endGame = function(req, res) {
   var data = req.body;
-  if (data.mode === 'single') {
-    data.single = true;
-  } else {
-    data.single = false;
-  }
-  // check if user is logged in
-  if (isEmpty(req.session.passport)) {
-    data.loggedIn = false;
-  } else {
-    data.loggedIn = true;
-    data.name = req.session.passport.user.displayName;
-  }
-  console.log(data.score);
-  console.log(data.number);
-  data.ratio = data.score * 10 / data.number;
+  var userid = req.session.userid;
 
-  res.json(data);
+  User.findOne({_id: req.session.userid})
+    .exec(function (err, user) {
+      if (err) {
+        res.status(500).json(err);
+      } else {
+        user.scores.push(data.score);
+        user.songs.push(data.song);
+        user.save(function (err) {
+          if (err) {
+            console.log('Problem saving users');
+            res.status(500).json(err);
+          } else {
+            // check if user is logged in
+            if (isEmpty(req.session.passport)) {
+              data.loggedIn = false;
+            } else {
+              data.loggedIn = true;
+              data.name = req.session.passport.user.displayName;
+            }
+
+            var entry = new Leader({
+              score: data.score,
+              user: data.name,
+              song: data.song,
+              user_id: userid
+            });
+            entry.save(function (err) {
+              if (err) {
+                console.log('Problem saving leaderboard');
+                res.status(500).json(err);
+              } else {
+                if (data.mode === 'single') {
+                  data.single = true;
+                } else {
+                  data.single = false;
+                  if (data.score > data.oppScore) {
+                    data.won = 'Won';
+                  } else {
+                    data.won = 'Lost';
+                  }
+                }
+                
+                console.log(data.score);
+                console.log(data.number);
+                data.ratio = data.score * 10 / data.number;
+                data.ratio = data.ratio.toString().substring(0,3);
+
+                res.json(data);
+              }
+            });
+          }
+        });
+      }
+    }) 
 }
 
 routes.end = function(req, res) {
