@@ -212,7 +212,7 @@ $(document).on('click', '#start', function(event) {
     // Create new socket room
     socket.emit('joinRoom', info.song);
     // runBeats() to save notes object to info w/ true flag for online play
-    runBeats(true);
+    runBeats(true, info.song);
   } else {
     console.log('Please select a difficulty and song');
   }
