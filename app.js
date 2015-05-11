@@ -74,6 +74,7 @@ app.get('/echonestCall', index.echonestCall);
 app.get('/beats', index.beats);
 app.get('/echonestKey', index.echonestKey);
 app.get('/getSongInfo', index.getSongInfo);
+app.get('/leaderboard', index.leaderboardRender)
 
 app.get('/singlep', index.single);
 app.get('/online', index.online);
