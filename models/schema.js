@@ -5,20 +5,19 @@ var exports = {};
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function (callback) {});
-exports.db = db;
 
 // defining schema for users
 var userSchema = mongoose.Schema({
   name: String,
   songs: [String],
-  scores: [Number]
+  scores: [String]
 });
 
 exports.User = mongoose.model('User', userSchema);
 
 var songSchema = mongoose.Schema({
   title: String,
-  data: [{time: Number, keys: [String]}]
+  data: []
 });
 
 exports.Song = mongoose.model('Song', songSchema);

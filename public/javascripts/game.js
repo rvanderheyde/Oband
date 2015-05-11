@@ -221,6 +221,9 @@ function playGame(songObj){
     // audio.onended= function() {
     //   alert("The audio has ended");
     // };
+    // commented out hacky fix for quick testing
+    // songObj = {song:[]};
+    // Global.song = {song:[]};
     requestAnimationFrame(function(){ mainGame(Global.song) })
   }
 }
