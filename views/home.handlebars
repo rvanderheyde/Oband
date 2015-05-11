@@ -1,0 +1,22 @@
+<nav class='top-bar'>
+  <section class='top-bar-section'>
+    <ul class='left'>
+      <li><a class='button' href="/">Home</a></li>
+      {{#if data.loggedIn}}
+        <li><a class='button' id='logout'>Logout</a></li>
+        <li id='name'>Welcome, <span>{{data.name}}</span></li>
+      {{else}}
+        <li><a class='button' id='login' href='/auth/facebook'>Login with Facebook</a></li>
+        <li id='name'>Log in to start playing!</li>
+      {{/if}}
+    </ul>
+  </section>  
+</nav>  
+<div id='home'>
+  <h1>Oband</h1>
+  <button id='singlep'>Singleplayer</button>
+  <button id='online'>Online Multiplayer</button>
+  <button>Leaderboards</button>
+  <button id='help'>Help</button>
+  <p hidden id='help_info'>Please log in to start playing. Click singleplayer to play by yourself, or online multiplayer to play against someone online.</p>
+</div>

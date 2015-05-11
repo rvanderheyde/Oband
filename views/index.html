@@ -11,6 +11,16 @@
     <script type="text/javascript" src="/javascripts/game.js"></script>
   </head>
   <body onload='main()'>
+    <nav class='top-bar'>
+      <section class='top-bar-section'>
+        <ul class='left'>
+          <li><a class='button' href="/">Home</a></li>
+          <li><a class='button' id='login' href='/auth/facebook'>Login with Facebook</a></li>
+          <li hidden><a class='button' id='logout'>Logout</a></li>
+        </ul>
+        <p id='name'>Please log in<span></span></li>
+      </section>  
+    </nav>  
     <div id="content"></div>
   </body>
   <script type="text/javascript" src="/javascripts/app.js"></script>

@@ -1,0 +1,21 @@
+<div id='content'>
+  <nav class='top-bar'>
+    <section class='top-bar-section'>
+      <ul class='left'>
+        <li><a class='button' href="/">Home</a></li>
+        {{#if data.loggedIn}}
+          <li><a class='button' id='logout'>Logout</a></li>
+          <li id='name'>Welcome, <span>{{data.name}}</span></li>
+        {{else}}
+          <li><a class='button' id='login' href='/auth/facebook'>Login with Facebook</a></li>
+          <li id='name'>Log in to start playing!</li>
+        {{/if}}
+      </ul>
+    </section>  
+  </nav>
+  {{#if data.single}}
+    <p>Good job! Your score was {{data.score}}</p>
+  {{else}}
+  {{/if}}
+  <p>You correctly hit {{data.ratio}} of your notes</p>
+</div>
