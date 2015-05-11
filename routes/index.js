@@ -164,7 +164,8 @@ routes.getCachedSongData = function(req, res) {
       console.log("Problem searching for song: ", err);
       res.end();
     } else if (song) { // If we found a cached song,
-      res.json(songs[0]); // send it.
+      console.log(song);
+      res.json(song.data); // send it.
     } else { // If it has not been cached yet,
       res.json(null); // return null.
     }
