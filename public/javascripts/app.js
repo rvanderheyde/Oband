@@ -3,6 +3,11 @@ var socket = io();
 // Info object for each user
 var info = {};
 
+// URL where the audio file can be found
+// TODO: Tie this to the song select feature
+var trackURL = 'audio/OKGO.mp3';
+
+
 function main() {
   info.count = 0;
   info.ids = {};
@@ -226,6 +231,19 @@ $(document).on('click', '#singleStart', function(event) {
     };
     // runBeats to get notes object (w/ false flag because singleplayer)
     runBeats(false);
+
+    // Play the game, after a countdown.
+    var i = 5;
+    a = setInterval(function () {
+      i--;
+      console.log(i);
+      $('#status').html('Music parsing complete! Starting in ' + i + ' seconds');
+      if (i === 0) {
+        clearInterval(a);
+        playGame({song: info.notes, track: trackURL});
+      }
+    }, 1000);
+
 
   } else {
     console.log('Please select a difficulty, instrument, and song');

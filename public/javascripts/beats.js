@@ -80,11 +80,41 @@ var playSong = function(player, track, notes) {
   playNotes(notes); // Let's get recursive!      
 }
 
-function runBeats(onlineFlag) {
+function runBeats(onlineFlag, trackURL) {
+  /**
+   * If the song has already been parsed, then retrieve the beats from the cache.
+   * Otherwise, remix the beats using the echonest API.
+   * TODO: Get this to work with different tracks.
+   */
+  $.get('/getCachedSongData', function(cachedBeats) {
+    if (cachedBeats) {  // If we found this song in the cache
+      info.notes = cachedBeats;
+      info.host = true;
+      // Send the notes to the server if you're in online mode
+      if (onlineFlag) {
+        $('#status').html('Music parsing complete, waiting for more users...');
+        $.post('/songNotes', {notes: JSON.stringify(notes)})
+          .done(function() {
+            socket.emit('songParsed', info.room);
+            console.log('emitting that shit');
+          })
+          .error(onError);
+      }
+    } else {  // If no song data was found,
+      remixBeats(onlineFlag, trackURL);  // r-r-remix!
+    }
+  })
+}
+
+function remixBeats(onlineFlag, trackURL) {
+  /**
+   * Analze and parse out a beats-file,
+   * which will be stored in routes/index/beats.
+   */
   // Get the EchoNest API key fromt he server
   $.get('/echonestKey', function(apiKey) {
     var trackID = 'TRCYWPQ139279B3308'; // I don't know what this is.
-    var trackURL = 'audio/OKGO.mp3'; // Where the audio file is saved
+    var trackURL = 'audio/OKGO.mp3';
     var remixer; // remix.js stuff
     var player;
     var track;
@@ -123,13 +153,9 @@ function runBeats(onlineFlag) {
         if (track.status == 'ok') {
           var notes = generateNotes(track.analysis.beats);
           console.log("Remix complete!");
-          // $('#status').html('Music parsing complete! Starting in 5 seconds')
           info.notes = notes;
           // person who parsed the music is the host
           info.host = true;
-          
-          // Uncomment this line to display the beat#s realtime in the console
-          // playSong(player, track, notes);
 
           // Send the notes to the server if you're in online mode
           if (onlineFlag) {
@@ -140,17 +166,6 @@ function runBeats(onlineFlag) {
                 console.log('emitting that shit');
               })
               .error(onError);
-          } else {
-            var i = 5;
-            a = setInterval(function () {
-              i--;
-              console.log(i);
-              $('#status').html('Music parsing complete! Starting in ' + i + ' seconds');
-              if (i === 0) {
-                clearInterval(a);
-                playGame({song: info.notes, track: trackURL});
-              }
-            }, 1000);
           }
         }
       });

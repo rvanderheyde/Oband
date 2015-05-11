@@ -68,7 +68,7 @@ routes.cacheSongData = function(req, res) {
   res.end("");
 }
 
-route.getCachedSongData = function(req, res) {
+routes.getCachedSongData = function(req, res) {
   // GET request to retrieve a song's data if it has been cached.
   // If it has not been cached, instead return null.
   var query = mgschema.Song.where({ title: req.body.songpath });
