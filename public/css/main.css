@@ -34,6 +34,13 @@ ul li#name {
 	width: 20%;
 }
 
+a.button {
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+	width: 20%;
+}
+
 #number {
 	text-align: left;
 }
