@@ -156,7 +156,7 @@ routes.endGame = function(req, res) {
                 console.log(data.score);
                 console.log(data.number);
                 data.ratio = data.score * 10 / data.number;
-                data.ratio = data.ratio.toString().substring(0,3);
+                data.ratio = data.ratio.toString().substring(0,4);
 
                 res.json(data);
               }
