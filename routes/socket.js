@@ -10,8 +10,9 @@ var openRooms = {};
 var count = 0;
 // Room map for ID and song names
 var roomMap = {
-  'Ok Go': 'A',
-  'Sail': 'B'
+  'Madness': 'A',
+  'Sail': 'B',
+  'Intro': 'C'
 };
 
 module.exports.listen = function(app) {

@@ -4,8 +4,9 @@ var socket = io();
 var info = {};
 // Room map for ID and song names
 var roomMap = {
-  'Ok Go': 'A',
-  'Sail': 'B'
+  'Madness': 'A',
+  'Sail': 'B',
+  'Intro': 'C'
 };
 
 // URL where the audio file can be found
