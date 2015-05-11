@@ -193,15 +193,16 @@ $(document).on('click', '#diff-col button', function(event) {
 $(document).on('click', '#song-col button', function(event) {
   info.song = $(this).html();
   $('#song').html(info.song);
+  //song URL and Id for Beats and audio
   if (info.song === 'Intro'){
     trackURL = 'audio/XX.mp3';
-    trackID = '';
-  } else if ('Madness') {
+    trackID = 'TRKUSTF13974911656';
+  } else if (info.song === 'Madness') {
     trackURL = 'audio/MUSE.mp3';
-    trackID = '';
-  } else if ('Sail') {
+    trackID = 'TRHIUST13B5695A3E4';
+  } else if (info.song==='Sail') {
     trackURL = 'audio/Sail.mp3';
-    trackID = '';
+    trackID = 'TRWHQOK13B357AB74A';
   }
 });
 
