@@ -104,7 +104,7 @@ function runBeats(onlineFlag, trackURL) {
         $('#status').html('Music parsing complete, waiting for more users...');
         info.track = trackURL;
         $.post('/songNotes', {notes: JSON.stringify(notes), track: trackURL})
-          .done(function() { 
+          .done(function() {
             socket.emit('songParsed', info.room);
             console.log('emitting that shit');
           })
