@@ -84,7 +84,7 @@ function runBeats(onlineFlag) {
   // Get the EchoNest API key fromt he server
   $.get('/echonestKey', function(apiKey) {
     var trackID = 'TRCYWPQ139279B3308'; // I don't know what this is.
-    var trackURL = 'audio/OKGO.mp3'; // Where the audio file is saved
+    var trackURL = 'audio/KOS.mp3'; // Where the audio file is saved
     var remixer; // remix.js stuff
     var player;
     var track;
