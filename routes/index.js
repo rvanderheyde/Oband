@@ -2,7 +2,7 @@ var path = require('path');
 var echojs = require('echojs');
 var schema = require('./../models/schema');
 var User = schema.User;
-
+var Leader = schema.Leader;
 var routes = {};
 // I know this is stupid as a global var, but database will come later
 var beats;
@@ -144,6 +144,8 @@ function isEmpty(obj) {
 }
 
 routes.leaderboardRender = function(req, res) {
-  
+  Leader.find({}, function(err, data){
+    res.render('leadderboard', {score: data})
+  })
 }
 module.exports = routes;
