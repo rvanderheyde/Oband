@@ -140,9 +140,11 @@ function isEmpty(obj) {
 
 routes.cacheSongData = function(req, res) {
   // POST request to store a beats-file in the remote db.
+  var reqbody = JSON.parse(Object.keys(req.body)[0])
+  console.log("Caching " + reqbody.title);
   var songObj = new schema.Song({
-    title: JSON.parse(req.body.songpath),
-    data: JSON.parse(req.body.beats)
+    title: reqbody.title,
+    data: reqbody.data
   });
   songObj.save(function (err) {
     if (err) {
@@ -155,7 +157,8 @@ routes.cacheSongData = function(req, res) {
 routes.getCachedSongData = function(req, res) {
   // GET request to retrieve a song's data if it has been cached.
   // If it has not been cached, instead return null.
-  var query = schema.Song.where({ title: req.body.songpath });
+  console.log("CHECKING IN: " + req.query.title);
+  var query = schema.Song.where({ title: req.query.title });
   query.findOne(function (err, song) {
     if (err) {
       console.log("Problem searching for song: ", err);

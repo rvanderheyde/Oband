@@ -86,27 +86,37 @@ function runBeats(onlineFlag, trackURL) {
    * Otherwise, remix the beats using the echonest API.
    * TODO: Get this to work with different tracks.
    */
-  $.get('/getCachedSongData', function(cachedBeats) {
-    if (cachedBeats) {  // If we found this song in the cache
+  info.trackURL = trackURL;
+
+  // First, check whether this song has already been cached.
+  var cacheQuery = { title: info.trackURL }
+  $.get('/getCachedSongData', cacheQuery, function(cachedBeats) {
+
+    // If we found this song in the cache,
+    if (cachedBeats) {
+      console.log("Found cached song data");
+      notes = cachedBeats;
       info.notes = cachedBeats;
       info.host = true;
-      // Send the notes to the server if you're in online mode
-      if (onlineFlag) {
-        $('#status').html('Music parsing complete, waiting for more users...');
-        $.post('/songNotes', {notes: JSON.stringify(notes)})
-          .done(function() {
-            socket.emit('songParsed', info.room);
-            console.log('emitting that shit');
-          })
-          .error(onError);
-      }
-    } else {  // If no song data was found,
-      remixBeats(onlineFlag, trackURL);  // r-r-remix!
+
+    // If no song data was found,
+    } else { 
+      remixBeats(onlineFlag, trackURL, function() {  // r-r-remix!
+        console.log("NOTES " , info.notes.length)
+
+        // Send the song data to the cache.
+        var songDataQuery = { title: info.trackURL, data: info.notes };
+        songDataQuery = JSON.stringify(songDataQuery);
+        console.log("Firing /cacheSongData POST request");
+        $.post('/cacheSongData', songDataQuery).done(function(data) {
+          info.host = true;
+        });
+      });
     }
-  })
+  });
 }
 
-function remixBeats(onlineFlag, trackURL) {
+function remixBeats(onlineFlag, trackURL, callback) {
   /**
    * Analze and parse out a beats-file,
    * which will be stored in routes/index/beats.
@@ -168,6 +178,9 @@ function remixBeats(onlineFlag, trackURL) {
               })
               .error(onError);
           }
+
+          // Caaaaaallbaaaaaaaack!
+          callback();
         }
       });
     }

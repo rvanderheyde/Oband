@@ -246,7 +246,7 @@ $(document).on('click', '#singleStart', function(event) {
       'song': info.song
     };
     // runBeats to get notes object (w/ false flag because singleplayer)
-    runBeats(false);
+    runBeats(false, trackURL);
 
     // Play the game, after a countdown.
     var i = 5;
