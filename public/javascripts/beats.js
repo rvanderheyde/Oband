@@ -80,17 +80,15 @@ var playSong = function(player, track, notes) {
   playNotes(notes); // Let's get recursive!      
 }
 
-function runBeats(onlineFlag, song) {
+function runBeats(onlineFlag, songName) {
   // Get the EchoNest API key fromt he server
   $.get('/echonestKey', function(apiKey) {
     var trackID = 'TRCYWPQ139279B3308'; // I don't know what this is.
-    if (song === 'Kings of Summer'){
+    if (songName === 'Kings of Summer'){
       var trackURL = 'audio/KOS.mp3'; // Where the audio file is saved
-    } else if (song === 'Ok Go') {
+    } else if (songName === 'Ok Go') {
       var trackURL = 'audio/OKGO.mp3'; // Where the audio file is saved
-    } else {
-      var trackURL = 'audio/OKGO.mp3';
-    }
+    } 
     
     var remixer; // remix.js stuff
     var player;

@@ -249,7 +249,7 @@ $(document).on('click', '#singleStart', function(event) {
       'song': info.song
     };
     // runBeats to get notes object (w/ false flag because singleplayer)
-    runBeats(false);
+    runBeats(false, info.song);
 
   } else {
     console.log('Please select a difficulty and song');
