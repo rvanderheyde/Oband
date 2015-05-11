@@ -80,7 +80,7 @@ var playSong = function(player, track, notes) {
   playNotes(notes); // Let's get recursive!      
 }
 
-function runBeats(onlineFlag, trackURL) {
+function runBeats(onlineFlag, trackURL, trackID) {
   /**
    * If the song has already been parsed, then retrieve the beats from the cache.
    * Otherwise, remix the beats using the echonest API.
@@ -113,7 +113,7 @@ function runBeats(onlineFlag, trackURL) {
 
     // If no song data was found,
     } else { 
-      remixBeats(onlineFlag, trackURL, function() {  // r-r-remix!
+      remixBeats(onlineFlag, trackID, trackURL, function() {  // r-r-remix!
         console.log("NOTES " , info.notes.length)
 
         // Send the song data to the cache.
@@ -128,15 +128,14 @@ function runBeats(onlineFlag, trackURL) {
   });
 }
 
-function remixBeats(onlineFlag, trackURL, callback) {
+function remixBeats(onlineFlag, trackID, trackURL, callback) {
   /**
    * Analze and parse out a beats-file,
    * which will be stored in routes/index/beats.
    */
   // Get the EchoNest API key fromt he server
-  $.get('/echonestKey', function(apiKey) {
-    var trackID = 'TRCYWPQ139279B3308'; // I don't know what this is.
-    var trackURL = 'audio/KOS.mp3'; // Where the audio file is saved
+  $.get('/echonestKey', function(apiKey) { // I don't know what this is.
+    
     var remixer; // remix.js stuff
     var player;
     var track;
