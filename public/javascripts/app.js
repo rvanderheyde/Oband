@@ -11,7 +11,8 @@ var roomMap = {
 
 // URL where the audio file can be found
 // TODO: Tie this to the song select feature
-var trackURL = 'audio/KOS.mp3';
+var trackURL;
+var trackID;
 
 
 function main() {
@@ -193,6 +194,16 @@ $(document).on('click', '#diff-col button', function(event) {
 $(document).on('click', '#song-col button', function(event) {
   info.song = $(this).html();
   $('#song').html(info.song);
+  if (info.song === 'Intro'){
+    trackURL = 'audio/XX.mp3';
+    trackID = '';
+  } else if ('Madness') {
+    trackURL = 'audio/MUSE.mp3';
+    trackID = '';
+  } else if ('Sail') {
+    trackURL = 'audio/Sail.mp3';
+    trackID = '';
+  }
 });
 
 // Success function for joining an existing song and getting song info
@@ -218,7 +229,7 @@ $(document).on('click', '#start', function(event) {
     // Create new socket room
     socket.emit('joinRoom', info.song);
     // runBeats() to save notes object to info w/ true flag for online play
-    runBeats(true, trackURL);
+    runBeats(true, trackURL, trackID);
   } else {
     console.log('Please select a difficulty and song');
   }
@@ -255,7 +266,7 @@ $(document).on('click', '#singleStart', function(event) {
       'song': info.song
     };
     // runBeats to get notes object (w/ false flag because singleplayer)
-    runBeats(false, trackURL);
+    runBeats(false, trackURL, trackID);
 
     // Play the game, after a countdown.
     var i = 5;
@@ -268,7 +279,6 @@ $(document).on('click', '#singleStart', function(event) {
         playGame({song: info.notes, track: trackURL});
       }
     }, 1000);
-
 
   } else {
     console.log('Please select a difficulty and song');
