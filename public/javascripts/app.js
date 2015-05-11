@@ -8,6 +8,11 @@ var roomMap = {
   'Kings of Summer': 'B'
 };
 
+// URL where the audio file can be found
+// TODO: Tie this to the song select feature
+var trackURL = 'audio/KOS.mp3';
+
+
 function main() {
   info.count = 0;
   info.ids = {};
@@ -212,7 +217,7 @@ $(document).on('click', '#start', function(event) {
     // Create new socket room
     socket.emit('joinRoom', info.song);
     // runBeats() to save notes object to info w/ true flag for online play
-    runBeats(true);
+    runBeats(true, trackURL);
   } else {
     console.log('Please select a difficulty and song');
   }
@@ -249,7 +254,20 @@ $(document).on('click', '#singleStart', function(event) {
       'song': info.song
     };
     // runBeats to get notes object (w/ false flag because singleplayer)
-    runBeats(false);
+    runBeats(false, trackURL);
+
+    // Play the game, after a countdown.
+    var i = 5;
+    a = setInterval(function () {
+      i--;
+      console.log(i);
+      $('#status').html('Music parsing complete! Starting in ' + i + ' seconds');
+      if (i === 0) {
+        clearInterval(a);
+        playGame({song: info.notes, track: trackURL});
+      }
+    }, 1000);
+
 
   } else {
     console.log('Please select a difficulty and song');

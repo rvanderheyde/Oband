@@ -80,7 +80,59 @@ var playSong = function(player, track, notes) {
   playNotes(notes); // Let's get recursive!      
 }
 
-function runBeats(onlineFlag) {
+function runBeats(onlineFlag, trackURL) {
+  /**
+   * If the song has already been parsed, then retrieve the beats from the cache.
+   * Otherwise, remix the beats using the echonest API.
+   * TODO: Get this to work with different tracks.
+   */
+  info.track = trackURL;
+
+  // First, check whether this song has already been cached.
+  var cacheQuery = { title: info.track }
+  $.get('/getCachedSongData', cacheQuery, function(cachedBeats) {
+
+    // If we found this song in the cache,
+    if (cachedBeats) {
+      console.log("Found cached song data");
+      notes = cachedBeats;
+      info.notes = notes;
+      info.host = true;
+
+      // Send the notes to the server if you're in online mode
+      if (onlineFlag) {
+        $('#status').html('Music parsing complete, waiting for more users...');
+        info.track = trackURL;
+        $.post('/songNotes', {notes: JSON.stringify(notes), track: trackURL})
+          .done(function() { ￼Kings of Summer
+            socket.emit('songParsed', info.room);
+            console.log('emitting that shit');
+          })
+          .error(onError);
+      }
+
+    // If no song data was found,
+    } else { 
+      remixBeats(onlineFlag, trackURL, function() {  // r-r-remix!
+        console.log("NOTES " , info.notes.length)
+
+        // Send the song data to the cache.
+        var songDataQuery = { title: info.track, data: info.notes };
+        songDataQuery = JSON.stringify(songDataQuery);
+        console.log("Firing /cacheSongData POST request");
+        $.post('/cacheSongData', songDataQuery).done(function(data) {
+          info.host = true;
+        });
+      });
+    }
+  });
+}
+
+function remixBeats(onlineFlag, trackURL, callback) {
+  /**
+   * Analze and parse out a beats-file,
+   * which will be stored in routes/index/beats.
+   */
   // Get the EchoNest API key fromt he server
   $.get('/echonestKey', function(apiKey) {
     var trackID = 'TRCYWPQ139279B3308'; // I don't know what this is.
@@ -123,13 +175,9 @@ function runBeats(onlineFlag) {
         if (track.status == 'ok') {
           var notes = generateNotes(track.analysis.beats);
           console.log("Remix complete!");
-          // $('#status').html('Music parsing complete! Starting in 5 seconds')
           info.notes = notes;
           // person who parsed the music is the host
           info.host = true;
-          
-          // Uncomment this line to display the beat#s realtime in the console
-          // playSong(player, track, notes);
 
           // Send the notes to the server if you're in online mode
           if (onlineFlag) {
@@ -141,18 +189,10 @@ function runBeats(onlineFlag) {
                 console.log('emitting that shit');
               })
               .error(onError);
-          } else {
-            var i = 5;
-            a = setInterval(function () {
-              i--;
-              console.log(i);
-              $('#status').html('Music parsing complete! Starting in ' + i + ' seconds');
-              if (i === 0) {
-                clearInterval(a);
-                playGame({song: info.notes, track: trackURL});
-              }
-            }, 1000);
           }
+
+          // Caaaaaallbaaaaaaaack!
+          callback();
         }
       });
     }

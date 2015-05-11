@@ -5,6 +5,7 @@ var exports = {};
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function (callback) {});
+exports.db = db;
 
 // defining schema for users
 var userSchema = mongoose.Schema({
@@ -17,7 +18,7 @@ exports.User = mongoose.model('User', userSchema);
 
 var songSchema = mongoose.Schema({
   title: String,
-  data: []
+  data: [{time: Number, keys: [String]}]
 });
 
 exports.Song = mongoose.model('Song', songSchema);
