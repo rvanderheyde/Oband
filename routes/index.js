@@ -182,4 +182,9 @@ function isEmpty(obj) {
   return Object.keys(obj).length === 0;
 }
 
+routes.leaderboardRender = function(req, res) {
+  Leader.find({}).sort({score: -1}).exec(function(err, data){
+    res.render('leaderboard', {score: data})
+  })
+}
 module.exports = routes;
