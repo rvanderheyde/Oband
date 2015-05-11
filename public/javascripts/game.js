@@ -298,13 +298,13 @@ function drawGame(dt){
   //draw score
   canvas.setPenColor('#2222FF')
   canvas.drawRect(.75*canvas.width, .47*height, 1/16*canvas.width, 30)
-  if (info.mode === 'online') {
-    canvas.drawRect(.75*canvas.width, .25*height, 1/16*canvas.width, 30);
-  }
   var str = score.toString()
   canvas.setPenColor('#000000')
   canvas.drawText(str, .75*canvas.width, .5*height)
   if (info.mode === 'online') {
+    canvas.setPenColor('#2222FF')
+    canvas.drawRect(.75*canvas.width, .27*height, 1/16*canvas.width, 30);
+    canvas.setPenColor('#000000')
     canvas.drawText(oppScore.toString(), .75*canvas.width, .3*height);
   }
 }
