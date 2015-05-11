@@ -108,6 +108,11 @@ routes.endGame = function(req, res) {
     data.single = true;
   } else {
     data.single = false;
+    if (score > oppScore) {
+      data.won = true;
+    } else {
+      data.won = false;
+    }
   }
   // check if user is logged in
   if (isEmpty(req.session.passport)) {

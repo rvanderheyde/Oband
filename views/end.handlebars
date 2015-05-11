@@ -16,6 +16,9 @@
   {{#if data.single}}
     <p>Good job! Your score was {{data.score}}</p>
   {{else}}
+    <p>You {{data.won}}!</p>
+    <p>Your score was {{data.score}}</p>
+    <p>Your opponent's score was {{data.oppScore}}</p>
   {{/if}}
   <p>You correctly hit {{data.ratio}} of your notes</p>
 </div>
