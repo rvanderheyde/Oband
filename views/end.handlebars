@@ -13,24 +13,9 @@
       </ul>
     </section>  
   </nav>
-  <div id='singleSetup'>
-    <div id='diff-col'>
-      <h3>Difficulty</h3>
-      <button>Easy</button>
-      <button>Medium</button>
-      <button>Hard</button>
-      <button>Expert</button>
-    </div>
-    <div id='song-col'>
-      <h3>Pick a Song!</h3>
-      <button>A</button>
-      <button>B</button>
-    </div>
-    <div id='singleInfo'>
-      <p>Difficulty: <span id='diff'></span></p>
-      <p>Song: <span id='song'></span></p>
-      <button id='singleStart'>Start Game</button>
-      <p id='status'></p>
-    </div>
-  </div>
+  {{#if data.single}}
+    <p>Good job! Your score was {{data.score}}</p>
+  {{else}}
+  {{/if}}
+  <p>You correctly hit {{data.ratio}} of your notes</p>
 </div>

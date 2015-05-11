@@ -9,6 +9,8 @@ db.once('open', function (callback) {});
 // defining schema for users
 var userSchema = mongoose.Schema({
   name: String,
+  songs: [String],
+  scores: [String]
 });
 
 exports.User = mongoose.model('User', userSchema);

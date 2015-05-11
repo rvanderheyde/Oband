@@ -93,13 +93,45 @@ routes.songNotes = function (req, res) {
 
 routes.getSongInfo = function(req, res) {
   // Get request for person connecting to get parsed song data
-  data = {};
+  var data = {};
   data.beats = beats;
   data.track = track;
   console.log('Getting dat song info!');
   console.log(data.beats[0]);
   res.json(data);
   // res.send(beats);
+}
+
+routes.endGame = function(req, res) {
+  var data = req.body;
+  if (data.mode === 'single') {
+    data.single = true;
+  } else {
+    data.single = false;
+  }
+  // check if user is logged in
+  if (isEmpty(req.session.passport)) {
+    data.loggedIn = false;
+  } else {
+    data.loggedIn = true;
+    data.name = req.session.passport.user.displayName;
+  }
+  console.log(data.score);
+  console.log(data.number);
+  data.ratio = data.score * 10 / data.number;
+
+  res.json(data);
+}
+
+routes.end = function(req, res) {
+  data = req.query;
+  if (data.loggedIn === 'false') {
+    data.loggedIn = false;
+  }
+  if (data.single === 'false') {
+    data.single = false;
+  }
+  res.render('end', {'data': req.query, 'layout': false});
 }
 
 function isEmpty(obj) {
