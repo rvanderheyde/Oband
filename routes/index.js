@@ -144,7 +144,7 @@ function isEmpty(obj) {
 }
 
 routes.leaderboardRender = function(req, res) {
-  Leader.find({}, function(err, data){
+  Leader.find({}).sort({score: -1}).exec(function(err, data){
     res.render('leadderboard', {score: data})
   })
 }
