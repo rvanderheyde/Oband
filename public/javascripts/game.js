@@ -157,13 +157,14 @@ function mainGame(songObj){
     last = now;
     requestAnimationFrame(function(){ mainGame(Global.song) })
   } else {
-    //post score to server 
-<<<<<<< HEAD
-    $.post('endGame', {score: score, oppScore: oppScore, number: noteCounter})
+    //post score to server
+    console.log(info.mode);
+    $.post('endGame', {score: score, oppScore: oppScore, number: noteCounter, mode: info.mode})
       .done(function(data) {
         //load after game screen
         $.get('end', data)
           .success(function(data) {
+            console.log(data);
             $('body').html(data);
           })
           .error(onError);
@@ -171,12 +172,6 @@ function mainGame(songObj){
       .error(function() { 
         alert("Failed to submit score!");
       });
-=======
-    console.log(audio.ended)
-    $.post('endGame', {score: score, number: noteCounter}).error(function(){ alert("Failed to submit score!")})
-    //load after game screen
-    window.location.replace('http://localhost:3000/end')
->>>>>>> master
   }
 }
 function mainGameTest(songObj){
@@ -205,8 +200,8 @@ function playGame(songObj){
       noteCounter += 1;
     }
   }
-  console.log(noteCounter)
-  console.log(Global.song.song[Global.song.song.length-1])
+  console.log(noteCounter);
+  console.log(Global.song.song[Global.song.song.length-1]);
   //event listening for keyboard inputs
   document.addEventListener('keydown', 
         function(ev){ onKeyDown(ev, ev.keyCode, true)}, false);
@@ -305,8 +300,6 @@ function drawGame(dt){
   canvas.drawRect(.75*canvas.width, .47*height, 1/16*canvas.width, 30)
   if (info.mode === 'online') {
     canvas.drawRect(.75*canvas.width, .25*height, 1/16*canvas.width, 30);
-  } else {
-    oppScore = false;
   }
   var str = score.toString()
   canvas.setPenColor('#000000')

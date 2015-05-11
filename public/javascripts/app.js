@@ -130,35 +130,44 @@ $(document).on('click', '#help', function(event) {
 $(document).on('click', '#singlep', function(event) {
   event.preventDefault();
   
-  // $('#content').load('templates/single.html');
-  $.get('/singlep')
-    .done(function(data) {
-      $('body').html(data);
-      console.log('Singleplayer');
-      info.mode = 'single';
-    })
-    .error(onError);
+  var loggedIn = $('#name').html();
+  if (loggedIn[0] === 'W') {
+    $.get('/singlep')
+      .done(function(data) {
+        $('body').html(data);
+        console.log('Singleplayer');
+        info.mode = 'single';
+      })
+      .error(onError);
+  } else {
+    $('#help_info').show();
+  }
 });
 
 // Loads online multiplayer page
 $(document).on('click', '#online', function(event) {
   event.preventDefault();
-  $.get('/online')
-    .done(function(data) {
-      $('body').html(data) //, function() {
-        info.mode = 'online';
-        console.log('Online multiplayer');
-        $('#number span').html(info.count);
-        // Updating number of open rooms when each song loading online multip page
-        var rooms = info.roomCount;
-        for (var r in rooms) {
-          if (rooms.hasOwnProperty(r)) {
-            console.log(r + " -> " + rooms[r]);
-            $('#' + r).html(rooms[r]);
+  var loggedIn = $('#name').html();
+  if (loggedIn[0] === 'W') {
+    $.get('/online')
+      .done(function(data) {
+        $('body').html(data) //, function() {
+          info.mode = 'online';
+          console.log('Online multiplayer');
+          $('#number span').html(info.count);
+          // Updating number of open rooms when each song loading online multip page
+          var rooms = info.roomCount;
+          for (var r in rooms) {
+            if (rooms.hasOwnProperty(r)) {
+              console.log(r + " -> " + rooms[r]);
+              $('#' + r).html(rooms[r]);
+            }
           }
-        }
-    })
-    .error(onError);
+      })
+      .error(onError);
+  } else {
+    $('#help_info').show();
+  }
 });
 
 // Functions to update vars when setup buttons are clicked

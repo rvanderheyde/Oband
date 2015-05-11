@@ -77,6 +77,7 @@ app.get('/getSongInfo', index.getSongInfo);
 
 app.get('/singlep', index.single);
 app.get('/online', index.online);
+app.get('/end', index.end);
 app.post('/songNotes', index.songNotes);
 app.post('/loggingOut', auth.loggingOut);
 app.post('/endGame', index.endGame);

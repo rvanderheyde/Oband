@@ -104,7 +104,7 @@ routes.getSongInfo = function(req, res) {
 
 routes.endGame = function(req, res) {
   var data = req.body;
-  if (data.oppScore === false) {
+  if (data.mode === 'single') {
     data.single = true;
   } else {
     data.single = false;
@@ -116,12 +116,21 @@ routes.endGame = function(req, res) {
     data.loggedIn = true;
     data.name = req.session.passport.user.displayName;
   }
-  data.ratio = data.score * 10 / data.noteCounter;
+  console.log(data.score);
+  console.log(data.number);
+  data.ratio = data.score * 10 / data.number;
 
   res.json(data);
 }
 
 routes.end = function(req, res) {
+  data = req.query;
+  if (data.loggedIn === 'false') {
+    data.loggedIn = false;
+  }
+  if (data.single === 'false') {
+    data.single = false;
+  }
   res.render('end', {'data': req.query, 'layout': false});
 }
 
