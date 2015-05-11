@@ -108,7 +108,7 @@ routes.endGame = function(req, res) {
     data.single = true;
   } else {
     data.single = false;
-    if (score > oppScore) {
+    if (data.score > data.oppScore) {
       data.won = true;
     } else {
       data.won = false;

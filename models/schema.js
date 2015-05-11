@@ -10,7 +10,7 @@ db.once('open', function (callback) {});
 var userSchema = mongoose.Schema({
   name: String,
   songs: [String],
-  scores: [String]
+  scores: [Number]
 });
 
 exports.User = mongoose.model('User', userSchema);
